@@ -1,7 +1,8 @@
-package com.dogdduddy.jmt
+package com.dogdduddy.jmt.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.dogdduddy.jmt.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
