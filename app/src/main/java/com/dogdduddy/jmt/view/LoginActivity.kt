@@ -2,6 +2,7 @@ package com.dogdduddy.jmt.view
 
 import android.app.Activity
 import android.content.Intent
+import android.content.IntentSender
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -52,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
             }
             else {
                 Log.d(TAG, "result Not OK  result : ${result.resultCode}")
+                Log.d(TAG, "result Not OK  result2 : ${result.data}")
                 Log.d(TAG, "result Not OK  error : ${result}")
                 Log.d(TAG, "result Not OK  : ${Activity.RESULT_OK}")
             }
@@ -61,14 +63,11 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.googleLoginBtn.setOnClickListener {
-            val signInIntent = googleSignInClient.signInIntent
-            Log.d(TAG, "googleLogin() called $signInIntent")
-            startForResult.launch(signInIntent)
-        }
-
         oneTapClient = Identity.getSignInClient(this)
         signInRequest = BeginSignInRequest.builder()
+            .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
+                .setSupported(true)
+                .build())
             .setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
@@ -79,6 +78,13 @@ class LoginActivity : AppCompatActivity() {
                     .build())
             .setAutoSelectEnabled(true)
             .build()
+
+        binding.googleLoginBtn.setOnClickListener {
+            val signInIntent = googleSignInClient.signInIntent
+            Log.d(TAG, "googleLogin() called $signInIntent")
+            startForResult.launch(signInIntent)
+        }
+
     }
     fun toast(string: String)  {
         Toast.makeText(this.applicationContext, string, Toast.LENGTH_LONG).show()
