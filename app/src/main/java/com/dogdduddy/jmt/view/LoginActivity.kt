@@ -9,9 +9,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import com.dogdduddy.jmt.R
 import com.dogdduddy.jmt.databinding.ActivityLoginBinding
+import com.dogdduddy.jmt.viewmodel.LoginViewModel
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -20,13 +23,50 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    // Google
-    private lateinit var signInRequest: BeginSignInRequest
-    private lateinit var oneTapClient: SignInClient
+    private val loginViewModel: LoginViewModel = LoginViewModel()
     private val TAG = "LoginTest"
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
+
+        binding.googleLoginBtn.setOnClickListener {
+            Log.d(TAG, "Login Button Click!!")
+            lifecycleScope.launch(CoroutineExceptionHandler { _, throwable -> throwable.printStackTrace() }) {
+                Log.d(TAG, "lifecycleScope launch Start")
+                startForResult.launch(
+                    IntentSenderRequest.Builder(loginViewModel.googleLogin(this@LoginActivity)).build()
+                )
+            }
+        }
+
+    }
+    private val startForResult: ActivityResultLauncher<IntentSenderRequest> =
+        registerForActivityResult( ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
+                    toast(account.displayName.toString())
+                    Log.d(TAG, "Access : ${account}")
+                } catch (e: ApiException) {
+                    Log.e(TAG, "Google Signin Exception : $e")
+                }
+            } else {
+                Log.d("LoginTest", "Result : ${result.resultCode}")
+                Log.d("LoginTest", "Result : ${result}")
+            }
+        }
+    /*
 
     private val googleSignInClient by lazy {
         GoogleSignIn.getClient(
@@ -51,41 +91,8 @@ class LoginActivity : AppCompatActivity() {
                     Log.e(TAG, "Google Signin Exception : $e")
                 }
             }
-            else {
-                Log.d(TAG, "result Not OK  result : ${result.resultCode}")
-                Log.d(TAG, "result Not OK  result2 : ${result.data}")
-                Log.d(TAG, "result Not OK  error : ${result}")
-                Log.d(TAG, "result Not OK  : ${Activity.RESULT_OK}")
-            }
         }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        oneTapClient = Identity.getSignInClient(this)
-        signInRequest = BeginSignInRequest.builder()
-            .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
-                .setSupported(true)
-                .build())
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    // 서버 클라이언트 ID (현재는 Firebase Web Client ID)
-                    .setServerClientId(getString(R.string.my_web_client_id))
-                    // 이전에 로그인하는 데 사용한 계정만 표시합니다.
-                    .setFilterByAuthorizedAccounts(true)
-                    .build())
-            .setAutoSelectEnabled(true)
-            .build()
-
-        binding.googleLoginBtn.setOnClickListener {
-            val signInIntent = googleSignInClient.signInIntent
-            Log.d(TAG, "googleLogin() called $signInIntent")
-            startForResult.launch(signInIntent)
-        }
-
-    }
+     */
     fun toast(string: String)  {
         Toast.makeText(this.applicationContext, string, Toast.LENGTH_LONG).show()
     }

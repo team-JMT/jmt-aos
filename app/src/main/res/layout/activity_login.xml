@@ -7,9 +7,8 @@
     tools:context=".view.LoginActivity">
     <com.google.android.gms.common.SignInButton
         android:layout_width="wrap_content"
-        android:layout_height="53dp"
+        android:layout_height="wrap_content"
         android:id="@+id/googleLoginBtn"
-        android:text="구글 로그인"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
