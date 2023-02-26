@@ -39,9 +39,7 @@ class LoginActivity : AppCompatActivity() {
 
 
         binding.googleLoginBtn.setOnClickListener {
-            Log.d(TAG, "Login Button Click!!")
             lifecycleScope.launch(CoroutineExceptionHandler { _, throwable -> throwable.printStackTrace() }) {
-                Log.d(TAG, "lifecycleScope launch Start")
                 startForResult.launch(
                     IntentSenderRequest.Builder(loginViewModel.googleLogin(this@LoginActivity)).build()
                 )
@@ -52,47 +50,23 @@ class LoginActivity : AppCompatActivity() {
     private val startForResult: ActivityResultLauncher<IntentSenderRequest> =
         registerForActivityResult( ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val task: Task<GoogleSignInAccount> =
-                    GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
-                    toast(account.displayName.toString())
-                    Log.d(TAG, "Access : ${account}")
-                } catch (e: ApiException) {
-                    Log.e(TAG, "Google Signin Exception : $e")
+                val intent = result.data
+                if (intent != null) {
+                    val credential = loginViewModel.getCredential(intent)
+                    val googleIdToken = credential.googleIdToken
+                    /*
+                    // Server에 Token 넘기는 코드 넣기
+                    if (googleIdToken != null) {
+                        viewModel.requestGoogleSignIn(googleIdToken)
+                    }
+                     */
+                } else {
+                    Log.d(TAG, "Google Login Failed")
                 }
             } else {
-                Log.d("LoginTest", "Result : ${result.resultCode}")
-                Log.d("LoginTest", "Result : ${result}")
+                Log.e(TAG, "Result : ${result.resultCode}")
             }
         }
-    /*
-
-    private val googleSignInClient by lazy {
-        GoogleSignIn.getClient(
-            this,
-            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.my_web_client_id))
-                .requestEmail()
-                .requestProfile()
-                .build())
-    }
-    // 구글 로그인 결과 받을 런처
-    private val startForResult: ActivityResultLauncher<Intent> =
-        registerForActivityResult( ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val task: Task<GoogleSignInAccount> =
-                    GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
-                    toast(account.displayName.toString())
-                    Log.d(TAG, "Access : ${account}")
-                } catch (e: ApiException) {
-                    Log.e(TAG, "Google Signin Exception : $e")
-                }
-            }
-        }
-     */
     fun toast(string: String)  {
         Toast.makeText(this.applicationContext, string, Toast.LENGTH_LONG).show()
     }

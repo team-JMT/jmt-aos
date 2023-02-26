@@ -12,7 +12,6 @@ class GoogleLoginManager() {
     lateinit var oneTapClient: SignInClient
 
     suspend fun signInIntent(activity: Activity)  = suspendCoroutine { continuation ->
-        Log.d("LoginTest", "signInIntent suspend method Start!!")
         oneTapClient = Identity.getSignInClient(activity)
         val signInRequest = BeginSignInRequest.builder()
             .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
@@ -28,11 +27,8 @@ class GoogleLoginManager() {
             .build()
 
         oneTapClient.beginSignIn(signInRequest)
-            .addOnFailureListener {
-                Log.d("LoginTest", "onTap Request fail : ${it.localizedMessage}")
-                continuation.resumeWith(Result.failure(it)) }
+            .addOnFailureListener { continuation.resumeWith(Result.failure(it)) }
             .addOnSuccessListener {
-                Log.d("LoginTest", "onTap Request success : ${it.pendingIntent}")
                 continuation.resumeWith(Result.success(it.pendingIntent))
             }
     }
