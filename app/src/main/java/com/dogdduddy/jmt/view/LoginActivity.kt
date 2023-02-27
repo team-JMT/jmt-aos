@@ -37,7 +37,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
         binding.googleLoginBtn.setOnClickListener {
             lifecycleScope.launch(CoroutineExceptionHandler { _, throwable -> throwable.printStackTrace() }) {
                 startForResult.launch(
@@ -45,7 +44,9 @@ class LoginActivity : AppCompatActivity() {
                 )
             }
         }
-
+        binding.testBtn.setOnClickListener {
+            loginViewModel.testPost()
+        }
     }
     private val startForResult: ActivityResultLauncher<IntentSenderRequest> =
         registerForActivityResult( ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
@@ -54,12 +55,8 @@ class LoginActivity : AppCompatActivity() {
                 if (intent != null) {
                     val credential = loginViewModel.getCredential(intent)
                     val googleIdToken = credential.googleIdToken
-                    /*
-                    // Server에 Token 넘기는 코드 넣기
-                    if (googleIdToken != null) {
-                        viewModel.requestGoogleSignIn(googleIdToken)
-                    }
-                     */
+                    Log.d(TAG, "Token : ${googleIdToken}")
+                    loginViewModel.postToken(googleIdToken)
                 } else {
                     Log.d(TAG, "Google Login Failed")
                 }

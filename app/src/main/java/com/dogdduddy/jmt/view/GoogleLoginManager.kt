@@ -8,9 +8,7 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import kotlin.coroutines.suspendCoroutine
 class GoogleLoginManager() {
-
     lateinit var oneTapClient: SignInClient
-
     suspend fun signInIntent(activity: Activity)  = suspendCoroutine { continuation ->
         oneTapClient = Identity.getSignInClient(activity)
         val signInRequest = BeginSignInRequest.builder()
