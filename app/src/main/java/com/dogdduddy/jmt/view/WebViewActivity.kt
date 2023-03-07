@@ -20,14 +20,9 @@ class WebViewActivity : AppCompatActivity() {
 
         webView = binding.webView
         webViewInit()
-        /*
         intent.extras?.let {
             binding.webView.loadUrl(it.getString("url")!!)
         }
-        // https://jmt-matzip.dev/
-         */
-        //binding.webView.loadUrl("file:///android_asset/webviewexam.html")
-        binding.webView.loadUrl("https://jmt-matzip.dev/")
 
         val actionBar: ActionBar? = supportActionBar
         actionBar!!.hide()
