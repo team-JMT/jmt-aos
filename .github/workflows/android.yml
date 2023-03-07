@@ -21,17 +21,19 @@ jobs:
             cache: gradle
         - name: Build debug APK
           run: bash ./gradlew assembleDebug --stacktrace
+          
         - name: Upload APK
           uses: actions/upload-artifact@v3
           with:
             name: app
             path: app/build/outputs/apk/debug
+            
         - name: Slack - Upload APK
           uses: MeilCli/slack-upload-file@v1.0.0
           with:
             slack_token: ${{ secrets.SLACK_TOKEN }}  
             channels: ${{ secrets.SLACK_CHANNEL }}
             initial_comment: 'APK File Upload'
-            file_type: apk
-            file_name: app
-            file_path: app/build/outputs/apk/debug
+            file_path: 'app/build/outputs/apk/debug/app-debug.apk'
+            file_name: 'app-debug.apk'
+            file_type: 'apk'
