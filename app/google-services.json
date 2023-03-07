@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "846233671186",
+    "project_id": "matzip-jmt",
+    "storage_bucket": "matzip-jmt.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846233671186:android:0ca9a58252f491a5da6acb",
+        "android_client_info": {
+          "package_name": "com.dogdduddy.jmt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "846233671186-v1mirmbuqar5n0djl73cefot811vutne.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dogdduddy.jmt",
+            "certificate_hash": "3f1cc906a92375c5e73f09bd409b3ceb499cbaef"
+          }
+        },
+        {
+          "client_id": "846233671186-4vknaa3i38pfkeourp2q37lolncdbmhl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDr0G-cb7iz9fgJ15eON842Akv4DxstLRk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "846233671186-4vknaa3i38pfkeourp2q37lolncdbmhl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

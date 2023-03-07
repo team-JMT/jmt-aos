@@ -23,6 +23,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.OAuthProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -36,6 +38,49 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        /// 애플 로그인
+
+        binding.appleLoginBtn.setOnClickListener {
+            Log.d(TAG, "appleLoginBtn Clicked")
+            val provider = OAuthProvider.newBuilder("apple.com")
+            // provider.setScopes(mutableListOf("email", "name"))
+
+            val auth = FirebaseAuth.getInstance()
+
+            val pending = auth.pendingAuthResult
+            if (pending != null) {
+                Log.d(TAG, "peding : not null")
+                pending.addOnSuccessListener { authResult ->
+                    Log.d(TAG, "checkPending:onSuccess:$authResult")
+                    // Get the user profile with authResult.getUser() and
+                    // authResult.getAdditionalUserInfo(), and the ID
+                    // token from Apple with authResult.getCredential().
+                    authResult.user?.getIdToken(true)?.addOnSuccessListener {
+                        Log.d(TAG, "checkPending:onSuccess:$it")
+                    }
+                    Log.d("TAG", "checkAuth/UserInfo : ${authResult.additionalUserInfo}")
+                    Log.d("TAG", "checkAuth/credential : ${authResult.credential}")
+                }.addOnFailureListener { e ->
+                    Log.w(TAG, "checkPending:onFailure", e)
+                }
+            } else {
+                Log.d(TAG, "pending: null")
+            }
+
+            // 대기 중 결과가 없다면 실행
+            auth.startActivityForSignInWithProvider(this, provider.build())
+                .addOnSuccessListener { authResult ->
+                    // Sign-in successful!
+                    Log.d(TAG, "activitySignIn:onSuccess:${authResult.user}")
+                    val user = authResult.user
+                    // ...
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "activitySignIn:onFailure", e)
+                }
+        }
+
+        ///
 
         binding.googleLoginBtn.setOnClickListener {
             lifecycleScope.launch(CoroutineExceptionHandler { _, throwable -> throwable.printStackTrace() }) {
@@ -55,7 +100,7 @@ class LoginActivity : AppCompatActivity() {
                 if (intent != null) {
                     val credential = loginViewModel.getCredential(intent)
                     val googleIdToken = credential.googleIdToken
-                    Log.d(TAG, "Token : ${googleIdToken}")
+
                     loginViewModel.postToken(googleIdToken)
                 } else {
                     Log.d(TAG, "Google Login Failed")
