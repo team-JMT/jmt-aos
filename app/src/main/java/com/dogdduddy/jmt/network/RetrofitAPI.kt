@@ -16,6 +16,11 @@ interface RetrofitAPI {
         @Body jsonPlace: JsonPlaceDTO
     ): retrofit2.Call<JsonPlaceDTO>
 
+    @POST("api/v1/auth/apple")
+    fun sendUserAppleToken(
+        @Body jsonPlace: JsonPlaceDTO
+    ): retrofit2.Call<JsonPlaceDTO>
+
     @POST("/posts")
     fun callPost(
         @Body token: String
