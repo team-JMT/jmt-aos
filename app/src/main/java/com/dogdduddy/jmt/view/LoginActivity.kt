@@ -39,11 +39,10 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         /// 애플 로그인
-
         binding.appleLoginBtn.setOnClickListener {
             Log.d(TAG, "appleLoginBtn Clicked")
             val provider = OAuthProvider.newBuilder("apple.com")
-            // provider.setScopes(mutableListOf("email", "name"))
+            provider.setScopes(mutableListOf("email", "name"))
 
             val auth = FirebaseAuth.getInstance()
 
@@ -56,24 +55,39 @@ class LoginActivity : AppCompatActivity() {
                     // authResult.getAdditionalUserInfo(), and the ID
                     // token from Apple with authResult.getCredential().
                     authResult.user?.getIdToken(true)?.addOnSuccessListener {
-                        Log.d(TAG, "checkPending:onSuccess:$it")
+                        Log.d(TAG, "checkPending:onSuccess:Result : $it")
+                        Log.d(TAG, "checkPending:onSuccess:Token  :  $it.token")
+                        Log.d(TAG, "checkPending:onSuccess:Values :  $it.claims.values")
                     }
-                    Log.d("TAG", "checkAuth/UserInfo : ${authResult.additionalUserInfo}")
-                    Log.d("TAG", "checkAuth/credential : ${authResult.credential}")
+                    Log.d(TAG, "checkAuth/UserInfo : ${authResult.additionalUserInfo}")
+                    Log.d(TAG, "checkAuth/credential : ${authResult.credential}")
                 }.addOnFailureListener { e ->
                     Log.w(TAG, "checkPending:onFailure", e)
                 }
-            } else {
-                Log.d(TAG, "pending: null")
             }
 
             // 대기 중 결과가 없다면 실행
             auth.startActivityForSignInWithProvider(this, provider.build())
                 .addOnSuccessListener { authResult ->
-                    // Sign-in successful!
-                    Log.d(TAG, "activitySignIn:onSuccess:${authResult.user}")
-                    val user = authResult.user
-                    // ...
+                    // Log.d(TAG, "activitySignIn:onSuccess:email  :  ${authResult.user?.email}")
+                    // Log.d(TAG, "activitySignIn:onSuccess:Name  :  ${authResult.user?.displayName}")
+                    Log.d(TAG, "checkPending:onSuccess:providerId  : ${authResult.additionalUserInfo?.providerId}")
+                    Log.d(TAG, "checkPending:onSuccess:profileValue  : ${authResult.additionalUserInfo?.profile?.values}")
+
+
+                    Log.d(TAG, "checkPending:onSuccess:credential  : ${authResult.credential.toString()}")
+                    Log.d(TAG, "checkPending:onSuccess:provider  : ${authResult.credential?.provider.toString()}")
+                    Log.d(TAG, "checkPending:onSuccess:provider  : ${authResult.credential?.signInMethod.toString()}")
+
+                    authResult.user?.getIdToken(true)?.addOnSuccessListener {
+                        it.signInProvider
+
+                        Log.d(TAG, "checkPending:onSuccess:Result : $it")
+                        Log.d(TAG, "checkPending:onSuccess:Token  : ${it.token}")
+
+                        loginViewModel.postAppleToken(it.token)
+                    }
+
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "activitySignIn:onFailure", e)
@@ -101,7 +115,7 @@ class LoginActivity : AppCompatActivity() {
                     val credential = loginViewModel.getCredential(intent)
                     val googleIdToken = credential.googleIdToken
 
-                    loginViewModel.postToken(googleIdToken)
+                    loginViewModel.postGoogleToken(googleIdToken)
                 } else {
                     Log.d(TAG, "Google Login Failed")
                 }

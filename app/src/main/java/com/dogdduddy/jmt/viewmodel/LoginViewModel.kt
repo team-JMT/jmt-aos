@@ -23,10 +23,19 @@ class LoginViewModel: ViewModel() {
     fun getCredential(intent: Intent) :SignInCredential {
         return googleLoginManager.oneTapClient.getSignInCredentialFromIntent(intent)
     }
-    fun postToken(token:String?) {
+    fun postGoogleToken(token:String?) {
         viewModelScope.launch {
             val deferred = async {
-                data.postToken(token)
+                data.postGoogleToken(token)
+            }
+            deferred.await()
+        }
+    }
+
+    fun postAppleToken(token:String?) {
+        viewModelScope.launch {
+            val deferred = async {
+                data.postAppleToken(token)
             }
             deferred.await()
         }
