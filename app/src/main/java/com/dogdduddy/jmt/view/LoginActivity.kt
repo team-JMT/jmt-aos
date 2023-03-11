@@ -25,6 +25,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
+import com.google.firebase.auth.ktx.oAuthCredential
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -54,35 +55,25 @@ class LoginActivity : AppCompatActivity() {
                     // Get the user profile with authResult.getUser() and
                     // authResult.getAdditionalUserInfo(), and the ID
                     // token from Apple with authResult.getCredential().
+
                     authResult.user?.getIdToken(true)?.addOnSuccessListener {
-                        Log.d(TAG, "checkPending:onSuccess:Result : $it")
-                        Log.d(TAG, "checkPending:onSuccess:Token  :  $it.token")
-                        Log.d(TAG, "checkPending:onSuccess:Values :  $it.claims.values")
+                        Log.d(TAG, "checkPending:onSuccess:Token  :  ${it.token}")
                     }
-                    Log.d(TAG, "checkAuth/UserInfo : ${authResult.additionalUserInfo}")
-                    Log.d(TAG, "checkAuth/credential : ${authResult.credential}")
                 }.addOnFailureListener { e ->
                     Log.w(TAG, "checkPending:onFailure", e)
                 }
             }
 
             // 대기 중 결과가 없다면 실행
+
             auth.startActivityForSignInWithProvider(this, provider.build())
                 .addOnSuccessListener { authResult ->
-                    // Log.d(TAG, "activitySignIn:onSuccess:email  :  ${authResult.user?.email}")
-                    // Log.d(TAG, "activitySignIn:onSuccess:Name  :  ${authResult.user?.displayName}")
-                    Log.d(TAG, "checkPending:onSuccess:providerId  : ${authResult.additionalUserInfo?.providerId}")
-                    Log.d(TAG, "checkPending:onSuccess:profileValue  : ${authResult.additionalUserInfo?.profile?.values}")
-
-
-                    Log.d(TAG, "checkPending:onSuccess:credential  : ${authResult.credential.toString()}")
-                    Log.d(TAG, "checkPending:onSuccess:provider  : ${authResult.credential?.provider.toString()}")
-                    Log.d(TAG, "checkPending:onSuccess:provider  : ${authResult.credential?.signInMethod.toString()}")
-
+                    Log.d(TAG, "checkPending:onSuccess:credential  :  ${authResult.credential}")
+                    Log.d(TAG, "checkPending:onSuccess:Anonymous  :  ${authResult.user?.isAnonymous}")
+                    Log.d(TAG, "checkPending:onSuccess:tenant  :  ${authResult.user?.tenantId}")
+                    Log.d(TAG, "checkPending:onSuccess:metadata  :  ${authResult.user?.metadata}")
+                    Log.d(TAG, "checkPending:onSuccess:provider  :  ${authResult.user?.providerData}")
                     authResult.user?.getIdToken(true)?.addOnSuccessListener {
-                        it.signInProvider
-
-                        Log.d(TAG, "checkPending:onSuccess:Result : $it")
                         Log.d(TAG, "checkPending:onSuccess:Token  : ${it.token}")
 
                         loginViewModel.postAppleToken(it.token)
