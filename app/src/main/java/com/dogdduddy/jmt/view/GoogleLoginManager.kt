@@ -1,7 +1,6 @@
 package com.dogdduddy.jmt.view
 
 import android.app.Activity
-import android.util.Log
 import com.dogdduddy.jmt.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -19,7 +18,7 @@ class GoogleLoginManager() {
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
                     .setServerClientId(activity.getString(R.string.my_web_client_id))
-                    .setFilterByAuthorizedAccounts(true)
+                    .setFilterByAuthorizedAccounts(false)
                     .build())
             .setAutoSelectEnabled(true)
             .build()
