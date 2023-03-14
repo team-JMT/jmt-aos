@@ -1,8 +1,6 @@
 package com.dogdduddy.jmt.view
 
 import android.app.Activity
-import android.content.Intent
-import android.content.IntentSender
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,19 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import com.dogdduddy.jmt.R
 import com.dogdduddy.jmt.databinding.ActivityLoginBinding
 import com.dogdduddy.jmt.viewmodel.LoginViewModel
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
-import com.google.firebase.auth.ktx.oAuthCredential
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -65,20 +53,9 @@ class LoginActivity : AppCompatActivity() {
             }
 
             // 대기 중 결과가 없다면 실행
-
             auth.startActivityForSignInWithProvider(this, provider.build())
                 .addOnSuccessListener { authResult ->
-                    Log.d(TAG, "checkPending:onSuccess:credential  :  ${authResult.credential}")
-                    Log.d(TAG, "checkPending:onSuccess:Anonymous  :  ${authResult.user?.isAnonymous}")
-                    Log.d(TAG, "checkPending:onSuccess:tenant  :  ${authResult.user?.tenantId}")
-                    Log.d(TAG, "checkPending:onSuccess:metadata  :  ${authResult.user?.metadata}")
-                    Log.d(TAG, "checkPending:onSuccess:provider  :  ${authResult.user?.providerData}")
-                    authResult.user?.getIdToken(true)?.addOnSuccessListener {
-                        Log.d(TAG, "checkPending:onSuccess:Token  : ${it.token}")
-
-                        loginViewModel.postAppleToken(it.token)
-                    }
-
+                    loginViewModel.postAppleToken(authResult.user?.email.toString(), getString(R.string.ios_client_id))
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "activitySignIn:onFailure", e)

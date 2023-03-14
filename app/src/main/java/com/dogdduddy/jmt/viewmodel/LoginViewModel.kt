@@ -32,10 +32,10 @@ class LoginViewModel: ViewModel() {
         }
     }
 
-    fun postAppleToken(token:String?) {
+    fun postAppleToken(email:String, clientId:String) {
         viewModelScope.launch {
             val deferred = async {
-                data.postAppleToken(token)
+                data.postAppleToken(email, clientId)
             }
             deferred.await()
         }
