@@ -71,9 +71,6 @@ class LoginActivity : AppCompatActivity() {
                 )
             }
         }
-        binding.testBtn.setOnClickListener {
-            loginViewModel.testPost()
-        }
     }
     private val startForResult: ActivityResultLauncher<IntentSenderRequest> =
         registerForActivityResult( ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
