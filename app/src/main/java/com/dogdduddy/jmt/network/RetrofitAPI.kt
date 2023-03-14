@@ -1,6 +1,7 @@
 package com.dogdduddy.jmt.network
 
 import com.dogdduddy.jmt.model.JsonPlaceDTO
+import com.dogdduddy.jmt.model.JsonPlaceDTO2
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.Body
@@ -14,12 +15,12 @@ interface RetrofitAPI {
     @POST("api/v1/auth/google")
     fun sendUserGoogleToken(
         @Body jsonPlace: JsonPlaceDTO
-    ): retrofit2.Call<JsonPlaceDTO>
+    ): Call<JsonPlaceDTO>
 
-    @POST("api/v1/auth/apple")
+    @POST("api/v1/auth/android/apple")
     fun sendUserAppleToken(
-        @Body jsonPlace: JsonPlaceDTO
-    ): retrofit2.Call<JsonPlaceDTO>
+        @Body jsonPlace: JsonPlaceDTO2
+    ): Call<JsonPlaceDTO2>
 
     @POST("/posts")
     fun callPost(
