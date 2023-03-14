@@ -22,8 +22,4 @@ interface RetrofitAPI {
         @Body jsonPlace: JsonPlaceDTO2
     ): Call<JsonPlaceDTO2>
 
-    @POST("/posts")
-    fun callPost(
-        @Body token: String
-    ) : Call<JSONObject>
 }

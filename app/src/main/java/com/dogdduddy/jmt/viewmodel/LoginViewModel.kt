@@ -40,13 +40,4 @@ class LoginViewModel: ViewModel() {
             deferred.await()
         }
     }
-
-    fun testPost() {
-        viewModelScope.launch {
-            val deferred = async {
-                data.testPost()
-            }
-            deferred.await()
-        }
-    }
 }
