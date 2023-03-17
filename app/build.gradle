@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -16,7 +17,14 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    signingConfigs {
+        release {
+            storeFile file("../../jmtKey.jks")
+            storePassword "$System.env.KEYSTORE_PASSWORD"
+            keyAlias "$System.env.KEY_ALIAS"
+            keyPassword "$System.env.KEY_PASSWORD"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -56,6 +64,14 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
     // Gson 변환기
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // firebase
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation platform('com.google.firebase:firebase-bom:31.2.0')
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
