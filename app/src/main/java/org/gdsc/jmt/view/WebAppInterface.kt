@@ -1,4 +1,4 @@
-package com.dogdduddy.jmt.view
+package org.gdsc.jmt.view
 
 import android.content.Context
 import android.webkit.JavascriptInterface

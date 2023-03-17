@@ -1,4 +1,4 @@
-package com.dogdduddy.jmt.network
+package org.gdsc.jmt.network
 
 import android.app.Application
 import android.content.Context
@@ -21,7 +21,7 @@ class App:Application() {
     }
     fun getAppContext(): App {
         checkNotNull(instance) {
-            "This Application does not inherit com.dogdduddy.JMT"
+            "This Application does not inherit org.gdsc.JMT"
         }
         return instance!!
     }

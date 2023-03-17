@@ -1,4 +1,4 @@
-package com.dogdduddy.jmt
+package org.gdsc.jmt
 
 import org.junit.Test
 

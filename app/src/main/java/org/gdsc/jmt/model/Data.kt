@@ -1,12 +1,9 @@
-package com.dogdduddy.jmt.model
+package org.gdsc.jmt.model
 
 import android.util.Log
-import com.dogdduddy.jmt.network.RetrofitAPI
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import org.gdsc.jmt.network.RetrofitAPI
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit

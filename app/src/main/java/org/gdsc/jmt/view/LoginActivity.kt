@@ -1,4 +1,4 @@
-package com.dogdduddy.jmt.view
+package org.gdsc.jmt.view
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
@@ -10,9 +10,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
-import com.dogdduddy.jmt.R
-import com.dogdduddy.jmt.databinding.ActivityLoginBinding
-import com.dogdduddy.jmt.viewmodel.LoginViewModel
+import org.gdsc.jmt.R
+import org.gdsc.jmt.databinding.ActivityLoginBinding
+import org.gdsc.jmt.viewmodel.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -30,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
         /// 애플 로그인
         binding.appleLoginBtn.setOnClickListener {
             Log.d(TAG, "appleLoginBtn Clicked")
-            val provider = OAuthProvider.newBuilder("apple.com")
+            val provider = OAuthProvider.newBuilder(getString(R.string.apple_provider))
             provider.setScopes(mutableListOf("email", "name"))
 
             val auth = FirebaseAuth.getInstance()

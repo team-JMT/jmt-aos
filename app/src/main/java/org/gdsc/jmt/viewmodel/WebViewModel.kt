@@ -1,4 +1,4 @@
-package com.dogdduddy.jmt.viewmodel
+package org.gdsc.jmt.viewmodel
 
 import androidx.lifecycle.ViewModel
 

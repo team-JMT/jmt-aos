@@ -1,13 +1,11 @@
-package com.dogdduddy.jmt.view
+package org.gdsc.jmt.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.dogdduddy.jmt.R
-import com.dogdduddy.jmt.databinding.ActivityMainBinding
-import com.dogdduddy.jmt.viewmodel.WebViewModel
+import org.gdsc.jmt.databinding.ActivityMainBinding
+import org.gdsc.jmt.viewmodel.WebViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
