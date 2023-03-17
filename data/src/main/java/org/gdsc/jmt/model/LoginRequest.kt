@@ -3,13 +3,13 @@ package org.gdsc.jmt.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class JsonPlaceDTO(
+data class GoogleLoginRequest(
     @Expose
     @SerializedName("token")
     var token: String
 )
 
-data class JsonPlaceDTO2(
+data class AppleLoginRequest(
     @Expose
     @SerializedName("email")
     var email: String,
