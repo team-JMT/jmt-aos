@@ -7,50 +7,32 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
-      
-    - name: action-slack
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        author_name: Sloth Backend - dev
-        fields: repo,commit,message,author # action,eventName,ref,workflow,job,took 추가할 수 있음
-        mention: here
-        if_mention: failure,cancelled
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-      if: always() # Pick up events even if the job fails or is canceled.
-
   apk:
       name: Generate APK
       runs-on: ubuntu-latest
-
       steps:
-        - uses: actions/checkout@v1
-        - name: set up JDK 1.8
-          uses: actions/setup-java@v1
+        - uses: actions/checkout@v3
+        - name: set up JDK 11
+          uses: actions/setup-java@v3
           with:
-            java-version: 1.8
+            java-version: '11'
+            distribution: 'temurin'
+            cache: gradle
         - name: Build debug APK
           run: bash ./gradlew assembleDebug --stacktrace
+          
         - name: Upload APK
-          uses: actions/upload-artifact@v1
+          uses: actions/upload-artifact@v3
           with:
             name: app
             path: app/build/outputs/apk/debug
+            
+        - name: Slack - Upload APK
+          uses: MeilCli/slack-upload-file@v1.0.0
+          with:
+            slack_token: ${{ secrets.SLACK_TOKEN }}  
+            channels: ${{ secrets.SLACK_CHANNEL }}
+            initial_comment: 'APK File Upload'
+            file_path: 'app/build/outputs/apk/debug/app-debug.apk'
+            file_name: 'app-debug.apk'
+            file_type: 'apk'

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">JMT</string>
-    <string name="my_web_client_id">846233671186-b1egol7guu4j2nu3cg4vd8gmrqch10ui.apps.googleusercontent.com</string>
+    <string name="apple_provider">apple.com</string>
+    <string name="confirm">확인</string>
 </resources>
