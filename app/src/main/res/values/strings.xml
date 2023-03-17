@@ -2,4 +2,5 @@
     <string name="app_name">JMT</string>
     <string name="my_web_client_id">846233671186-4vknaa3i38pfkeourp2q37lolncdbmhl.apps.googleusercontent.com</string>
     <string name="ios_client_id">846233671186-1ri677r59p8slvhu0ph98kg2ir0kuk45.apps.googleusercontent.com</string>
+    <string name="confirm">확인</string>
 </resources>
