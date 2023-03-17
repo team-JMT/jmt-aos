@@ -4,12 +4,15 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
-    namespace 'com.dogdduddy.jmt'
+    namespace 'org.gdsc.jmt'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.dogdduddy.jmt"
+        applicationId "org.gdsc.jmt"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -26,6 +29,10 @@ android {
         }
     }
     buildTypes {
+        debug {
+            resValue("string", "my_web_client_id", properties['MyWebClientID'])
+            resValue("string", "ios_client_id", properties['IOSClientID'])
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

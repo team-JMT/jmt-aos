@@ -1,13 +1,12 @@
-package com.dogdduddy.jmt.viewmodel
+package org.gdsc.jmt.viewmodel
 
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dogdduddy.jmt.model.Data
-import com.dogdduddy.jmt.view.GoogleLoginManager
+import org.gdsc.jmt.model.Data
+import org.gdsc.jmt.view.GoogleLoginManager
 import com.google.android.gms.auth.api.identity.SignInCredential
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch

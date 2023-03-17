@@ -1,4 +1,4 @@
-package com.dogdduddy.jmt.view
+package org.gdsc.jmt.view
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.WindowManager
@@ -7,7 +7,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import com.dogdduddy.jmt.databinding.ActivityWebViewBinding
+import org.gdsc.jmt.databinding.ActivityWebViewBinding
 
 
 class WebViewActivity : AppCompatActivity() {

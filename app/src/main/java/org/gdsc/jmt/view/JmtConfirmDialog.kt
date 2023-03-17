@@ -1,4 +1,4 @@
-package com.dogdduddy.jmt.view
+package org.gdsc.jmt.view
 
 import android.content.Context
 import android.os.Bundle
@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import com.dogdduddy.jmt.R
-import com.dogdduddy.jmt.databinding.JmtConfirmDialogBinding
-import com.dogdduddy.jmt.utils.deviceMetrics
+import org.gdsc.jmt.R
+import org.gdsc.jmt.databinding.JmtConfirmDialogBinding
+import org.gdsc.jmt.utils.deviceMetrics
 
 class JmtConfirmDialog(private val context: Context) : DialogFragment() {
 

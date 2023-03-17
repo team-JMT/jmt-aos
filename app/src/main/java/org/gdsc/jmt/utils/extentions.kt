@@ -1,4 +1,4 @@
-package com.dogdduddy.jmt.utils
+package org.gdsc.jmt.utils
 
 import android.os.Build
 import android.util.DisplayMetrics

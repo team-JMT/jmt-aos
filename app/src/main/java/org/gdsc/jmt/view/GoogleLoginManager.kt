@@ -1,7 +1,7 @@
-package com.dogdduddy.jmt.view
+package org.gdsc.jmt.view
 
 import android.app.Activity
-import com.dogdduddy.jmt.R
+import org.gdsc.jmt.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
