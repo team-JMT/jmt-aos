@@ -26,8 +26,8 @@ class Data {
         val service = retrofit.create(RetrofitAPI::class.java)
         service.sendUserGoogleToken(JsonPlaceDTO(token!!)).enqueue(object : retrofit2.Callback<JsonPlaceDTO> {
             override fun onResponse(
-                call: retrofit2.Call<JsonPlaceDTO>,
-                response: retrofit2.Response<JsonPlaceDTO>
+                call: Call<JsonPlaceDTO>,
+                response: Response<JsonPlaceDTO>
             ) {
                 if(response.isSuccessful) {
                     Log.d("response", "success : ${response.body().toString()}")
@@ -39,7 +39,7 @@ class Data {
                 }
             }
 
-            override fun onFailure(call: retrofit2.Call<JsonPlaceDTO>, t: Throwable) {
+            override fun onFailure(call: Call<JsonPlaceDTO>, t: Throwable) {
                 Log.d("response", "error : ${t.message.toString()}")
             }
         })

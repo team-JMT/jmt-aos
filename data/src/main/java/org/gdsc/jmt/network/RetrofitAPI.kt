@@ -1,5 +1,6 @@
 package org.gdsc.jmt.network
 
+
 import org.gdsc.jmt.model.JsonPlaceDTO
 import org.gdsc.jmt.model.JsonPlaceDTO2
 import retrofit2.Call
