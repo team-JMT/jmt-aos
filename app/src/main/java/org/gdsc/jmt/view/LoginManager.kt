@@ -5,8 +5,10 @@ import org.gdsc.jmt.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.auth.FirebaseAuth
 import kotlin.coroutines.suspendCoroutine
 class LoginManager {
+    private val auth = FirebaseAuth.getInstance()
     lateinit var oneTapClient: SignInClient
     suspend fun signInIntent(activity: Activity)  = suspendCoroutine { continuation ->
         oneTapClient = Identity.getSignInClient(activity)
