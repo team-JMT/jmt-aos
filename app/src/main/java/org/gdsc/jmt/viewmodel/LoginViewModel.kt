@@ -5,27 +5,28 @@ import android.app.PendingIntent
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import org.gdsc.jmt.model.Data
-import org.gdsc.jmt.view.GoogleLoginManager
+import org.gdsc.jmt.model.LoginDataSourceImpl
+import org.gdsc.jmt.view.LoginManager
 import com.google.android.gms.auth.api.identity.SignInCredential
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class LoginViewModel: ViewModel() {
-    private val data = Data()
-    private val googleLoginManager = GoogleLoginManager()
+    private val loginDataSource = LoginDataSourceImpl()
+    private val loginManager = LoginManager()
 
     suspend fun googleLogin(activity: Activity):PendingIntent {
-        return googleLoginManager.signInIntent(activity)
+        return loginManager.signInIntent(activity)
     }
 
-    fun getCredential(intent: Intent) :SignInCredential {
-        return googleLoginManager.oneTapClient.getSignInCredentialFromIntent(intent)
+    fun getGoogleCredential(intent: Intent) :SignInCredential {
+        return loginManager.oneTapClient.getSignInCredentialFromIntent(intent)
     }
+
     fun postGoogleToken(token:String?) {
         viewModelScope.launch {
             val deferred = async {
-                data.postGoogleToken(token)
+                loginDataSource.postGoogleToken(token)
             }
             deferred.await()
         }
@@ -34,7 +35,7 @@ class LoginViewModel: ViewModel() {
     fun postAppleToken(email:String, clientId:String) {
         viewModelScope.launch {
             val deferred = async {
-                data.postAppleToken(email, clientId)
+                loginDataSource.postAppleToken(email, clientId)
             }
             deferred.await()
         }
