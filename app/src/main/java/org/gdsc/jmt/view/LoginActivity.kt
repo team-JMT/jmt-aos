@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -62,7 +61,6 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
 
-        ///
 
         binding.googleLoginBtn.setOnClickListener {
             lifecycleScope.launch(CoroutineExceptionHandler { _, throwable -> throwable.printStackTrace() }) {
@@ -77,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
                 if (intent != null) {
-                    val credential = loginViewModel.getCredential(intent)
+                    val credential = loginViewModel.getGoogleCredential(intent)
                     val googleIdToken = credential.googleIdToken
 
                     loginViewModel.postGoogleToken(googleIdToken)
@@ -88,7 +86,5 @@ class LoginActivity : AppCompatActivity() {
                 Log.e(TAG, "Result : ${result.resultCode}")
             }
         }
-    fun toast(string: String)  {
-        Toast.makeText(this.applicationContext, string, Toast.LENGTH_LONG).show()
-    }
+
 }
