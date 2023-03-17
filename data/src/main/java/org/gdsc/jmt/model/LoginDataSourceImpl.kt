@@ -1,7 +1,7 @@
 package org.gdsc.jmt.model
 
 import android.util.Log
-import org.gdsc.jmt.network.RetrofitAPI
+import org.gdsc.jmt.network.LoginAPI
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -10,7 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class Data {
+class LoginDataSourceImpl {
     fun postGoogleToken(token:String?) {
         val clientBuilder = OkHttpClient.Builder()
         val loggingInterceptor = HttpLoggingInterceptor()
@@ -23,11 +23,11 @@ class Data {
             .client(clientBuilder.build()).build()
 
         Log.d("response", "Data token : $token")
-        val service = retrofit.create(RetrofitAPI::class.java)
-        service.sendUserGoogleToken(JsonPlaceDTO(token!!)).enqueue(object : retrofit2.Callback<JsonPlaceDTO> {
+        val service = retrofit.create(LoginAPI::class.java)
+        service.sendUserGoogleToken(GoogleLoginRequest(token!!)).enqueue(object : retrofit2.Callback<GoogleLoginRequest> {
             override fun onResponse(
-                call: Call<JsonPlaceDTO>,
-                response: Response<JsonPlaceDTO>
+                call: Call<GoogleLoginRequest>,
+                response: Response<GoogleLoginRequest>
             ) {
                 if(response.isSuccessful) {
                     Log.d("response", "success : ${response.body().toString()}")
@@ -39,7 +39,7 @@ class Data {
                 }
             }
 
-            override fun onFailure(call: Call<JsonPlaceDTO>, t: Throwable) {
+            override fun onFailure(call: Call<GoogleLoginRequest>, t: Throwable) {
                 Log.d("response", "error : ${t.message.toString()}")
             }
         })
@@ -55,9 +55,9 @@ class Data {
             .addConverterFactory(GsonConverterFactory.create())
             .client(clientBuilder.build()).build()
 
-        val service = retrofit.create(RetrofitAPI::class.java)
-        service.sendUserAppleToken(JsonPlaceDTO2(email, clientId)).enqueue(object : retrofit2.Callback<JsonPlaceDTO2> {
-            override fun onResponse(call: Call<JsonPlaceDTO2>, response: Response<JsonPlaceDTO2>) {
+        val service = retrofit.create(LoginAPI::class.java)
+        service.sendUserAppleToken(AppleLoginRequest(email, clientId)).enqueue(object : retrofit2.Callback<AppleLoginRequest> {
+            override fun onResponse(call: Call<AppleLoginRequest>, response: Response<AppleLoginRequest>) {
                 if(response.isSuccessful) {
                     Log.d("response", "success : ${response.body().toString()}")
                 }
@@ -68,7 +68,7 @@ class Data {
                 }
             }
 
-            override fun onFailure(call: Call<JsonPlaceDTO2>, t: Throwable) {
+            override fun onFailure(call: Call<AppleLoginRequest>, t: Throwable) {
                 Log.d("response", "error : ${t.message.toString()}")
             }
 
