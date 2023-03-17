@@ -20,7 +20,6 @@ class WebViewActivity : AppCompatActivity() {
 
         webView = binding.webView
         webViewInit()
-
         intent.extras?.let {
             binding.webView.loadUrl(it.getString("url")!!)
         }
@@ -35,5 +34,6 @@ class WebViewActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) //화면이 계속 켜짐
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
         webView.setWebViewClient(WebViewClient())
+        webView.addJavascriptInterface(WebAppInterface(this), "Android")
     }
 }
