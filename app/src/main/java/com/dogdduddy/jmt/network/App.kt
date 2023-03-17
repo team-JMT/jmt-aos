@@ -13,8 +13,6 @@ class App:Application() {
         super.onCreate()
         appContext = this
         instance = this
-
-
     }
 
     override fun onTerminate() {

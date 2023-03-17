@@ -8,3 +8,11 @@ data class JsonPlaceDTO(
     @SerializedName("token")
     var token: String
 )
+
+data class JsonPlaceDTO2(
+    @Expose
+    @SerializedName("email")
+    var email: String,
+    @SerializedName("clientId")
+    var clientId: String
+)
