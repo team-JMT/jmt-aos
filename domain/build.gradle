@@ -12,4 +12,12 @@ dependencies {
     // Inject
     implementation "javax.inject:javax.inject:1"
 
+    //Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4'
+
+    // Gson 변환기
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
 }
