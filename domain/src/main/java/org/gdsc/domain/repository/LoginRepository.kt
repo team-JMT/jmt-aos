@@ -1,9 +1,11 @@
 package org.gdsc.domain.repository
 
+import org.gdsc.domain.model.LoginResponse
+
 interface LoginRepository {
 
-    fun postGoogleToken(token: String)
+    suspend fun postGoogleToken(token: String): LoginResponse
 
-    fun postAppleToken(email: String, clientId: String)
+    suspend fun postAppleToken(email: String, clientId: String): LoginResponse
 
 }

@@ -1,5 +1,6 @@
 package org.gdsc.domain.usecase
 
+import org.gdsc.domain.model.LoginResponse
 import org.gdsc.domain.repository.LoginRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -8,7 +9,7 @@ import javax.inject.Singleton
 class PostGoogleTokenUseCase @Inject constructor(
     private val loginRepository: LoginRepository
 ) {
-    operator fun invoke(token: String) {
-        loginRepository.postGoogleToken(token)
+    suspend operator fun invoke(token: String): LoginResponse {
+        return loginRepository.postGoogleToken(token)
     }
 }

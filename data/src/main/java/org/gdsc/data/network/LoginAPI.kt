@@ -1,21 +1,21 @@
 package org.gdsc.data.network
 
 
-import org.gdsc.data.model.GoogleLoginRequest
-import org.gdsc.data.model.AppleLoginRequest
-import retrofit2.Call
+import org.gdsc.domain.model.GoogleLoginRequest
+import org.gdsc.domain.model.AppleLoginRequest
+import org.gdsc.domain.model.LoginResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface LoginAPI {
     @POST("api/v1/auth/google")
-    fun sendUserGoogleToken(
+    suspend fun postUserGoogleToken(
         @Body request: GoogleLoginRequest
-    ): Call<GoogleLoginRequest>
+    ): LoginResponse
 
     @POST("api/v1/auth/android/apple")
-    fun sendUserAppleToken(
+    suspend fun postUserAppleToken(
         @Body request: AppleLoginRequest
-    ): Call<AppleLoginRequest>
+    ): LoginResponse
 
 }
