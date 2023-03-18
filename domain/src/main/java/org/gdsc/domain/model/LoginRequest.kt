@@ -1,4 +1,4 @@
-package org.gdsc.data.model
+package org.gdsc.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
