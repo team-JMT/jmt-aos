@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("org.gdsc.jmt.test", appContext.packageName)
+        assertEquals("org.gdsc.jmt", appContext.packageName)
     }
 }
