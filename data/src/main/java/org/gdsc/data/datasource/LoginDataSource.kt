@@ -1,7 +1,9 @@
 package org.gdsc.data.datasource
 
-interface LoginDataSource {
-    fun postGoogleToken(token: String)
+import org.gdsc.domain.model.LoginResponse
 
-    fun postAppleToken(email: String, clientId: String)
+interface LoginDataSource {
+    suspend fun postGoogleToken(token: String): LoginResponse
+
+    suspend fun postAppleToken(email: String, clientId: String): LoginResponse
 }
