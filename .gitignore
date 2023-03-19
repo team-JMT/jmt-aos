@@ -9,3 +9,7 @@
 .cxx
 local.properties
 google-services.json
+*.apk
+*.aar
+*.ap_
+*.aab
