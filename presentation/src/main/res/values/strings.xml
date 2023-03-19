@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">JMT</string>
     <string name="apple_provider">apple.com</string>
+
     <string name="confirm">확인</string>
+
+    <string name="enable_nickname">사용 가능한 닉네임입니다.</string>
+    <string name="unable_nickname">사용 불가능한 닉네임입니다.</string>
+    <string name="nickname_hint">닉네임을 입력하세요.</string>
+
+    <string name="content_description_nickname_verify">닉네임 유효성 검증</string>
 </resources>
