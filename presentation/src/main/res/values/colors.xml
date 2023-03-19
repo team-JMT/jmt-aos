@@ -10,4 +10,6 @@
 
     <color name="main600">#20BC2F</color>
     <color name="main800">#116419</color>
+
+    <color name="grayscale600">#75798C</color>
 </resources>
