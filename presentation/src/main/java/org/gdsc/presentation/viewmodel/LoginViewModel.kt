@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.identity.SignInCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.google.firebase.auth.OAuthProvider
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import org.gdsc.domain.usecase.PostAppleTokenUseCase
 import org.gdsc.domain.usecase.PostGoogleTokenUseCase
 import org.gdsc.presentation.R
@@ -39,36 +40,39 @@ class LoginViewModel @Inject constructor(
     }
 
     fun appleLogin(activity: Activity) {
-        val provider = OAuthProvider.newBuilder(activity.getString(R.string.apple_provider))
-        provider.scopes = mutableListOf("email", "name")
+        viewModelScope.launch {
+            val provider = OAuthProvider.newBuilder(activity.getString(R.string.apple_provider))
+            provider.scopes = mutableListOf("email", "name")
 
-        val auth = loginManager.auth
-        val pending = auth.pendingAuthResult
+            val auth = loginManager.auth
+            val pending = auth.pendingAuthResult
 
-        pending?.addOnSuccessListener { authResult ->
-            authResult.user?.getIdToken(true)?.addOnSuccessListener {
+            val authResult = pending?.await()
+
+            if (authResult != null) {
+
+                val getToken = authResult.user?.getIdToken(true)?.await()
+
+                getToken?.let {
+                    postAppleToken(
+                        authResult.user?.email.toString(),
+                        activity.getString(R.string.ios_client_id)
+                    )
+                } ?: Log.w(TAG, "getIdToken:onFailure")
+
+            } else {
+                Log.w(TAG, "pending:onFailure")
+            }
+
+            auth.startActivityForSignInWithProvider(activity, provider.build()).await().let { authResult ->
                 postAppleToken(
                     authResult.user?.email.toString(),
                     activity.getString(R.string.ios_client_id)
                 )
             }
-                ?.addOnFailureListener { e ->
-                    Log.w(TAG, "getIdToken:onFailure", e)
-                }
-        }?.addOnFailureListener { e ->
-            Log.w(TAG, "checkPending:onFailure", e)
+
         }
 
-        auth.startActivityForSignInWithProvider(activity, provider.build())
-            .addOnSuccessListener { authResult ->
-                postAppleToken(
-                    authResult.user?.email.toString(),
-                    activity.getString(R.string.ios_client_id)
-                )
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "activitySignIn:onFailure", e)
-            }
     }
 
     private fun postAppleToken(email: String, clientId: String) {
