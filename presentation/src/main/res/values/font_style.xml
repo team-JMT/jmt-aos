@@ -1,11 +1,11 @@
 <resources>
 
     <style name="pretendard_bold" parent="TextAppearance.AppCompat">
-        <item name="android:fontFamily">@font/pretendard_medium</item>
+        <item name="android:fontFamily">@font/pretendard_bold</item>
     </style>
 
     <style name="pretendard_medium" parent="TextAppearance.AppCompat">
-        <item name="android:fontFamily">@font/pretendard_bold</item>
+        <item name="android:fontFamily">@font/pretendard_medium</item>
     </style>
 
     <style name="title_large_bold" parent="pretendard_bold">
