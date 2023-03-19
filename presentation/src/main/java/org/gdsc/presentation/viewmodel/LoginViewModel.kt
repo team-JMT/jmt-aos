@@ -45,30 +45,30 @@ class LoginViewModel @Inject constructor(
             provider.scopes = mutableListOf("email", "name")
 
             val auth = loginManager.auth
-            val pending = auth.pendingAuthResult
 
-            val authResult = pending?.await()
+            val pendingAuthResult = auth.pendingAuthResult?.await()
 
-            if (authResult != null) {
+            if (pendingAuthResult != null) {
 
-                val getToken = authResult.user?.getIdToken(true)?.await()
+                val getToken = pendingAuthResult.user?.getIdToken(true)?.await()
 
                 getToken?.let {
                     postAppleToken(
-                        authResult.user?.email.toString(),
+                        pendingAuthResult.user?.email.toString(),
                         activity.getString(R.string.ios_client_id)
                     )
                 } ?: Log.w(TAG, "getIdToken:onFailure")
 
             } else {
                 Log.w(TAG, "pending:onFailure")
-            }
 
-            auth.startActivityForSignInWithProvider(activity, provider.build()).await().let { authResult ->
-                postAppleToken(
-                    authResult.user?.email.toString(),
-                    activity.getString(R.string.ios_client_id)
-                )
+                auth.startActivityForSignInWithProvider(activity, provider.build()).await()
+                    .let { authResult ->
+                        postAppleToken(
+                            authResult.user?.email.toString(),
+                            activity.getString(R.string.ios_client_id)
+                        )
+                    }
             }
 
         }
