@@ -8,8 +8,17 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="main100">#E9FBEB</color>
+    <color name="main200">#CFF7D3</color>
+    <color name="main300">#9BEEA3</color>
+    <color name="main400">#66E573</color>
+    <color name="main500">#32DC43</color>
     <color name="main600">#20BC2F</color>
+    <color name="main700">#189024</color>
     <color name="main800">#116419</color>
+    <color name="main900">#0A390E</color>
 
     <color name="grayscale600">#75798C</color>
+
+    <color name="unable_nickname_color">#FF785A</color>
 </resources>
