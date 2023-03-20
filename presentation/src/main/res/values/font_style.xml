@@ -1,0 +1,55 @@
+<resources>
+
+    <style name="pretendard_bold" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="pretendard_medium" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+    </style>
+
+    <style name="title_large_bold" parent="pretendard_bold">
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="title_medium_bold" parent="pretendard_bold">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="title_medium_medium" parent="pretendard_medium">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="title_small_bold" parent="pretendard_bold">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="title_small_medium" parent="pretendard_medium">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="text_large_bold" parent="pretendard_bold">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="text_large_medium" parent="pretendard_medium">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="text_medium_bold" parent="pretendard_bold">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="text_medium_medium" parent="pretendard_medium">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="text_small_bold" parent="pretendard_bold">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="text_small_medium" parent="pretendard_medium">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+</resources>
