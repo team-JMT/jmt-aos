@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.navArgs
+import androidx.fragment.app.activityViewModels
 import org.gdsc.presentation.databinding.FragmentSignUpCompleteBinding
 
 class SignUpCompleteFragment : Fragment() {
@@ -14,7 +14,7 @@ class SignUpCompleteFragment : Fragment() {
     private val binding
         get() = requireNotNull(_binding)
 
-    private val args: SignUpCompleteFragmentArgs by navArgs()
+    private val viewModel: LoginViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +27,7 @@ class SignUpCompleteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.nicknameText.text = args.nickname
+        binding.nicknameText.text = viewModel.nicknameState.value
 
         binding.profileImageAddButton.setOnClickListener {
             // TODO: 갤러리에서 이미지 pick
