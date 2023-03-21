@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="org.gdsc.presentation.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_signUpNicknameFragment"
+            app:destination="@id/signUpNicknameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpNicknameFragment"
+        android:name="org.gdsc.presentation.login.SignUpNicknameFragment"
+        android:label="fragment_sign_up_nickname"
+        tools:layout="@layout/fragment_sign_up_nickname" >
+        <action
+            android:id="@+id/action_signUpNicknameFragment_to_signUpCompleteFragment"
+            app:destination="@id/signUpCompleteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpCompleteFragment"
+        android:name="org.gdsc.presentation.login.SignUpCompleteFragment"
+        android:label="fragment_sign_up_complete"
+        tools:layout="@layout/fragment_sign_up_complete" >
+        <argument
+            android:name="nickname"
+            app:argType="string" />
+    </fragment>
+</navigation>
