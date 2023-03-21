@@ -10,6 +10,9 @@
 
     <application>
         <activity
+            android:name="org.gdsc.presentation.login.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name="org.gdsc.presentation.view.WebViewActivity"
             android:exported="false" />
         <activity

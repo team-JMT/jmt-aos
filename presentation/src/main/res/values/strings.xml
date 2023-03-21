@@ -9,4 +9,7 @@
     <string name="nickname_hint">닉네임을 입력하세요.</string>
 
     <string name="content_description_nickname_verify">닉네임 유효성 검증</string>
+    <string name="continue_with_google">Google로 계속하기</string>
+    <string name="continue_with_apple"><u>애플 계정으로 계속하기</u></string>
+
 </resources>
