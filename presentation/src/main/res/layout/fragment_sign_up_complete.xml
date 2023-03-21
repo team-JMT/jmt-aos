@@ -40,15 +40,20 @@
         android:layout_marginTop="24dp"
         android:contentDescription="@string/content_description_profile_image" />
 
-    <ImageView
-        android:id="@+id/profile_image_add_button"
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@id/profile_image"
-        android:src="@drawable/profile_image_add_button"
         android:elevation="4dp"
-        app:layout_constraintBottom_toBottomOf="@id/profile_image"
-        android:contentDescription="@string/content_description_profile_image_setting_button" />
+        app:cardCornerRadius="100dp"
+        app:layout_constraintEnd_toEndOf="@id/profile_image"
+        app:layout_constraintBottom_toBottomOf="@id/profile_image">
+        <ImageView
+            android:id="@+id/profile_image_add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/profile_image_add_button"
+            android:contentDescription="@string/content_description_profile_image_setting_button" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/nickname_text"
