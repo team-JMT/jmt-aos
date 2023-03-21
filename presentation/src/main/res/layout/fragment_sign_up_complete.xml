@@ -36,9 +36,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ask_profile_text"
-        android:src="@drawable/profile_icon"
+        android:src="@drawable/base_profile_image"
         android:layout_marginTop="24dp"
         android:contentDescription="@string/content_description_profile_image" />
+
+    <ImageView
+        android:id="@+id/profile_image_add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/profile_image"
+        android:src="@drawable/profile_image_add_button"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/profile_image"
+        android:contentDescription="@string/content_description_profile_image_setting_button" />
 
     <TextView
         android:id="@+id/nickname_text"
