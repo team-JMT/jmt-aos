@@ -1,7 +1,10 @@
 package org.gdsc.presentation.utils
 
+import android.app.Activity
+import android.content.Context
 import android.os.Build
 import android.util.DisplayMetrics
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 
 val Fragment.deviceMetrics
@@ -32,3 +35,8 @@ val Fragment.deviceMetrics
         }
         displayMetrics
     }
+
+fun Fragment.hideKeyBoard(activity: Activity) {
+    val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
+}

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import org.gdsc.presentation.databinding.FragmentSignUpNicknameBinding
+import org.gdsc.presentation.utils.hideKeyBoard
 
 class SignUpNicknameFragment : Fragment() {
 
@@ -25,6 +26,13 @@ class SignUpNicknameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setNextButton()
+        setHideKeyboard()
+    }
+
+    private fun setHideKeyboard() {
+        binding.root.setOnClickListener {
+            hideKeyBoard(requireActivity())
+        }
     }
 
     private fun setNextButton() {
