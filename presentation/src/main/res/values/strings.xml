@@ -19,5 +19,6 @@
     <string name="alert_setting_profile_image">설정하지 않으면 기본 이미지로 표시됩니다.</string>
     <string name="suggest_set_profile_image">나의 프로필 사진을 설정해볼까요?</string>
     <string name="content_description_profile_image">프로필 이미지</string>
+    <string name="content_description_profile_image_setting_button">프로필 이미지 설정 버튼</string>
 
 </resources>
