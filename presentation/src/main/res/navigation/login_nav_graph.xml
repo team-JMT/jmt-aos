@@ -19,5 +19,17 @@
         android:name="org.gdsc.presentation.login.SignUpNicknameFragment"
         android:label="fragment_sign_up_nickname"
         tools:layout="@layout/fragment_sign_up_nickname" >
+        <action
+            android:id="@+id/action_signUpNicknameFragment_to_signUpCompleteFragment"
+            app:destination="@id/signUpCompleteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpCompleteFragment"
+        android:name="org.gdsc.presentation.login.SignUpCompleteFragment"
+        android:label="fragment_sign_up_complete"
+        tools:layout="@layout/fragment_sign_up_complete" >
+        <argument
+            android:name="nickname"
+            app:argType="string" />
     </fragment>
 </navigation>
