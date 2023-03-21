@@ -35,7 +35,7 @@ class ImageAdapter(
 
     private fun subscribeUi(binding: ItemImageBinding, holder: ImageViewHolder) {
         binding.image.setOnClickListener {
-            listener.onImageClick(getItem(holder.absoluteAdapterPosition).uri.toString())
+            listener.onImageClick(getItem(holder.absoluteAdapterPosition))
         }
     }
 
