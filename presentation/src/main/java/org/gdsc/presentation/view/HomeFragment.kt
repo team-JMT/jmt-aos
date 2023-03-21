@@ -27,21 +27,11 @@ class HomeFragment : Fragment() {
             //val directions = HomeFragmentDirections.actionHomeToPermission()
             findNavController().navigate(R.id.action_home_to_permission)
         }
-        /*
-        binding.buttonListener = View.OnClickListener {
-            val directions = HomeFragmentDirections.actionHomeToPermission()
-            findNavController().navigate(directions)
-        }
-
-         */
 
         // After getting Uri list selected from ImagePicker
-        activity?.supportFragmentManager?.setFragmentResultListener(URI_LIST_CHECKED, viewLifecycleOwner) { _, bundle ->
-            bundle.getStringArrayList("uriList")?.let { uriList ->
-                for(uri in uriList) {
-                    Log.d(TAG, uri.toString())
-                    // TODO: Whatever you want!
-                }
+        activity?.supportFragmentManager?.setFragmentResultListener(URI_SELECTED, viewLifecycleOwner) { _, bundle ->
+            bundle.getString("uri")?.let { uri ->
+                Log.d(TAG, uri)
             }
         }
 
@@ -59,7 +49,7 @@ class HomeFragment : Fragment() {
     }
 
     companion object {
-        const val URI_LIST_CHECKED = "URI_LIST_CHECKED"
+        const val URI_SELECTED = "URI_SELECTED"
         const val TAG = "HomeFragment"
     }
 }
