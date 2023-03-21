@@ -14,7 +14,7 @@
         android:theme="@style/Theme.JMT"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="org.gdsc.presentation.view.LoginActivity"
+            android:name="org.gdsc.presentation.view.TestActivity"
             android:exported="true">
 
             <intent-filter>
