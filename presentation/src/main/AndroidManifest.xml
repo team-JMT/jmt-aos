@@ -11,7 +11,7 @@
     <application>
         <activity
             android:name=".view.SetProfileActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".view.WebViewActivity"
             android:exported="false" />

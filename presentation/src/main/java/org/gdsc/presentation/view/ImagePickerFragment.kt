@@ -9,11 +9,12 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.customimagepicker.adapter.ImageAdapter
+import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
-import org.gdsc.presentation.view.HomeFragment.Companion.URI_LIST_CHECKED
+import org.gdsc.presentation.view.HomeFragment.Companion.URI_SELECTED
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
-class ImagePickerFragment : Fragment() {
+class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     private var _binding: FragmentImagePickerBinding? = null
     private val binding get() = _binding!!
 
@@ -24,16 +25,9 @@ class ImagePickerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentImagePickerBinding.inflate(inflater, container, false)
-        binding.recyclerviewImage.setOnClickListener {
-            // Pass Uri list to fragment outside
-            activity?.supportFragmentManager?.setFragmentResult(
-                URI_LIST_CHECKED,
-                bundleOf("uriList" to viewModel.getCheckedImageUriList())
-            )
-            findNavController().navigateUp()
-        }
 
         val adapter = ImageAdapter(viewModel)
+        adapter.setListener(this)
         binding.recyclerviewImage.adapter = adapter
 
         viewModel.fetchImageItemList(requireContext())
@@ -48,6 +42,13 @@ class ImagePickerFragment : Fragment() {
         }
     }
 
+    override fun onImageClick(url: String) {
+        activity?.supportFragmentManager?.setFragmentResult(
+            URI_SELECTED,
+            bundleOf("uri" to url)
+        )
+        findNavController().navigateUp()
+    }
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
