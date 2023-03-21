@@ -29,6 +29,10 @@ class SignUpCompleteFragment : Fragment() {
 
         binding.nicknameText.text = args.nickname
 
+        binding.profileImageAddButton.setOnClickListener {
+            // TODO: 갤러리에서 이미지 pick
+        }
+
     }
 
     override fun onDestroyView() {
