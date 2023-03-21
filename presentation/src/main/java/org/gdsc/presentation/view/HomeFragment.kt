@@ -30,6 +30,9 @@ class HomeFragment : Fragment() {
 
         // After getting Uri list selected from ImagePicker
         activity?.supportFragmentManager?.setFragmentResultListener(URI_SELECTED, viewLifecycleOwner) { _, bundle ->
+            bundle.getString("bucket")?.let { bucket ->
+                Log.d(TAG, bucket)
+            }
             bundle.getString("uri")?.let { uri ->
                 Log.d(TAG, uri)
             }

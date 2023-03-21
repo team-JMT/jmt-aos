@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.customimagepicker.adapter.ImageAdapter
+import com.example.customimagepicker.data.ImageItem
 import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
 import org.gdsc.presentation.view.HomeFragment.Companion.URI_SELECTED
@@ -42,10 +43,10 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         }
     }
 
-    override fun onImageClick(url: String) {
+    override fun onImageClick(imageItem: ImageItem) {
         activity?.supportFragmentManager?.setFragmentResult(
             URI_SELECTED,
-            bundleOf("uri" to url)
+            bundleOf("uri" to imageItem.uri.toString(), "bucket" to imageItem.bucket)
         )
         findNavController().navigateUp()
     }
