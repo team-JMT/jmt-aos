@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import org.gdsc.presentation.databinding.FragmentSignUpNicknameBinding
 import org.gdsc.presentation.utils.hideKeyBoard
 import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.utils.showKeyBoard
 
 class SignUpNicknameFragment : Fragment() {
 
@@ -29,6 +30,7 @@ class SignUpNicknameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showKeyBoard(requireActivity(), binding.nicknameEditText.editText)
         setNextButton()
         setHideKeyboard()
         observeNicknameValidation()
