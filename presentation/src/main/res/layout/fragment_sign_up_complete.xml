@@ -77,7 +77,7 @@
         app:layout_constraintBottom_toTopOf="@id/next_btn"
         android:layout_marginBottom="36dp"/>
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/next_btn"
         android:layout_width="0dp"
         android:layout_height="62dp"
