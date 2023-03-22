@@ -8,5 +8,4 @@ interface LoginRepository {
 
     suspend fun postAppleToken(email: String, clientId: String): LoginResponse
 
-    fun getGalleryImage(): ArrayList<String>
 }
