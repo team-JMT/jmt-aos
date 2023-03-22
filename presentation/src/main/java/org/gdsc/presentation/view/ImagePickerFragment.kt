@@ -34,7 +34,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         adapter.setListener(this)
         binding.recyclerviewImage.adapter = adapter
 
-        viewModel.fetchImageItemList(requireContext())
+        viewModel.fetchImageItemList()
         subscribeUi(adapter)
 
         return binding.root
