@@ -1,10 +1,13 @@
 package org.gdsc.presentation.login
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.activityViewModels
 import org.gdsc.presentation.databinding.FragmentSignUpCompleteBinding
 
@@ -26,6 +29,7 @@ class SignUpCompleteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setProfileImageButtonAnimation()
 
         binding.nicknameText.text = viewModel.nicknameState.value
 
@@ -33,6 +37,27 @@ class SignUpCompleteFragment : Fragment() {
             // TODO: 갤러리에서 이미지 pick
         }
 
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setProfileImageButtonAnimation() {
+        binding.profileImageAddButton.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    val parent = v.parent as CardView
+                    parent.animate()
+                        .scaleX(1.2f)
+                        .scaleY(1.2f)
+                }
+                MotionEvent.ACTION_UP -> {
+                    val parent = v.parent as CardView
+                    parent.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                }
+            }
+            false
+        }
     }
 
     override fun onDestroyView() {
