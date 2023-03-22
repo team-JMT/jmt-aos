@@ -1,6 +1,7 @@
 package org.gdsc.presentation.adapter
 
-import com.example.customimagepicker.data.ImageItem
+import org.gdsc.presentation.data.ImageItem
+
 
 interface GalleryImageClickListener {
     fun onImageClick(imageItem: ImageItem)

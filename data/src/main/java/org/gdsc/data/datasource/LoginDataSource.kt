@@ -6,4 +6,6 @@ interface LoginDataSource {
     suspend fun postGoogleToken(token: String): LoginResponse
 
     suspend fun postAppleToken(email: String, clientId: String): LoginResponse
+
+    fun getGalleryImage(): ArrayList<String>
 }

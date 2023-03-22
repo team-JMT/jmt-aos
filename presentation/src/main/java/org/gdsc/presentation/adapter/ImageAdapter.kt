@@ -3,12 +3,13 @@ package com.example.customimagepicker.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.customimagepicker.data.ImageItem
 import org.gdsc.presentation.adapter.GalleryImageClickListener
+import org.gdsc.presentation.data.ImageItem
 import org.gdsc.presentation.databinding.ItemImageBinding
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
@@ -49,7 +50,7 @@ class ImageAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(imageItem: ImageItem) {
             Glide.with(binding.root)
-                .load(imageItem.uri)
+                .load(imageItem.uri.toUri())
                 .into(binding.image)
         }
     }
