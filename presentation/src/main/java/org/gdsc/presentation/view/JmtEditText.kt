@@ -16,6 +16,8 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
     private val binding = JmtEditTextBinding.inflate(LayoutInflater.from(context), this, true)
 
     val text get() = binding.nicknameEditText.text.toString()
+    val editText = binding.nicknameEditText
+
     init {
         removeAllViews()
         addView(binding.root)
