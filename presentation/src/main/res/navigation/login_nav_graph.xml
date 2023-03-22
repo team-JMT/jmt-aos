@@ -28,8 +28,5 @@
         android:name="org.gdsc.presentation.login.SignUpCompleteFragment"
         android:label="fragment_sign_up_complete"
         tools:layout="@layout/fragment_sign_up_complete" >
-        <argument
-            android:name="nickname"
-            app:argType="string" />
     </fragment>
 </navigation>
