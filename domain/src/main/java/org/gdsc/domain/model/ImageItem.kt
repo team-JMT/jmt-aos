@@ -1,6 +1,5 @@
-package org.gdsc.presentation.data
+package org.gdsc.domain.model
 
-import android.net.Uri
 
 data class ImageItem(
     var uri: String,
