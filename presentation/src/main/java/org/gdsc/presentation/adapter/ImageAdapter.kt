@@ -1,4 +1,4 @@
-package com.example.customimagepicker.adapter
+package org.gdsc.presentation.adapter
 
 import android.util.Log
 import android.view.LayoutInflater

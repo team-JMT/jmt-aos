@@ -1,5 +1,7 @@
 package org.gdsc.data.datasource
 
+import kotlinx.coroutines.flow.Flow
+
 interface GalleryDataSource {
-    fun getGalleryImage(): ArrayList<String>
+    fun getGalleryImage(): Flow<MutableList<String>>
 }
