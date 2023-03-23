@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.fragment.app.Fragment
@@ -18,22 +19,13 @@ import androidx.navigation.fragment.findNavController
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentPermissionBinding
 
-/**
- * A middle fragment between home fragment and image picker fragment.
- * To navigate to image picker fragment, navigate to here for checking
- * all permissions required by image picker fragment.
- * "hasAllPermissions?" --(O) - ImagePickerFragment
- *                      `-(X) - Request permissions & "isGranted?" --(O) - ImagePickerFragment
- *                                                                 `-(X) - Stay until all permissions are granted
- */
 class PermissionFragment : Fragment() {
     private var _binding: FragmentPermissionBinding? = null
     private val binding get() = _binding!!
 
-    private val requiredPermissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    private val requiredPermissionsTIRAMISU = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+    private val requiredPermissionsOTHER = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
     private val onSuccess: () -> Unit = {
-        //val directions = PermissionFragmentDirections.actionPermissionToImagepicker()
-        //findNavController().navigate(directions)
         findNavController().navigate(R.id.action_permission_to_imagepicker)
     }
 
@@ -70,6 +62,13 @@ class PermissionFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
+            checkPermission(requiredPermissionsTIRAMISU)
+        } else{
+            checkPermission(requiredPermissionsOTHER)
+        }
+    }
+    fun checkPermission(requiredPermissions:Array<String>) {
         if(hasAllPermissions(requireContext(), requiredPermissions)) {
             onSuccess.invoke()
         }else{
