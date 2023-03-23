@@ -38,8 +38,6 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     private val imagePickerViewModel: ImagePickerViewModel by viewModels()
 
-    private var galleryName:String = "Camera"
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,6 +52,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
             imagePickerViewModel.fetchImageItemList()
         }
 
+        // 갤러리 선택용 다이얼로그
         binding.galleryButton.setOnClickListener {
             val array = imagePickerViewModel.getGalleryAlbum().toTypedArray()
 
@@ -61,18 +60,19 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
                 .setTitle("list")
                 .setItems(array) { _, which ->
                     val currentItem = array[which]
-                    galleryName = currentItem
+                    imagePickerViewModel.galleryName.value = currentItem
                 }.show()
         }
 
         return binding.root
     }
 
+    // 갤러리 이미지 불러오기 및 구독
     private fun initGallery(adapter: ImageAdapter) {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 imagePickerViewModel.imageItemListFlow.collect {
-                    adapter.submitList(filterImagesByName(it, galleryName))
+                    adapter.submitList(it)
                 }
             }
         }
@@ -89,11 +89,4 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         super.onDestroy()
         _binding = null
     }
-
-    fun filterImagesByName(images: MutableList<ImageItem>, name: String): MutableList<ImageItem> {
-        return images.filter {
-            it.bucket == name
-        } as MutableList<ImageItem>
-    }
-
 }

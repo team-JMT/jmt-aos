@@ -8,13 +8,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.gdsc.domain.usecase.GetGalleryUseCase
 import org.gdsc.presentation.data.ImageItem
@@ -28,7 +32,22 @@ class ImagePickerViewModel @Inject constructor(
     private val TAG = "ImagePickerViewModel"
 
     private val _imageItemListFlow = MutableStateFlow<MutableList<ImageItem>>(mutableListOf<ImageItem>())
+
+    val galleryName = MutableStateFlow("전체")
+
+    var filter: String
+        get() = galleryName.value
+        set(value) {
+            galleryName.value = value
+        }
+
+
     val imageItemListFlow: StateFlow<MutableList<ImageItem>> = _imageItemListFlow
+        .combine(galleryName) { list, filter ->
+        list.filter { if(galleryName.value=="전체") true else it.bucket.contains(filter) }.toMutableList() }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, mutableListOf())
+
+
 
     suspend fun fetchImageItemList() {
         viewModelScope.launch {
@@ -61,8 +80,8 @@ class ImagePickerViewModel @Inject constructor(
     }
 
     fun getGalleryAlbum():List<String> {
-        return imageItemListFlow.value.map { imageItem ->
+        return listOf("전체") + _imageItemListFlow.value.map { imageItem ->
             imageItem.bucket
-        }
+        }.distinct()
     }
 }
