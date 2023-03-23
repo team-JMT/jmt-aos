@@ -35,13 +35,6 @@ class ImagePickerViewModel @Inject constructor(
 
     val galleryName = MutableStateFlow("전체")
 
-    var filter: String
-        get() = galleryName.value
-        set(value) {
-            galleryName.value = value
-        }
-
-
     val imageItemListFlow: StateFlow<MutableList<ImageItem>> = _imageItemListFlow
         .combine(galleryName) { list, filter ->
         list.filter { if(galleryName.value=="전체") true else it.bucket.contains(filter) }.toMutableList() }
