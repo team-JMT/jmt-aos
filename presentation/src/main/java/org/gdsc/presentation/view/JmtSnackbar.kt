@@ -7,7 +7,11 @@ import com.google.android.material.snackbar.BaseTransientBottomBar.Duration
 import com.google.android.material.snackbar.Snackbar
 import org.gdsc.presentation.databinding.JmtSnackbarBinding
 
-class JmtSnackbar private constructor(private val view: View, message: String, @Duration duration: Int) {
+class JmtSnackbar private constructor(
+    private val view: View,
+    message: String,
+    @Duration duration: Int
+) {
 
     private val snackbar by lazy {
         Snackbar.make(view, "", duration)
@@ -30,7 +34,6 @@ class JmtSnackbar private constructor(private val view: View, message: String, @
 
     private fun setSnackbarView() {
 
-
         binding = JmtSnackbarBinding.inflate(LayoutInflater.from(context), snackbarLayout, false)
 
         snackbarLayout.run {
@@ -41,13 +44,13 @@ class JmtSnackbar private constructor(private val view: View, message: String, @
 
     }
 
+    private fun setSnackbarText(message: String) {
+        binding.snackbarText.text = message
+    }
+
     fun setPadding(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0): JmtSnackbar {
         snackbarLayout.setPadding(left, top, right, bottom)
         return this
-    }
-
-    private fun setSnackbarText(message: String) {
-        binding.snackbarText.text = message
     }
 
     fun show() {
