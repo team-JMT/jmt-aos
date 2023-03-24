@@ -24,8 +24,8 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         binding.permissionButton.setOnClickListener {
-            //val directions = HomeFragmentDirections.actionHomeToPermission()
-            findNavController().navigate(R.id.action_home_to_permission)
+            val directions = HomeFragmentDirections.actionHomeToPermission()
+            findNavController().navigate(directions)
         }
 
         // After getting Uri list selected from ImagePicker
