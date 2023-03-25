@@ -1,12 +1,8 @@
 package org.gdsc.presentation.view
 
 import android.content.Context
-import android.content.DialogInterface
-import android.media.Image
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -14,23 +10,18 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.gdsc.presentation.R
 import org.gdsc.presentation.adapter.GalleryImageClickListener
@@ -39,6 +30,7 @@ import org.gdsc.presentation.data.ImageItem
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
 import org.gdsc.presentation.view.HomeFragment.Companion.URI_SELECTED
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
+
 
 @AndroidEntryPoint
 class ImagePickerFragment : Fragment(), GalleryImageClickListener {
@@ -61,22 +53,58 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         setupMenu()
         setupAdapter()
 
+
         CoroutineScope(Dispatchers.IO).launch {
             imagePickerViewModel.fetchImageItemList()
         }
 
         // 갤러리 선택용 다이얼로그
-        binding.galleryButton.setOnClickListener {
-            val array = imagePickerViewModel.getGalleryAlbum().toTypedArray()
+        binding.galleryButton.setOnClickListener {view ->
+            val albumNameList = imagePickerViewModel.getGalleryAlbum().toTypedArray()
 
+            /*
             AlertDialog.Builder(this.requireContext())
                 .setItems(array) { _, which ->
                     val currentItem = array[which]
                     imagePickerViewModel.galleryName.value = currentItem
                 }.show()
+             */
+
+            val popupMenu = PopupMenu(requireContext(), view)
+            (activity as SetProfileActivity).menuInflater.inflate(R.menu.sample_menu, popupMenu.menu)
+
+            for(i in 0 until albumNameList.size) {
+                popupMenu.menu.add(0, i, i, albumNameList[i])
+            }
+
+            popupMenu.setOnMenuItemClickListener {item ->
+                imagePickerViewModel.galleryName.value = item.title.toString()
+                return@setOnMenuItemClickListener true
+            }
+
+
+            popupMenu.show()
         }
 
         return binding.root
+    }
+    private fun setupMenu() {
+        (requireActivity() as SetProfileActivity).addMenuProvider(object: MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.tolbar_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                Log.d("ImagePickerFragment", "onMenuItemSelected : ${menuItem.itemId}")
+                when(menuItem.itemId) {
+                    android.R.id.home -> {
+                        callback.handleOnBackPressed()
+                        return true
+                    }
+                }
+                return true
+            }
+        })
     }
 
     // 갤러리 이미지 불러오기 및 구독
@@ -111,23 +139,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         actionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setHomeAsUpIndicator(R.drawable.finish)
     }
-    private fun setupMenu() {
-        (requireActivity() as SetProfileActivity).addMenuProvider(object: MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.tolbar_menu, menu)
-            }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when(menuItem.itemId) {
-                    android.R.id.home -> {
-                        callback.handleOnBackPressed()
-                        return true
-                    }
-                }
-                return true
-            }
-        })
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -140,7 +152,6 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
                 findNavController().navigate(directions)
             }
         }
-
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
     override fun onDestroy() {
