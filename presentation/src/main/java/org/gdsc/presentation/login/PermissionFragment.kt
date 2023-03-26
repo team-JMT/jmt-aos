@@ -16,7 +16,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import org.gdsc.presentation.databinding.FragmentPermissionBinding
-import org.gdsc.presentation.view.PermissionFragmentDirections
 
 class PermissionFragment : Fragment() {
     private var _binding: FragmentPermissionBinding? = null
@@ -79,8 +78,8 @@ class PermissionFragment : Fragment() {
         ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         _binding = null
+        super.onDestroyView()
     }
 }

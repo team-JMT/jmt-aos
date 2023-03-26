@@ -1,6 +1,5 @@
 package org.gdsc.data.datasource
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
