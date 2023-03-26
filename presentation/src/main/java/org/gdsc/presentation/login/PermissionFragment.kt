@@ -45,6 +45,10 @@ class PermissionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPermissionBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.imagepickerButton.setOnClickListener {
             val intent = Intent(
@@ -53,8 +57,6 @@ class PermissionFragment : Fragment() {
             )
             startActivity(intent)
         }
-
-        return binding.root
     }
 
     override fun onStart() {
