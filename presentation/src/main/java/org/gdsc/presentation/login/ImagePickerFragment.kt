@@ -115,11 +115,9 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     // SignUpCompleteFragment로 선택 이미지와 갤러리명 넘기기
     override fun onImageClick(imageItem: ImageItem) {
-        activity?.supportFragmentManager?.setFragmentResult(
-            URI_SELECTED,
-            bundleOf("uri" to imageItem.uri, "bucket" to imageItem.bucket)
-        )
-        findNavController().navigateUp()
+        val imageUri = imageItem.uri
+        val navigation = ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment(imageUri)
+        findNavController().navigate(navigation)
     }
 
     private fun setupAdapter() {
