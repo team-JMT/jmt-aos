@@ -31,6 +31,11 @@
         <action
             android:id="@+id/action_signUpCompleteFragment_to_permissionFragment"
             app:destination="@id/PermissionFragment"/>
+        <argument
+            android:name="imageUri"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
     </fragment>
     <fragment
         android:id="@+id/PermissionFragment"

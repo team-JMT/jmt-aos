@@ -11,16 +11,6 @@
 
     <application>
         <activity
-<<<<<<< HEAD
-            android:name=".view.SetProfileActivity"
-            android:exported="true" />
-        <activity
-            android:name=".view.WebViewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.MainActivity"
-            android:exported="false"></activity>
-=======
             android:name="org.gdsc.presentation.login.LoginActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
@@ -35,7 +25,6 @@
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="${naverMapClientId}" />
->>>>>>> develop
     </application>
 
 </manifest>
