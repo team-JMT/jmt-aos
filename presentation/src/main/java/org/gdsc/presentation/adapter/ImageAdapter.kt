@@ -19,12 +19,12 @@ import org.gdsc.presentation.viewmodel.ImagePickerViewModel
  */
 class ImageAdapter(
     private val parentViewModel: ImagePickerViewModel
-): ListAdapter<ImageItem, RecyclerView.ViewHolder>(ImageDiffCallback()) {
+): ListAdapter<ImageItem, ImageAdapter.ImageViewHolder>(ImageDiffCallback()) {
     private lateinit var listener: GalleryImageClickListener
     fun setListener(listener: GalleryImageClickListener) {
         this.listener = listener
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
 
         val binding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
@@ -40,9 +40,10 @@ class ImageAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val imageItem = getItem(position)
-        (holder as ImageViewHolder).bind(imageItem)
+        holder.bind(imageItem)
+
     }
 
     class ImageViewHolder(
