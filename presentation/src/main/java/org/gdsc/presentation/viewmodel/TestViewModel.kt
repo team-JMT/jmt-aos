@@ -18,7 +18,7 @@ import org.gdsc.presentation.R
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class TestViewModel @Inject constructor(
     private val postGoogleTokenUseCase: PostGoogleTokenUseCase,
     private val postAppleTokenUseCase: PostAppleTokenUseCase
 ) : ViewModel() {
@@ -82,7 +82,7 @@ class LoginViewModel @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "LoginViewModel"
+        private const val TAG = "TestViewModel"
     }
 
 }
