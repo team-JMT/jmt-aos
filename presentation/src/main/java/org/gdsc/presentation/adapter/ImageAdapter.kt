@@ -1,6 +1,5 @@
 package org.gdsc.presentation.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
@@ -8,8 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import org.gdsc.presentation.adapter.GalleryImageClickListener
-import org.gdsc.presentation.data.ImageItem
+import org.gdsc.domain.model.ImageItem
 import org.gdsc.presentation.databinding.ItemImageBinding
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 

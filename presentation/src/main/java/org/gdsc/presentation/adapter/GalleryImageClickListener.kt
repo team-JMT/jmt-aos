@@ -1,6 +1,6 @@
 package org.gdsc.presentation.adapter
 
-import org.gdsc.presentation.data.ImageItem
+import org.gdsc.domain.model.ImageItem
 
 
 interface GalleryImageClickListener {
