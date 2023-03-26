@@ -10,22 +10,22 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import org.gdsc.presentation.viewmodel.LoginViewModel
+import org.gdsc.presentation.viewmodel.TestViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import org.gdsc.presentation.databinding.ActivityLoginBinding
+import org.gdsc.presentation.databinding.ActivityTestBinding
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityLoginBinding
+class TestActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityTestBinding
 
-    private val viewModel: LoginViewModel by viewModels()
+    private val viewModel: TestViewModel by viewModels()
 
     private val TAG = "LoginTest"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = ActivityTestBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.appleLoginBtn.setOnClickListener {
@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
         binding.googleLoginBtn.setOnClickListener {
             lifecycleScope.launch(CoroutineExceptionHandler { _, throwable -> throwable.printStackTrace() }) {
                 startForResult.launch(
-                    IntentSenderRequest.Builder(viewModel.googleLogin(this@LoginActivity)).build()
+                    IntentSenderRequest.Builder(viewModel.googleLogin(this@TestActivity)).build()
                 )
             }
         }

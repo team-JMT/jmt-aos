@@ -32,7 +32,7 @@
         app:layout_constraintTop_toBottomOf="@id/title_text"
         tools:text="와이파이 연결상태를\n 다시 확인해주세요."/>
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/confirm_button"
         style="@style/JmtButton"
         android:text="@string/confirm"

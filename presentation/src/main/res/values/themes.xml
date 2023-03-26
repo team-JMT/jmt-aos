@@ -14,9 +14,8 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="JmtButton" parent="Widget.MaterialComponents.Button">
+    <style name="JmtButton" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/jmt_button_background</item>
-        <item name="backgroundTint">@color/main600</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:gravity">center</item>
         <item name="android:textAppearance">@style/title_small_medium</item>

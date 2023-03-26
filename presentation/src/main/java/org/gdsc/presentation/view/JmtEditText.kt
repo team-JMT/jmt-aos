@@ -15,6 +15,9 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
 
     private val binding = JmtEditTextBinding.inflate(LayoutInflater.from(context), this, true)
 
+    val text get() = binding.nicknameEditText.text.toString()
+    val editText = binding.nicknameEditText
+
     init {
         removeAllViews()
         addView(binding.root)
@@ -47,10 +50,10 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
         }
     }
 
-    private fun setNicknameEditTextWatcher() {
+    fun addAfterTextChangedListener(block: (String) -> Unit) {
         binding.nicknameEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                checkNickname()
+                block(s.toString())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -59,6 +62,10 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
+    }
+
+    private fun setNicknameEditTextWatcher() {
+        addAfterTextChangedListener { checkNickname() }
     }
 
     private fun hideVerifyLayout() {

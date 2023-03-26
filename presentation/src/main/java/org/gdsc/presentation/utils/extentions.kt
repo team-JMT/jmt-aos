@@ -1,8 +1,17 @@
 package org.gdsc.presentation.utils
 
+import android.app.Activity
+import android.content.Context
 import android.os.Build
 import android.util.DisplayMetrics
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 
 val Fragment.deviceMetrics
     get() = run {
@@ -32,3 +41,22 @@ val Fragment.deviceMetrics
         }
         displayMetrics
     }
+
+fun Fragment.hideKeyBoard(activity: Activity) {
+    val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
+}
+
+fun Fragment.showKeyBoard(activity: Activity, view: View) {
+    view.requestFocus()
+    val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.showSoftInput(view, 0)
+}
+
+fun LifecycleOwner.repeatWhenUiStarted(block: suspend () -> Unit) {
+    lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.STARTED) {
+            block.invoke()
+        }
+    }
+}

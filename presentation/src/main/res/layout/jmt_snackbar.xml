@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="335dp"
+    android:layout_height="56dp"
+    android:layout_gravity="center"
+    android:elevation="2dp"
+    android:layout_marginBottom="1dp"
+    app:cardCornerRadius="8dp">
+
+    <TextView
+        android:id="@+id/snackbar_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:textAppearance="@style/text_large_bold"
+        android:textColor="@color/main600"
+        tools:text="회원가입이 완료되었어요!"/>
+
+</androidx.cardview.widget.CardView>
