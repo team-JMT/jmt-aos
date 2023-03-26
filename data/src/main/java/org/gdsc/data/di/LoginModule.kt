@@ -4,14 +4,10 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.gdsc.data.datasource.GalleryDataSource
-import org.gdsc.data.datasource.GalleryDataSourceImpl
 import org.gdsc.data.datasource.LoginDataSource
 import org.gdsc.data.datasource.LoginDataSourceImpl
-import org.gdsc.data.repository.GalleryRepositoryImpl
 import org.gdsc.domain.repository.LoginRepository
 import org.gdsc.data.repository.LoginRepositoryImpl
-import org.gdsc.domain.repository.GalleryRepository
 import javax.inject.Singleton
 
 @Module
@@ -26,11 +22,4 @@ abstract class LoginModule {
     @Binds
     abstract fun bindLoginRepository(loginRepositoryImpl: LoginRepositoryImpl): LoginRepository
 
-    @Singleton
-    @Binds
-    abstract fun bindGalleryDataSource(galleryDataSourceImpl: GalleryDataSourceImpl): GalleryDataSource
-
-    @Singleton
-    @Binds
-    abstract fun bindGalleryRepository(galleryRepositoryImpl: GalleryRepositoryImpl): GalleryRepository
 }

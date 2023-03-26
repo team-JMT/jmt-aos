@@ -28,7 +28,6 @@ import org.gdsc.presentation.adapter.ImageAdapter
 import org.gdsc.presentation.data.ImageItem
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
 import org.gdsc.presentation.login.SignUpCompleteFragment.Companion.URI_SELECTED
-import org.gdsc.presentation.view.ImagePickerFragmentDirections
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
 
@@ -38,8 +37,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     private lateinit var popupMenu:PopupMenu
 
-    private val directions =
-        ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment()
+    private val directions = ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment()
 
     private var _binding: FragmentImagePickerBinding? = null
     private val binding get() = _binding!!
@@ -157,9 +155,10 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
-    override fun onDestroy() {
-        super.onDestroy()
+
+    override fun onDestroyView() {
         _binding = null
+        super.onDestroyView()
     }
     override fun onDetach() {
         super.onDetach()
