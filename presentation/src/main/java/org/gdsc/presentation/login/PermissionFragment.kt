@@ -1,4 +1,4 @@
-package org.gdsc.presentation.view
+package org.gdsc.presentation.login
 
 import android.Manifest
 import android.content.Context
@@ -15,19 +15,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.findNavController
-import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentPermissionBinding
+import org.gdsc.presentation.view.PermissionFragmentDirections
 
 class PermissionFragment : Fragment() {
     private var _binding: FragmentPermissionBinding? = null
     private val binding get() = _binding!!
 
-    // 안드로이드 13용
+    // 안드로이드 13용 갤러리 퍼미션
     private val requiredPermissionsTIRAMISU = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
     private val requiredPermissionsOTHER = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    // 권한 확인 완료 후 ImagePickerFragment로 이동
     private val onSuccess: () -> Unit = {
-        findNavController().navigate(R.id.action_permission_to_imagepicker)
+        PermissionFragmentDirections.actionPermissionFragmentToImagepickerFragment()
     }
 
     private val requestPermissionsLauncher = registerForActivityResult(
@@ -47,8 +47,6 @@ class PermissionFragment : Fragment() {
     ): View? {
         _binding = FragmentPermissionBinding.inflate(inflater, container, false)
 
-
-        //binding.lifecycleOwner = this
         binding.imagepickerButton.setOnClickListener {
             val intent = Intent(
                 Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -69,7 +67,7 @@ class PermissionFragment : Fragment() {
             checkPermission(requiredPermissionsOTHER)
         }
     }
-    fun checkPermission(requiredPermissions:Array<String>) {
+    private fun checkPermission(requiredPermissions:Array<String>) {
         if(hasAllPermissions(requireContext(), requiredPermissions)) {
             onSuccess.invoke()
         }else{
