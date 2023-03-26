@@ -13,6 +13,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -36,6 +37,8 @@ import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     private lateinit var callback: OnBackPressedCallback
 
+    private lateinit var popupMenu:PopupMenu
+
     private val directions = ImagePickerFragmentDirections.actionImagepickerToHome()
 
     private var _binding: FragmentImagePickerBinding? = null
@@ -53,40 +56,34 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         setupMenu()
         setupAdapter()
 
-
         CoroutineScope(Dispatchers.IO).launch {
             imagePickerViewModel.fetchImageItemList()
         }
 
         // 갤러리 선택용 다이얼로그
         binding.galleryButton.setOnClickListener {view ->
-            val albumNameList = imagePickerViewModel.getGalleryAlbum().toTypedArray()
-
-            /*
-            AlertDialog.Builder(this.requireContext())
-                .setItems(array) { _, which ->
-                    val currentItem = array[which]
-                    imagePickerViewModel.galleryName.value = currentItem
-                }.show()
-             */
-
-            val popupMenu = PopupMenu(requireContext(), view)
-            (activity as SetProfileActivity).menuInflater.inflate(R.menu.sample_menu, popupMenu.menu)
-
-            for(i in 0 until albumNameList.size) {
-                popupMenu.menu.add(0, i, i, albumNameList[i])
-            }
-
-            popupMenu.setOnMenuItemClickListener {item ->
-                imagePickerViewModel.galleryName.value = item.title.toString()
-                return@setOnMenuItemClickListener true
-            }
-
-
+            setupPopUpMenu(view)
             popupMenu.show()
         }
 
         return binding.root
+    }
+    private fun setupPopUpMenu(view: View) {
+        val albumNameList = imagePickerViewModel.getGalleryAlbum().toTypedArray()
+
+        popupMenu = PopupMenu(requireContext(), view)
+        (activity as SetProfileActivity).menuInflater.inflate(R.menu.sample_menu, popupMenu.menu)
+
+        for(i in albumNameList.indices) {
+            // 갤러리 아이템 리스트 초기화
+            popupMenu.menu.add(0, i, i, albumNameList[i])
+        }
+
+        popupMenu.setOnMenuItemClickListener {item ->
+            imagePickerViewModel.galleryName.value = item.title.toString()
+            binding.galleryButton.text = item.title.toString()
+            return@setOnMenuItemClickListener true
+        }
     }
     private fun setupMenu() {
         (requireActivity() as SetProfileActivity).addMenuProvider(object: MenuProvider {
@@ -138,6 +135,9 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         actionBar?.setDisplayShowTitleEnabled(false)
         actionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setHomeAsUpIndicator(R.drawable.finish)
+
+        // 갤러리 선택용 버튼 텍스트 초기화
+        binding.galleryButton.text = imagePickerViewModel.galleryName.value
     }
 
 
