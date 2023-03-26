@@ -2,6 +2,6 @@ package org.gdsc.domain.model
 
 
 data class ImageItem(
-    var uri: String,
-    var bucket: String
+    val uri: String,
+    val bucket: String
 )
