@@ -28,6 +28,7 @@ import org.gdsc.presentation.adapter.ImageAdapter
 import org.gdsc.presentation.data.ImageItem
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
 import org.gdsc.presentation.login.SignUpCompleteFragment.Companion.URI_SELECTED
+import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
 
@@ -105,11 +106,9 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     // 갤러리 속 이미지 불러오기 및 Flow 구독
     private fun initGallery(adapter: ImageAdapter) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                imagePickerViewModel.imageItemListFlow.collect {
-                    adapter.submitList(it)
-                }
+        viewLifecycleOwner.repeatWhenUiStarted {
+            imagePickerViewModel.imageItemListFlow.collect {
+                adapter.submitList(it)
             }
         }
     }
