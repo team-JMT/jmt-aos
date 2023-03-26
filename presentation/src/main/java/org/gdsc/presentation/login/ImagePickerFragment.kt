@@ -1,8 +1,7 @@
-package org.gdsc.presentation.view
+package org.gdsc.presentation.login
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -13,7 +12,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -29,7 +27,8 @@ import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.adapter.ImageAdapter
 import org.gdsc.presentation.data.ImageItem
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
-import org.gdsc.presentation.view.HomeFragment.Companion.URI_SELECTED
+import org.gdsc.presentation.login.SignUpCompleteFragment.Companion.URI_SELECTED
+import org.gdsc.presentation.view.ImagePickerFragmentDirections
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
 
@@ -39,7 +38,8 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     private lateinit var popupMenu:PopupMenu
 
-    private val directions = ImagePickerFragmentDirections.actionImagepickerToHome()
+    private val directions =
+        ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment()
 
     private var _binding: FragmentImagePickerBinding? = null
     private val binding get() = _binding!!
@@ -60,7 +60,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
             imagePickerViewModel.fetchImageItemList()
         }
 
-        // 갤러리 선택용 다이얼로그
+        // 앨범 선택용 버튼 (팝업 메뉴)
         binding.galleryButton.setOnClickListener {view ->
             setupPopUpMenu(view)
             popupMenu.show()
@@ -72,7 +72,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         val albumNameList = imagePickerViewModel.getGalleryAlbum().toTypedArray()
 
         popupMenu = PopupMenu(requireContext(), view)
-        (activity as SetProfileActivity).menuInflater.inflate(R.menu.sample_menu, popupMenu.menu)
+        (requireActivity() as LoginActivity).menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
 
         for(i in albumNameList.indices) {
             // 갤러리 아이템 리스트 초기화
@@ -80,19 +80,20 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         }
 
         popupMenu.setOnMenuItemClickListener {item ->
+            // 앨범 선택 버튼 텍스트 변경
             imagePickerViewModel.galleryName.value = item.title.toString()
             binding.galleryButton.text = item.title.toString()
             return@setOnMenuItemClickListener true
         }
     }
     private fun setupMenu() {
-        (requireActivity() as SetProfileActivity).addMenuProvider(object: MenuProvider {
+        (requireActivity() as LoginActivity).addMenuProvider(object: MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.tolbar_menu, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                Log.d("ImagePickerFragment", "onMenuItemSelected : ${menuItem.itemId}")
+                // 뒤로가기 버튼
                 when(menuItem.itemId) {
                     android.R.id.home -> {
                         callback.handleOnBackPressed()
@@ -104,7 +105,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         })
     }
 
-    // 갤러리 이미지 불러오기 및 구독
+    // 갤러리 속 이미지 불러오기 및 Flow 구독
     private fun initGallery(adapter: ImageAdapter) {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -115,6 +116,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         }
     }
 
+    // SignUpCompleteFragment로 선택 이미지와 갤러리명 넘기기
     override fun onImageClick(imageItem: ImageItem) {
         activity?.supportFragmentManager?.setFragmentResult(
             URI_SELECTED,
@@ -130,13 +132,13 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         initGallery(adapter)
     }
     private fun setupActionBar() {
-        (activity as SetProfileActivity).setSupportActionBar(binding.toolbar)
-        val actionBar = (activity as SetProfileActivity).supportActionBar
+        (requireActivity() as LoginActivity).setSupportActionBar(binding.toolbar)
+        val actionBar = (requireActivity() as LoginActivity).supportActionBar
         actionBar?.setDisplayShowTitleEnabled(false)
         actionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setHomeAsUpIndicator(R.drawable.finish)
 
-        // 갤러리 선택용 버튼 텍스트 초기화
+        // 앨범 선택용 버튼 텍스트 초기화
         binding.galleryButton.text = imagePickerViewModel.galleryName.value
     }
 
@@ -146,6 +148,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         attachBackPressedCallback()
     }
 
+    // 뒤로가기 버튼 눌렀을 때 SignUpCompleteFragment로 이동
     private fun attachBackPressedCallback() {
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
