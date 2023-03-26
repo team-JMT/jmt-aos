@@ -16,7 +16,6 @@ private const val INDEX_DATE_ADDED = MediaStore.MediaColumns.DATE_ADDED
 class GalleryDataSourceImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ): GalleryDataSource {
-    @SuppressLint("Range")
     override fun getGalleryImage(): Flow<MutableList<String>> {
         val imageItemList:MutableList<String> = mutableListOf()
         val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -35,7 +34,8 @@ class GalleryDataSourceImpl @Inject constructor(
 
         cursor?.let {
             while(cursor.moveToNext()) {
-                val filePath = cursor.getString(cursor.getColumnIndex(INDEX_MEDIA_URI))
+                val id = cursor.getColumnIndex(INDEX_MEDIA_URI)
+                val filePath = cursor.getString(id)
                 imageItemList.add(filePath)
             }
         }
