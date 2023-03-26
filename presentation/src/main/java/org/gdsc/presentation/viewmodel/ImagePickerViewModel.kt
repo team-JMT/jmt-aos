@@ -31,16 +31,16 @@ class ImagePickerViewModel @Inject constructor(
 ): ViewModel() {
     private val TAG = "ImagePickerViewModel"
 
-    private val _imageItemListFlow = MutableStateFlow<MutableList<ImageItem>>(mutableListOf<ImageItem>())
+    private val _imageItemListFlow = MutableStateFlow<List<ImageItem>>(listOf<ImageItem>())
 
     val galleryName = MutableStateFlow(initAlbum)
 
     // 갤러리 이미지 Flow
     // 선택 앨범에 따라 리스트 내용 변경을 위한 fliter
-    val imageItemListFlow: StateFlow<MutableList<ImageItem>> = _imageItemListFlow
+    val imageItemListFlow: StateFlow<List<ImageItem>> = _imageItemListFlow
         .combine(galleryName) { list, filter ->
-        list.filter { if(galleryName.value == initAlbum) true else it.bucket.contains(filter) }.toMutableList() }
-            .stateIn(viewModelScope, SharingStarted.Eagerly, mutableListOf())
+        list.filter { if(galleryName.value == initAlbum) true else it.bucket.contains(filter) } }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
 
 
 
