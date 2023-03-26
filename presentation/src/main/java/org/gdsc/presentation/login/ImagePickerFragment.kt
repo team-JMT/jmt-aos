@@ -10,24 +10,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.gdsc.domain.model.ImageItem
 import org.gdsc.presentation.R
 import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.adapter.ImageAdapter
-import org.gdsc.presentation.data.ImageItem
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
-import org.gdsc.presentation.login.SignUpCompleteFragment.Companion.URI_SELECTED
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
