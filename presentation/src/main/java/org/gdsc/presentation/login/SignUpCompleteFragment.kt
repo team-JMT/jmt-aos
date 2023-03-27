@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.gdsc.presentation.databinding.FragmentSignUpCompleteBinding
-import org.gdsc.presentation.view.PermissionFragmentDirections
 
 class SignUpCompleteFragment : Fragment() {
 
@@ -42,8 +42,8 @@ class SignUpCompleteFragment : Fragment() {
         binding.nicknameText.text = viewModel.nicknameState.value
 
         binding.profileImageAddButton.setOnClickListener {
-            // TODO: 갤러리에서 이미지 pick
-            SignUpCompleteFragmentDirections.actionSignUpCompleteFragmentToPermissionFragment()
+            val action = SignUpCompleteFragmentDirections.actionSignUpCompleteFragmentToPermissionFragment()
+            findNavController().navigate(action)
         }
 
     }
