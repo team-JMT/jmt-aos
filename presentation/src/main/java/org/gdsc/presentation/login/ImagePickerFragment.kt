@@ -23,7 +23,6 @@ import org.gdsc.presentation.R
 import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.adapter.ImageAdapter
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
-import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
 
@@ -40,6 +39,8 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     private val imagePickerViewModel: ImagePickerViewModel by viewModels()
 
+    private lateinit var imageAdapter: ImageAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,10 +50,6 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         setupActionBar()
         setupMenu()
         setupAdapter()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            imagePickerViewModel.fetchImageItemList()
-        }
 
         // 앨범 선택용 버튼 (팝업 메뉴)
         binding.galleryButton.setOnClickListener {view ->
@@ -75,8 +72,9 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
 
         popupMenu.setOnMenuItemClickListener {item ->
             // 앨범 선택 버튼 텍스트 변경
-            imagePickerViewModel.galleryName.value = item.title.toString()
             binding.galleryButton.text = item.title.toString()
+            val imageList = imagePickerViewModel.getFilterImageList(item.title.toString())
+            imageAdapter.submitList(imageList)
             return@setOnMenuItemClickListener true
         }
     }
@@ -99,15 +97,6 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         })
     }
 
-    // 갤러리 속 이미지 불러오기 및 Flow 구독
-    private fun initGallery(adapter: ImageAdapter) {
-        viewLifecycleOwner.repeatWhenUiStarted {
-            imagePickerViewModel.imageItemListFlow.collect {
-                adapter.submitList(it)
-            }
-        }
-    }
-
     // SignUpCompleteFragment로 선택 이미지와 갤러리명 넘기기
     override fun onImageClick(imageItem: ImageItem) {
         val imageUri = imageItem.uri
@@ -116,10 +105,13 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     }
 
     private fun setupAdapter() {
-        val adapter = ImageAdapter(imagePickerViewModel)
-        adapter.setListener(this)
-        binding.recyclerviewImage.adapter = adapter
-        initGallery(adapter)
+        imageAdapter = ImageAdapter(imagePickerViewModel)
+        imageAdapter.setListener(this)
+        binding.recyclerviewImage.adapter = imageAdapter
+        CoroutineScope(Dispatchers.Main).launch {
+            val imageList = imagePickerViewModel.getImageItemList()
+            imageAdapter.submitList(imageList)
+        }
     }
     private fun setupActionBar() {
         (requireActivity() as LoginActivity).setSupportActionBar(binding.toolbar)
@@ -129,7 +121,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         actionBar?.setHomeAsUpIndicator(R.drawable.finish)
 
         // 앨범 선택용 버튼 텍스트 초기화
-        binding.galleryButton.text = imagePickerViewModel.galleryName.value
+        binding.galleryButton.text = imagePickerViewModel.getInitAlbum()
     }
 
 

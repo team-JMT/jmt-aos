@@ -4,8 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 private const val INDEX_MEDIA_ID = MediaStore.MediaColumns._ID
@@ -15,7 +13,7 @@ private const val INDEX_DATE_ADDED = MediaStore.MediaColumns.DATE_ADDED
 class GalleryDataSourceImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ): GalleryDataSource {
-    override fun getGalleryImage(): Flow<List<String>> {
+    override suspend fun getGalleryImage(): List<String> {
         val imageItemList:MutableList<String> = mutableListOf()
         val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
@@ -41,6 +39,6 @@ class GalleryDataSourceImpl @Inject constructor(
 
         cursor?.close()
 
-        return flow { emit(imageItemList.toList()) }
+        return imageItemList.toList()
     }
 }
