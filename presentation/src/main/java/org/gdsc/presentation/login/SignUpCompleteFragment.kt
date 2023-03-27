@@ -9,7 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
 import org.gdsc.presentation.databinding.FragmentSignUpCompleteBinding
+import org.gdsc.presentation.view.PermissionFragmentDirections
 
 class SignUpCompleteFragment : Fragment() {
 
@@ -18,12 +20,18 @@ class SignUpCompleteFragment : Fragment() {
         get() = requireNotNull(_binding)
 
     private val viewModel: LoginViewModel by activityViewModels()
+    private val args by navArgs<SignUpCompleteFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSignUpCompleteBinding.inflate(inflater, container, false)
+
+        args.imageUri?.let {
+            // TODO : 이미지 변경 로직
+        }
+
         return binding.root
     }
 
@@ -35,6 +43,7 @@ class SignUpCompleteFragment : Fragment() {
 
         binding.profileImageAddButton.setOnClickListener {
             // TODO: 갤러리에서 이미지 pick
+            SignUpCompleteFragmentDirections.actionSignUpCompleteFragmentToPermissionFragment()
         }
 
     }
@@ -65,4 +74,8 @@ class SignUpCompleteFragment : Fragment() {
         super.onDestroyView()
     }
 
+    companion object {
+        const val URI_SELECTED = "URI_SELECTED"
+        const val TAG = "SignUpCompleteFragment"
+    }
 }

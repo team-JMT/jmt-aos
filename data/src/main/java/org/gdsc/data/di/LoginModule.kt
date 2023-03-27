@@ -21,4 +21,5 @@ abstract class LoginModule {
     @Singleton
     @Binds
     abstract fun bindLoginRepository(loginRepositoryImpl: LoginRepositoryImpl): LoginRepository
+
 }

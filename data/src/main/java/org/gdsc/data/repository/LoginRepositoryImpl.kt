@@ -15,4 +15,5 @@ class LoginRepositoryImpl @Inject constructor(private val loginDataSource: Login
     override suspend fun postAppleToken(email: String, clientId: String): LoginResponse {
         return loginDataSource.postAppleToken(email, clientId)
     }
+
 }

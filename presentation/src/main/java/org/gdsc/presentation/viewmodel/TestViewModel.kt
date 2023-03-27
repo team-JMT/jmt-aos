@@ -35,7 +35,6 @@ class TestViewModel @Inject constructor(
     fun postGoogleToken(token: String) {
         viewModelScope.launch {
             val response = postGoogleTokenUseCase.invoke(token)
-            Log.d(TAG, "postGoogleToken: $response")
         }
     }
 
