@@ -48,6 +48,8 @@ class TestActivity : AppCompatActivity() {
                     val credential = viewModel.getGoogleCredential(intent)
                     val googleIdToken = credential.googleIdToken
 
+                    Log.d(TAG, "Google Login Success : $googleIdToken")
+
                     // TODO : 토큰이 null일 경우 예외 처리
                     googleIdToken?.let {
                         viewModel.postGoogleToken(it)

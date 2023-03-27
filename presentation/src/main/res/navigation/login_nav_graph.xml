@@ -28,5 +28,37 @@
         android:name="org.gdsc.presentation.login.SignUpCompleteFragment"
         android:label="fragment_sign_up_complete"
         tools:layout="@layout/fragment_sign_up_complete" >
+        <action
+            android:id="@+id/action_signUpCompleteFragment_to_permissionFragment"
+            app:destination="@id/PermissionFragment"/>
+        <argument
+            android:name="imageUri"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+    </fragment>
+    <fragment
+        android:id="@+id/PermissionFragment"
+        android:name="org.gdsc.presentation.login.PermissionFragment"
+        android:label="fragment_permission"
+        tools:layout="@layout/fragment_permission" >
+        <action
+            android:id="@+id/action_permissionFragment_to_imagepickerFragment"
+            app:destination="@id/ImagePickerFragment"
+            app:popUpTo="@id/signUpCompleteFragment"/>
+        <action
+            android:id="@+id/action_permissionFragment_to_signUpCompleteFragment"
+            app:destination="@id/signUpCompleteFragment"
+            app:popUpTo="@id/ImagePickerFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/ImagePickerFragment"
+        android:name="org.gdsc.presentation.login.ImagePickerFragment"
+        label="fragment_image_picker"
+        tools:layout="@layout/fragment_image_picker" >
+        <action
+            android:id="@+id/action_imagepickerFragment_to_signUpCompleteFragment"
+            app:destination="@id/signUpCompleteFragment"
+            app:popUpTo="@id/PermissionFragment"/>
     </fragment>
 </navigation>
