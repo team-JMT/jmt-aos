@@ -17,7 +17,7 @@ class GalleryDataSourceImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ): GalleryDataSource {
     @SuppressLint("Range")
-    override fun getGalleryImage(): Flow<MutableList<String>> {
+    override fun getGalleryImage(): List<String> {
         val imageItemList:MutableList<String> = mutableListOf()
         val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
@@ -42,6 +42,6 @@ class GalleryDataSourceImpl @Inject constructor(
 
         cursor?.close()
 
-        return flow { emit(imageItemList) }
+        return imageItemList.toList()
     }
 }

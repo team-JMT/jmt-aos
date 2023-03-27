@@ -10,11 +10,8 @@ import javax.inject.Inject
 class GalleryRepositoryImpl @Inject constructor(
     private val galleryDataSource: GalleryDataSource
 ): GalleryRepository {
-    override fun getGalleryImage(): Flow<MutableList<String>> {
-        return flow {
-            galleryDataSource.getGalleryImage().collect() { imageList ->
-                emit(imageList)
-            }
-        }
+    override fun getGalleryImage(): List<String> {
+        return galleryDataSource.getGalleryImage()
+
     }
 }

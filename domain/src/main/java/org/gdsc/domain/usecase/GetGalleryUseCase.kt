@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetGalleryUseCase @Inject constructor(
     private val galleryRepository: GalleryRepository
 ) {
-    operator fun invoke(): Flow<MutableList<String>> {
+    operator fun invoke(): List<String> {
         return galleryRepository.getGalleryImage()
     }
 }

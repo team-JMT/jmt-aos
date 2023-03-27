@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.gdsc.domain.usecase.GetGalleryUseCase
 import org.gdsc.presentation.data.ImageItem
 import java.io.File
@@ -31,6 +33,7 @@ class ImagePickerViewModel @Inject constructor(
 ): ViewModel() {
     private val TAG = "ImagePickerViewModel"
 
+    /*
     private val _imageItemListFlow = MutableStateFlow<MutableList<ImageItem>>(mutableListOf<ImageItem>())
 
     val galleryName = MutableStateFlow("전체")
@@ -77,4 +80,35 @@ class ImagePickerViewModel @Inject constructor(
             imageItem.bucket
         }.distinct()
     }
+
+ */
+    private lateinit var imageList: List<ImageItem>
+
+    private val albumList: List<String> by lazy {
+        imageList.map { imageItem ->
+            imageItem.bucket
+        }.distinct()
+    }
+
+    suspend fun getImageItemList():List<ImageItem> {
+        return withContext(Dispatchers.IO) {
+            getGalleryUseCase()
+                .runCatching {
+                    imageList = this.map { filePath ->
+                        val filePathSplit = filePath.split(File.separator)
+                        ImageItem(Uri.fromFile(File(filePath)).toString(), filePathSplit[filePathSplit.size - 2])
+                    }
+                }
+            return@withContext imageList
+        }
+    }
+
+    fun getGalleryAlbum():List<String> {
+        return listOf("전체") + albumList
+    }
+
+    fun getFilterImageList(album: String):List<ImageItem> {
+        return imageList.filter { if(album =="전체") true else it.bucket == album }
+    }
+
 }

@@ -46,6 +46,8 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     private val imagePickerViewModel: ImagePickerViewModel by viewModels()
 
+    private lateinit var imageAdapter: ImageAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,10 +57,6 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         setupActionBar()
         setupMenu()
         setupAdapter()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            imagePickerViewModel.fetchImageItemList()
-        }
 
         // 갤러리 선택용 다이얼로그
         binding.galleryButton.setOnClickListener {view ->
@@ -80,8 +78,8 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         }
 
         popupMenu.setOnMenuItemClickListener {item ->
-            imagePickerViewModel.galleryName.value = item.title.toString()
             binding.galleryButton.text = item.title.toString()
+            imageAdapter.submitList(imagePickerViewModel.getFilterImageList(item.title.toString()))
             return@setOnMenuItemClickListener true
         }
     }
@@ -104,16 +102,6 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         })
     }
 
-    // 갤러리 이미지 불러오기 및 구독
-    private fun initGallery(adapter: ImageAdapter) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                imagePickerViewModel.imageItemListFlow.collect {
-                    adapter.submitList(it)
-                }
-            }
-        }
-    }
 
     override fun onImageClick(imageItem: ImageItem) {
         activity?.supportFragmentManager?.setFragmentResult(
@@ -124,10 +112,13 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     }
 
     private fun setupAdapter() {
-        val adapter = ImageAdapter(imagePickerViewModel)
-        adapter.setListener(this)
-        binding.recyclerviewImage.adapter = adapter
-        initGallery(adapter)
+        imageAdapter = ImageAdapter(imagePickerViewModel)
+        imageAdapter.setListener(this)
+        binding.recyclerviewImage.adapter = imageAdapter
+        CoroutineScope(Dispatchers.Main).launch {
+            val itemList = imagePickerViewModel.getImageItemList()
+            imageAdapter.submitList(itemList)
+        }
     }
     private fun setupActionBar() {
         (activity as SetProfileActivity).setSupportActionBar(binding.toolbar)
@@ -137,7 +128,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         actionBar?.setHomeAsUpIndicator(R.drawable.finish)
 
         // 갤러리 선택용 버튼 텍스트 초기화
-        binding.galleryButton.text = imagePickerViewModel.galleryName.value
+        binding.galleryButton.text = "전체"
     }
 
 
