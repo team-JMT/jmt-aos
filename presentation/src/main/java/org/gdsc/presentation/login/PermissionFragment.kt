@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import org.gdsc.presentation.databinding.FragmentPermissionBinding
 
 class PermissionFragment : Fragment() {
@@ -26,7 +27,8 @@ class PermissionFragment : Fragment() {
     private val requiredPermissionsOTHER = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
     // 권한 확인 완료 후 ImagePickerFragment로 이동
     private val onSuccess: () -> Unit = {
-        PermissionFragmentDirections.actionPermissionFragmentToImagepickerFragment()
+        val action = PermissionFragmentDirections.actionPermissionFragmentToImagepickerFragment()
+        findNavController().navigate(action)
     }
 
     private val requestPermissionsLauncher = registerForActivityResult(
