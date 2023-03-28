@@ -8,10 +8,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.gdsc.presentation.databinding.FragmentSignUpCompleteBinding
-import org.gdsc.presentation.view.PermissionFragmentDirections
+import com.bumptech.glide.Glide
 
 class SignUpCompleteFragment : Fragment() {
 
@@ -27,11 +29,6 @@ class SignUpCompleteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSignUpCompleteBinding.inflate(inflater, container, false)
-
-        args.imageUri?.let {
-            // TODO : 이미지 변경 로직
-        }
-
         return binding.root
     }
 
@@ -39,11 +36,21 @@ class SignUpCompleteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setProfileImageButtonAnimation()
 
+        args.imageUri?.let {
+
+            Glide.with(binding.root)
+                .load(it.toUri())
+                .centerCrop()
+                .into(binding.profileImage)
+
+            binding.profileImage.clipToOutline = true
+        }
+
         binding.nicknameText.text = viewModel.nicknameState.value
 
         binding.profileImageAddButton.setOnClickListener {
-            // TODO: 갤러리에서 이미지 pick
-            SignUpCompleteFragmentDirections.actionSignUpCompleteFragmentToPermissionFragment()
+            val action = SignUpCompleteFragmentDirections.actionSignUpCompleteFragmentToPermissionFragment()
+            findNavController().navigate(action)
         }
 
     }

@@ -31,11 +31,13 @@
     
     <ImageView
         android:id="@+id/profile_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="154dp"
+        android:layout_height="154dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ask_profile_text"
+        android:scaleType="centerCrop"
+        android:background="@drawable/background_profile"
         android:src="@drawable/base_profile_image"
         android:layout_marginTop="24dp"
         android:contentDescription="@string/content_description_profile_image" />
