@@ -18,6 +18,16 @@
     <color name="main800">#116419</color>
     <color name="main900">#0A390E</color>
 
+    <color name="grey100">#F1F3F4</color>
+    <color name="grey200">#D4DADE</color>
+    <color name="grey300">#B7C1C8</color>
+    <color name="grey400">#9AA9B2</color>
+    <color name="grey500">#7D909C</color>
+    <color name="grey600">#637782</color>
+    <color name="grey700">#4D5C65</color>
+    <color name="grey800">#374248</color>
+    <color name="grey900">#161A1D</color>
+
     <color name="grayscale600">#75798C</color>
 
     <color name="unable_nickname_color">#FF785A</color>
