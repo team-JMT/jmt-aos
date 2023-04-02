@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/home_fragment">
+
+    <fragment
+        android:id="@+id/home_fragment"
+        android:name="org.gdsc.presentation.view.home.HomeFragment"
+        android:label="home_fragment"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/my_page_fragment"
+        android:name="org.gdsc.presentation.view.mypage.MyPageFragment"
+        android:label="fragment_my_page"
+        tools:layout="@layout/fragment_my_page" />
+    <fragment
+        android:id="@+id/food_spot_registration_fragment"
+        android:name="org.gdsc.presentation.view.foodspotregistration.FoodSpotRegistrationFragment"
+        android:label="fragment_food_spot_registration"
+        tools:layout="@layout/fragment_food_spot_registration" />
+</navigation>
