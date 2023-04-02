@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <org.gdsc.presentation.view.JmtEditText
+    <org.gdsc.presentation.view.custom.JmtEditText
         android:id="@+id/nickname_edit_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

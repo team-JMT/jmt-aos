@@ -1,4 +1,4 @@
-package org.gdsc.presentation.view
+package org.gdsc.presentation.view.custom
 
 import android.content.Context
 import android.os.Bundle
