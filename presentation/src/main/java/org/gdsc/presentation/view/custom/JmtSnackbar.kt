@@ -1,4 +1,4 @@
-package org.gdsc.presentation.view
+package org.gdsc.presentation.view.custom
 
 import android.view.LayoutInflater
 import android.view.View
