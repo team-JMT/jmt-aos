@@ -20,4 +20,8 @@
     <string name="suggest_set_profile_image">나의 프로필 사진을 설정해볼까요?</string>
     <string name="content_description_profile_image">프로필 이미지</string>
     <string name="content_description_profile_image_setting_button">프로필 이미지 설정 버튼</string>
+
+    <string name="searching_menu">둘러보기</string>
+    <string name="food_spot_registration_menu">맛집등록</string>
+    <string name="my_page_menu">내정보</string>
 </resources>
