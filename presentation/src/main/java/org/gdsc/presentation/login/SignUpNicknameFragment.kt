@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.gdsc.presentation.databinding.FragmentSignUpNicknameBinding
+import org.gdsc.presentation.utils.addAfterTextChangedListener
 import org.gdsc.presentation.utils.hideKeyBoard
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.utils.showKeyBoard
@@ -34,7 +35,7 @@ class SignUpNicknameFragment : Fragment() {
         setNextButton()
         setHideKeyboard()
         observeNicknameValidation()
-        binding.nicknameEditText.addAfterTextChangedListener {
+        binding.nicknameEditText.editText.addAfterTextChangedListener {
             viewModel.updateNicknameState(it)
         }
     }
