@@ -5,11 +5,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.JmtSearchEditTextBinding
-import org.gdsc.presentation.utils.addAfterTextChangedListener
+import org.gdsc.presentation.utils.fadeIn
+import org.gdsc.presentation.utils.fadeOut
 
 @SuppressLint("ClickableViewAccessibility")
 class JmtSearchEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
@@ -37,21 +37,9 @@ class JmtSearchEditText(context: Context, attrs: AttributeSet) : ConstraintLayou
         removeAllViews()
         addView(binding.root)
 
-        setIconAndCancelVisibility()
         setCancel()
+        setAnimation()
 
-    }
-    private fun setIconAndCancelVisibility() {
-        binding.searchEditText.addAfterTextChangedListener {
-            if (text.isEmpty()) {
-                binding.searchIcon.visibility = View.VISIBLE
-                binding.cancelText.visibility = View.GONE
-            }
-            else {
-                binding.cancelText.visibility = View.VISIBLE
-                binding.searchIcon.visibility = View.GONE
-            }
-        }
     }
 
     private fun setCancel() {
@@ -59,13 +47,29 @@ class JmtSearchEditText(context: Context, attrs: AttributeSet) : ConstraintLayou
             binding.searchEditText.text?.clear()
             binding.searchEditText.clearFocus()
             hideKeyboardFromEditText()
+            binding.searchIcon.fadeIn()
         }
     }
 
-    private fun hideKeyboardFromEditText() {
-        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
+
+    private fun setAnimation() {
+
+        binding.searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.searchIcon.fadeOut()
+                binding.cancelText.fadeIn()
+            } else {
+                binding.searchIcon.fadeIn()
+                binding.cancelText.fadeOut()
+            }
+        }
+
     }
 
+    private fun hideKeyboardFromEditText() {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
+    }
 
 }
