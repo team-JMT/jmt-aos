@@ -3,12 +3,9 @@ package org.gdsc.presentation.utils
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -54,20 +51,6 @@ fun Fragment.showKeyBoard(activity: Activity, view: View) {
     view.requestFocus()
     val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.showSoftInput(view, 0)
-}
-
-fun EditText.addAfterTextChangedListener(block: (String) -> Unit) {
-    this.addTextChangedListener(object : TextWatcher {
-        override fun afterTextChanged(s: Editable?) {
-            block(s.toString())
-        }
-
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        }
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        }
-    })
 }
 
 fun LifecycleOwner.repeatWhenUiStarted(block: suspend () -> Unit) {
