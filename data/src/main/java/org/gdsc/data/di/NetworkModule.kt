@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.gdsc.data.network.LoginAPI
+import org.gdsc.data.network.RestaurantAPI
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -35,6 +36,12 @@ class NetworkModule {
     @Singleton
     fun provideLoginApi(retrofit: Retrofit): LoginAPI {
         return retrofit.create(LoginAPI::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRestaurantApi(retrofit: Retrofit): RestaurantAPI {
+        return retrofit.create(RestaurantAPI::class.java)
     }
 
 }
