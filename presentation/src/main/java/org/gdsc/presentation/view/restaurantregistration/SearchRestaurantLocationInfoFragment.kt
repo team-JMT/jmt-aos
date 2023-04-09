@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -22,7 +23,13 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: SearchRestaurantLocationInfoViewModel by viewModels()
     private val adapter by lazy { RestaurantLocationInfoAdapter{
-        // TODO: Navigation
+        viewLifecycleOwner.lifecycleScope.launch {
+            val canRegister = viewModel.canRegisterRestaurant(it.id)
+
+            val action = SearchRestaurantLocationInfoFragmentDirections
+                .actionSearchRestaurantLocationInfoFragmentToConfirmRestaurantRegistrationFragment(canRegister, it)
+            findNavController().navigate(action)
+        }
     } }
 
     private var debounceJob: Job? = null

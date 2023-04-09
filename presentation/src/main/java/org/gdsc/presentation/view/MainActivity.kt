@@ -50,12 +50,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            if (destination.id == R.id.search_restaurant_location_info_fragment) {
-                binding.bottomNavigationView.visibility = View.GONE
-            } else {
+            if (destination.id == R.id.home_fragment || destination.id == R.id.my_page_fragment)
                 binding.bottomNavigationView.visibility = View.VISIBLE
-            }
+            else
+                binding.bottomNavigationView.visibility = View.GONE
         }
+
 
     }
 }
