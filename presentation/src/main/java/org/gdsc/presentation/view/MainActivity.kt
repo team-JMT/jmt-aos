@@ -3,11 +3,14 @@ package org.gdsc.presentation.view
 import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.ActivityMainBinding
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val navController by lazy {
@@ -27,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initBottomNavigationView() {
+
         binding.bottomNavigationView.apply {
 
             setupWithNavController(navController)
@@ -44,5 +48,14 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            if (destination.id == R.id.home_fragment || destination.id == R.id.my_page_fragment)
+                binding.bottomNavigationView.visibility = View.VISIBLE
+            else
+                binding.bottomNavigationView.visibility = View.GONE
+        }
+
+
     }
 }

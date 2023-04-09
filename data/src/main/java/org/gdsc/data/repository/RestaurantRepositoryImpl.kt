@@ -11,4 +11,8 @@ class RestaurantRepositoryImpl @Inject constructor(
     override suspend fun getRestaurantLocationInfo(query: String, page: Int): List<RestaurantLocationInfo> {
         return restaurantDataSource.getRestaurantLocationInfo(query, page)
     }
+
+    override suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean {
+        return restaurantDataSource.checkRestaurantRegistration(kakaoSubId)
+    }
 }

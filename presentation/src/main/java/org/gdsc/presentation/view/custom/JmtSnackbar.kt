@@ -53,7 +53,20 @@ class JmtSnackbar private constructor(
         return this
     }
 
+    fun setTextColor(color: Int): JmtSnackbar {
+        binding.snackbarText.setTextColor(color)
+        return this
+    }
+
+    // TODO: Blur
+    fun setBackgroundAlpha(alpha: Float): JmtSnackbar {
+        binding.snackbarContainer.background.alpha = (alpha * 255).toInt()
+        binding.snackbarContainer.elevation = 0f
+        return this
+    }
+
     fun show() {
         snackbar.show()
     }
+
 }

@@ -50,3 +50,9 @@ fun View.fadeOut() {
     })
     self.startAnimation(animation)
 }
+
+fun View.getAbsolutePositionOnScreen(): Pair<Float, Float> {
+    val location = IntArray(2)
+    getLocationOnScreen(location)
+    return Pair(location[0].toFloat(), location[1].toFloat())
+}

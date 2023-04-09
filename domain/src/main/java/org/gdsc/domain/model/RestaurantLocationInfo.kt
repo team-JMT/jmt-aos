@@ -27,4 +27,4 @@ data class RestaurantLocationInfo(
     val x: String,
     @SerializedName("y")
     val y: String
-)
+): java.io.Serializable

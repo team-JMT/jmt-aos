@@ -17,6 +17,7 @@ class JmtSearchEditText(context: Context, attrs: AttributeSet) : ConstraintLayou
     private val binding = JmtSearchEditTextBinding.inflate(LayoutInflater.from(context), this, true)
 
     val text get() = binding.searchEditText.text.toString()
+    val editText get() = binding.searchEditText
 
     init {
 
