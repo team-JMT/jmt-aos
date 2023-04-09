@@ -16,8 +16,24 @@
         android:label="fragment_my_page"
         tools:layout="@layout/fragment_my_page" />
     <fragment
-        android:id="@+id/food_spot_registration_fragment"
-        android:name="org.gdsc.presentation.view.foodspotregistration.FoodSpotRegistrationFragment"
+        android:id="@+id/search_restaurant_location_info_fragment"
+        android:name="org.gdsc.presentation.view.restaurantregistration.SearchRestaurantLocationInfoFragment"
         android:label="fragment_food_spot_registration"
-        tools:layout="@layout/fragment_food_spot_registration" />
+        tools:layout="@layout/fragment_search_restaurant_location_info" >
+        <action
+            android:id="@+id/action_search_restaurant_location_info_fragment_to_confirmRestaurantRegistrationFragment"
+            app:destination="@id/confirmRestaurantRegistrationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmRestaurantRegistrationFragment"
+        android:name="org.gdsc.presentation.view.restaurantregistration.ConfirmRestaurantRegistrationFragment"
+        android:label="fragment_confirm_restaurant_registration"
+        tools:layout="@layout/fragment_confirm_restaurant_registration">
+        <argument
+            android:name="canRegister"
+            app:argType="boolean" />
+        <argument
+            android:name="restaurantLocationInfo"
+            app:argType="org.gdsc.domain.model.RestaurantLocationInfo" />
+    </fragment>
 </navigation>
