@@ -7,7 +7,10 @@ import javax.inject.Inject
 class GetRestaurantLocationInfoUseCase @Inject constructor(
     private val restaurantRepository: RestaurantRepository
 ) {
-    suspend operator fun invoke(query: String, page: Int): List<RestaurantLocationInfo> {
-        return restaurantRepository.getRestaurantLocationInfo(query, page)
+    suspend operator fun invoke(
+        query: String, latitude: String,
+        longitude: String, page: Int
+    ): List<RestaurantLocationInfo> {
+        return restaurantRepository.getRestaurantLocationInfo(query, latitude, longitude, page)
     }
 }

@@ -7,9 +7,12 @@ import javax.inject.Inject
 
 class RestaurantRepositoryImpl @Inject constructor(
     private val restaurantDataSource: RestaurantDataSource
-): RestaurantRepository {
-    override suspend fun getRestaurantLocationInfo(query: String, page: Int): List<RestaurantLocationInfo> {
-        return restaurantDataSource.getRestaurantLocationInfo(query, page)
+) : RestaurantRepository {
+    override suspend fun getRestaurantLocationInfo(
+        query: String, latitude: String,
+        longitude: String, page: Int
+    ): List<RestaurantLocationInfo> {
+        return restaurantDataSource.getRestaurantLocationInfo(query, latitude, longitude, page)
     }
 
     override suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean {
