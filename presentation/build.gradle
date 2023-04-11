@@ -113,4 +113,7 @@ dependencies {
 
     // naver map
     implementation "com.naver.maps:map-sdk:3.16.2"
+
+    // Fused Location Provider
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 }
