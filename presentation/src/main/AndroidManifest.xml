@@ -19,9 +19,6 @@
         <activity
             android:name="org.gdsc.presentation.view.WebViewActivity"
             android:exported="false" />
-        <activity
-            android:name="org.gdsc.presentation.view.MainActivity"
-            android:exported="false"/>
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
