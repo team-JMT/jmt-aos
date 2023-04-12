@@ -9,12 +9,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentSearchRestaurantLocationInfoBinding
 import org.gdsc.presentation.utils.addAfterTextChangedListener
+import org.gdsc.presentation.view.custom.JmtSnackbar
 
 @AndroidEntryPoint
 class SearchRestaurantLocationInfoFragment : Fragment() {
@@ -22,15 +25,20 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
     private var _binding: FragmentSearchRestaurantLocationInfoBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SearchRestaurantLocationInfoViewModel by viewModels()
-    private val adapter by lazy { RestaurantLocationInfoAdapter{
-        viewLifecycleOwner.lifecycleScope.launch {
-            val canRegister = viewModel.canRegisterRestaurant(it.id)
+    private val adapter by lazy {
+        RestaurantLocationInfoAdapter {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val canRegister = viewModel.canRegisterRestaurant(it.id)
 
-            val action = SearchRestaurantLocationInfoFragmentDirections
-                .actionSearchRestaurantLocationInfoFragmentToConfirmRestaurantRegistrationFragment(canRegister, it)
-            findNavController().navigate(action)
+                val action = SearchRestaurantLocationInfoFragmentDirections
+                    .actionSearchRestaurantLocationInfoFragmentToConfirmRestaurantRegistrationFragment(
+                        canRegister,
+                        it
+                    )
+                findNavController().navigate(action)
+            }
         }
-    } }
+    }
 
     private var debounceJob: Job? = null
 
@@ -50,13 +58,24 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
         setSearchEditTextDebounceWatcher {
             if (binding.restaurantNameEditText.text.isNotEmpty()) {
                 viewLifecycleOwner.lifecycleScope.launch {
-                    // TODO: Paging
-                    val response =
-                        viewModel.getRestaurantLocationInfo(binding.restaurantNameEditText.text, 1)
+                    val currentLocation = viewModel.getCurrentLocation()
 
-                    // TODO: Error Handling
-                    adapter.setTargetString(binding.restaurantNameEditText.text)
-                    adapter.submitList(response)
+                    if (currentLocation != null) {
+                        // TODO: Paging
+                        val response =
+                            viewModel.getRestaurantLocationInfo(
+                                binding.restaurantNameEditText.text,
+                                currentLocation.latitude.toString(), currentLocation.longitude.toString(), 1
+                            )
+
+                        // TODO: Error Handling
+                        adapter.setTargetString(binding.restaurantNameEditText.text)
+                        adapter.submitList(response)
+                    } else {
+                        JmtSnackbar.make(binding.root, getString(R.string.get_location_error), Snackbar.LENGTH_SHORT)
+                            .setTextColor(R.color.unable_nickname_color).show()
+                    }
+
                 }
             } else {
                 adapter.submitList(emptyList())
@@ -69,7 +88,6 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
         binding.restaurantInfoRecyclerView.adapter = adapter
         binding.restaurantInfoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
-
 
     private fun setSearchEditTextDebounceWatcher(delay: Long = 500L, block: () -> Unit) {
         binding.restaurantNameEditText.editText.addAfterTextChangedListener {
