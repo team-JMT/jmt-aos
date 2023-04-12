@@ -11,6 +11,8 @@ interface RestaurantAPI {
     @GET("api/v1/restaurant/location")
     suspend fun getRestaurantLocationInfo(
         @Query("query") query: String,
+        @Query("y") latitude: String,
+        @Query("x") longitude: String,
         @Query("page") page: Int,
     ): Response<List<RestaurantLocationInfo>>
 

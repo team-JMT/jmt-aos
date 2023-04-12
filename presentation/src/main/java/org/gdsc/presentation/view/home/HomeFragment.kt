@@ -5,15 +5,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.gdsc.presentation.databinding.FragmentHomeBinding
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var mapView: MapView
+
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,11 +34,26 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
 
-        mapView.getMapAsync { map ->
-            map.uiSettings.isZoomControlEnabled = false
+
+        mapView.getMapAsync { naverMap ->
+
+            naverMap.uiSettings.isZoomControlEnabled = false
+
+            lifecycleScope.launch {
+                val currentLocation = viewModel.getCurrentLocation()
+
+                currentLocation?.let {
+                    val cameraUpdate =
+                        CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
+                    naverMap.moveCamera(cameraUpdate)
+                }
+
+            }
+
         }
 
     }
