@@ -11,10 +11,12 @@ class RestaurantDataSourceImpl @Inject constructor(
 ) : RestaurantDataSource {
     override suspend fun getRestaurantLocationInfo(
         query: String,
+        latitude: String,
+        longitude: String,
         page: Int
     ): List<RestaurantLocationInfo> {
         // TODO: 예외 처리
-        return restaurantAPI.getRestaurantLocationInfo(query, page).data
+        return restaurantAPI.getRestaurantLocationInfo(query, latitude, longitude, page).data
     }
 
     override suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean {
