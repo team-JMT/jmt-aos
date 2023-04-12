@@ -30,4 +30,7 @@
     <string name="cancel">취소</string>
     <string name="select">선택</string>
 
+    <string name="distance_from_current_location">내 위치에서 %s</string>
+    <string name="get_location_error">위치 정보를 가져올 수 없습니다.</string>
+
 </resources>

@@ -9,7 +9,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getColor
 import androidx.navigation.fragment.navArgs
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
+import com.naver.maps.map.overlay.Marker
+import org.gdsc.domain.toMeterFormat
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentConfirmRestaurantRegistrationBinding
 import org.gdsc.presentation.utils.deviceMetrics
@@ -68,10 +72,19 @@ class ConfirmRestaurantRegistrationFragment : Fragment() {
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
 
-        mapView.getMapAsync { map ->
-            map.uiSettings.isZoomControlEnabled = false
-            map.uiSettings.isScaleBarEnabled = false
+        mapView.getMapAsync { naverMap ->
+            naverMap.uiSettings.isZoomControlEnabled = false
+            naverMap.uiSettings.isScaleBarEnabled = false
+
+            val marker = Marker().apply {
+                position = LatLng(navArgs.restaurantLocationInfo.y.toDouble(), navArgs.restaurantLocationInfo.x.toDouble())
+                map = naverMap
+            }
+
+            val cameraUpdate = CameraUpdate.scrollTo(LatLng(navArgs.restaurantLocationInfo.y.toDouble(), navArgs.restaurantLocationInfo.x.toDouble()))
+            naverMap.moveCamera(cameraUpdate)
         }
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -83,7 +96,7 @@ class ConfirmRestaurantRegistrationFragment : Fragment() {
                 navArgs.restaurantLocationInfo.placeName
 
             distanceFromCurrentLocation.text =
-                navArgs.restaurantLocationInfo.distance
+                getString(R.string.distance_from_current_location, navArgs.restaurantLocationInfo.distance.toMeterFormat())
 
             restaurantAddress.text =
                 navArgs.restaurantLocationInfo.addressName
