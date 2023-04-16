@@ -91,7 +91,6 @@ class MainActivity : AppCompatActivity() {
 
         initBottomNavigationView()
 
-        FoodCategoryBottomSheetDialog {}.show(supportFragmentManager, "foodCategoryBottomSheetDialog")
     }
 
     private fun initBottomNavigationView() {
