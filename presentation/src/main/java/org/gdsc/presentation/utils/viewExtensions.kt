@@ -1,5 +1,6 @@
 package org.gdsc.presentation.utils
 
+import android.content.res.Resources
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -29,6 +30,7 @@ fun View.fadeIn() {
         override fun onAnimationStart(animation: Animation) {
             self.visibility = View.VISIBLE
         }
+
         override fun onAnimationRepeat(animation: Animation) {}
         override fun onAnimationEnd(animation: Animation) {
         }
@@ -44,6 +46,7 @@ fun View.fadeOut() {
         override fun onAnimationStart(animation: Animation) {
             self.visibility = View.GONE
         }
+
         override fun onAnimationRepeat(animation: Animation) {}
         override fun onAnimationEnd(animation: Animation) {
         }
@@ -56,3 +59,6 @@ fun View.getAbsolutePositionOnScreen(): Pair<Float, Float> {
     getLocationOnScreen(location)
     return Pair(location[0].toFloat(), location[1].toFloat())
 }
+
+val Int.toPx: Int
+    get() = (this * Resources.getSystem().displayMetrics.density).toInt()
