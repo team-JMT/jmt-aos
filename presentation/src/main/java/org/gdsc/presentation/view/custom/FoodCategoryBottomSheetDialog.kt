@@ -1,13 +1,21 @@
 package org.gdsc.presentation.view.custom
 
 import android.app.ActionBar.LayoutParams
+import android.app.Dialog
+import android.content.res.ColorStateList
+import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FoodCategoryBottomSheetDialogBinding
 import org.gdsc.presentation.model.FoodCategoryItem
@@ -42,6 +50,26 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<Foo
         setDialog()
     }
 
+    private val Int.toPx: Int
+        get() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return (super.onCreateDialog(savedInstanceState) as BottomSheetDialog).apply {
+            setOnShowListener {
+                findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.apply {
+                    background = MaterialShapeDrawable(
+                        ShapeAppearanceModel.builder()
+                            .setTopLeftCornerSize(16.toPx.toFloat())
+                            .setTopRightCornerSize(16.toPx.toFloat())
+                            .build()
+                    ).apply {
+                        fillColor = ColorStateList.valueOf(Color.WHITE) // TODO Color 변경하기
+                    }
+                }
+            }
+        }
+    }
+
     private fun setRecyclerView() {
 
         val adapter = FoodCategoryRecyclerAdapter()
@@ -64,7 +92,6 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<Foo
 
                 bottomSheet.apply {
                     layoutParams.height = LayoutParams.MATCH_PARENT
-                    setBackgroundResource(R.drawable.bottom_sheet_background)
                 }
 
                 BottomSheetBehavior.from<View>(bottomSheet).apply {

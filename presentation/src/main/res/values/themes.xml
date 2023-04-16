@@ -27,6 +27,5 @@
     </style>
 
     <style name="JmtBottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearance">@null</item>
     </style>
 </resources>
