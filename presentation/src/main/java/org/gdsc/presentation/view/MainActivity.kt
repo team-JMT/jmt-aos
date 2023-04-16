@@ -18,6 +18,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.ActivityMainBinding
+import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -90,6 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         initBottomNavigationView()
 
+        FoodCategoryBottomSheetDialog {}.show(supportFragmentManager, "foodCategoryBottomSheetDialog")
     }
 
     private fun initBottomNavigationView() {
