@@ -22,10 +22,4 @@
         <item name="android:textAppearance">@style/title_small_medium</item>
     </style>
 
-    <style name="JmtBottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/JmtBottomSheet</item>
-    </style>
-
-    <style name="JmtBottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
-    </style>
 </resources>

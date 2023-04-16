@@ -47,7 +47,6 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<Foo
 
         setRecyclerView()
         setSelectButton()
-        setDialog()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -61,6 +60,13 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<Foo
                             .build()
                     ).apply {
                         fillColor = ColorStateList.valueOf(Color.WHITE) // TODO Color 변경하기
+                    }
+
+                    layoutParams.height = LayoutParams.MATCH_PARENT
+
+                    BottomSheetBehavior.from<View>(this).apply {
+                        peekHeight = (resources.displayMetrics.heightPixels * 0.4).toInt()
+                        maxHeight = (resources.displayMetrics.heightPixels * 0.85).toInt()
                     }
                 }
             }
@@ -83,28 +89,8 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<Foo
         }
     }
 
-    private fun setDialog() {
-        dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            ?.let { bottomSheet ->
-
-                bottomSheet.apply {
-                    layoutParams.height = LayoutParams.MATCH_PARENT
-                }
-
-                BottomSheetBehavior.from<View>(bottomSheet).apply {
-                    peekHeight = (resources.displayMetrics.heightPixels * 0.4).toInt()
-                    maxHeight = (resources.displayMetrics.heightPixels * 0.85).toInt()
-                }
-
-            }
-    }
-
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    override fun getTheme(): Int {
-        return R.style.JmtBottomSheetDialog
     }
 }
