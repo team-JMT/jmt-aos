@@ -3,7 +3,6 @@ package org.gdsc.presentation.view.custom
 import android.app.ActionBar.LayoutParams
 import android.app.Dialog
 import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +18,7 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FoodCategoryBottomSheetDialogBinding
 import org.gdsc.presentation.model.FoodCategoryItem
+import org.gdsc.presentation.utils.toPx
 import org.gdsc.presentation.view.restaurantregistration.FoodCategoryRecyclerAdapter
 
 class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<FoodCategoryItem>) -> Unit) :
@@ -49,9 +49,6 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<Foo
         setSelectButton()
         setDialog()
     }
-
-    private val Int.toPx: Int
-        get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return (super.onCreateDialog(savedInstanceState) as BottomSheetDialog).apply {
