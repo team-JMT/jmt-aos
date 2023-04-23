@@ -3,4 +3,9 @@
     <declare-styleable name="JmtSearchEditText">
         <attr name="editTextEnabled" format="boolean"/>
     </declare-styleable>
+
+    <declare-styleable name="JmtEditText">
+        <attr name="verifyTextEnabled" format="boolean"/>
+        <attr name="jmtEditTextHint" format="string|reference"/>
+    </declare-styleable>
 </resources>

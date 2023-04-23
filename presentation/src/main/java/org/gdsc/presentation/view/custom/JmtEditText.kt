@@ -18,9 +18,30 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
     val editText = binding.nicknameEditText
 
     init {
+
+        context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.JmtEditText,
+            0, 0
+        ).apply {
+            try {
+                val isVerifyEnable = getBoolean(R.styleable.JmtEditText_verifyTextEnabled, false)
+                if (isVerifyEnable.not()) {
+                    binding.verifyContainer.visibility = View.GONE
+                } else {
+                    setNicknameEditTextWatcher()
+                }
+                getString(R.styleable.JmtEditText_jmtEditTextHint)?.let {
+                    binding.nicknameEditText.hint = it
+                }
+            } finally {
+                recycle()
+            }
+        }
+
         removeAllViews()
         addView(binding.root)
-        setNicknameEditTextWatcher()
+
     }
 
     fun checkNickname() {
