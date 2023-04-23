@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
     </style>
 
     <style name="JmtButton" parent="Widget.AppCompat.Button">
@@ -20,4 +21,5 @@
         <item name="android:gravity">center</item>
         <item name="android:textAppearance">@style/title_small_medium</item>
     </style>
+
 </resources>
