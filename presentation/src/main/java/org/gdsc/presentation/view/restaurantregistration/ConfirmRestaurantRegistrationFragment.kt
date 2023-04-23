@@ -2,12 +2,13 @@ package org.gdsc.presentation.view.restaurantregistration
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getColor
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -42,6 +43,14 @@ class ConfirmRestaurantRegistrationFragment : Fragment() {
         setMap(savedInstanceState)
         setRestaurantLocationInfoCard()
         initView(view)
+
+        binding.selectButton.setOnClickListener {
+
+            val action = ConfirmRestaurantRegistrationFragmentDirections
+                .actionConfirmRestaurantRegistrationFragmentToRegisterRestaurantFragment(navArgs.restaurantLocationInfo)
+            findNavController().navigate(action)
+
+        }
     }
 
     private fun initView(view: View) {
@@ -77,12 +86,22 @@ class ConfirmRestaurantRegistrationFragment : Fragment() {
             naverMap.uiSettings.isScaleBarEnabled = false
 
             val marker = Marker().apply {
-                position = LatLng(navArgs.restaurantLocationInfo.y.toDouble(), navArgs.restaurantLocationInfo.x.toDouble())
+                position = LatLng(
+                    navArgs.restaurantLocationInfo.y.toDouble(),
+                    navArgs.restaurantLocationInfo.x.toDouble()
+                )
                 map = naverMap
             }
 
-            val cameraUpdate = CameraUpdate.scrollTo(LatLng(navArgs.restaurantLocationInfo.y.toDouble(), navArgs.restaurantLocationInfo.x.toDouble()))
+            val cameraUpdate = CameraUpdate.scrollTo(
+                LatLng(
+                    navArgs.restaurantLocationInfo.y.toDouble(),
+                    navArgs.restaurantLocationInfo.x.toDouble()
+                )
+            )
             naverMap.moveCamera(cameraUpdate)
+            val zoom = CameraUpdate.zoomTo(17.0)
+            naverMap.moveCamera(zoom)
         }
 
     }
@@ -96,7 +115,10 @@ class ConfirmRestaurantRegistrationFragment : Fragment() {
                 navArgs.restaurantLocationInfo.placeName
 
             distanceFromCurrentLocation.text =
-                getString(R.string.distance_from_current_location, navArgs.restaurantLocationInfo.distance.toMeterFormat())
+                getString(
+                    R.string.distance_from_current_location,
+                    navArgs.restaurantLocationInfo.distance.toMeterFormat()
+                )
 
             restaurantAddress.text =
                 navArgs.restaurantLocationInfo.addressName
