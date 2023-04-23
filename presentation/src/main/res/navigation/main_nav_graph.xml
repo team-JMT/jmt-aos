@@ -35,5 +35,19 @@
         <argument
             android:name="restaurantLocationInfo"
             app:argType="org.gdsc.domain.model.RestaurantLocationInfo" />
+        <action
+            android:id="@+id/action_confirmRestaurantRegistrationFragment_to_registerRestaurantFragment"
+            app:destination="@id/registerRestaurantFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerRestaurantFragment"
+        android:name="org.gdsc.presentation.view.restaurantregistration.RegisterRestaurantFragment"
+        android:label="fragment_register_restaurant"
+        tools:layout="@layout/fragment_register_restaurant" >
+
+        <argument
+            android:name="restaurantLocationInfo"
+            app:argType="org.gdsc.domain.model.RestaurantLocationInfo" />
+
     </fragment>
 </navigation>
