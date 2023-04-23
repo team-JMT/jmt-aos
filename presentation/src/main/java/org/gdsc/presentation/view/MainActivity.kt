@@ -8,7 +8,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -18,6 +17,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.ActivityMainBinding
+import org.gdsc.presentation.utils.slideDown
+import org.gdsc.presentation.utils.slideUp
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -114,11 +115,18 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             if (destination.id == R.id.home_fragment || destination.id == R.id.my_page_fragment)
-                binding.bottomNavigationView.visibility = View.VISIBLE
+                slideUpBottomNavigationView()
             else
-                binding.bottomNavigationView.visibility = View.GONE
+                slideDownBottomNavigationView()
         }
 
+    }
 
+    fun slideDownBottomNavigationView() {
+        binding.bottomNavigationView.slideDown()
+    }
+
+    fun slideUpBottomNavigationView() {
+        binding.bottomNavigationView.slideUp()
     }
 }
