@@ -9,7 +9,6 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="54dp"
-        android:layout_marginHorizontal="20dp"
         android:background="@drawable/jmt_background"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -19,7 +18,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:background="@null"
-            android:hint="@string/nickname_hint"
             android:textAppearance="@style/title_small_medium"
             android:textCursorDrawable="@null"
             android:autofillHints="username"
@@ -28,11 +26,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:inputType="text"
+            tools:hint="@string/nickname_hint"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
+        android:id="@+id/verify_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
