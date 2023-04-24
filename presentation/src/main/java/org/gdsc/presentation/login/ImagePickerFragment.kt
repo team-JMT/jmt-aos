@@ -13,16 +13,20 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.gdsc.domain.model.ImageItem
+import org.gdsc.domain.model.MediaItem
 import org.gdsc.presentation.R
 import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.adapter.ImageAdapter
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
+import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
 
@@ -47,10 +51,6 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     ): View? {
         _binding = FragmentImagePickerBinding.inflate(inflater, container, false)
 
-        setupActionBar()
-        setupMenu()
-        setupAdapter()
-
         // 앨범 선택용 버튼 (팝업 메뉴)
         binding.galleryButton.setOnClickListener {view ->
             setupPopUpMenu(view)
@@ -60,7 +60,8 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         return binding.root
     }
     private fun setupPopUpMenu(view: View) {
-        val albumNameList = imagePickerViewModel.getGalleryAlbum().toTypedArray()
+        //val albumNameList = imagePickerViewModel.getGalleryAlbum().toTypedArray()
+        val albumNameList = arrayOf("전체", "카메라", "스크린샷", "다운로드", "DCIM", "Pictures", "Screenshots", "Download", "Camera")
 
         popupMenu = PopupMenu(requireContext(), view)
         (requireActivity() as LoginActivity).menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
@@ -73,8 +74,9 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         popupMenu.setOnMenuItemClickListener {item ->
             // 앨범 선택 버튼 텍스트 변경
             binding.galleryButton.text = item.title.toString()
-            val imageList = imagePickerViewModel.getFilterImageList(item.title.toString())
-            imageAdapter.submitList(imageList)
+
+            //val imageList = imagePickerViewModel.getFilterImageList(item.title.toString())
+
             return@setOnMenuItemClickListener true
         }
     }
@@ -97,9 +99,18 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         })
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupActionBar()
+        setupMenu()
+        setupAdapter()
+
+    }
+
     // SignUpCompleteFragment로 선택 이미지와 갤러리명 넘기기
-    override fun onImageClick(imageItem: ImageItem) {
-        val imageUri = imageItem.uri
+    override fun onImageClick(mediaItem: MediaItem) {
+        val imageUri = mediaItem.uri
         val navigation = ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment(imageUri)
         findNavController().navigate(navigation)
     }
@@ -108,10 +119,14 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         imageAdapter = ImageAdapter(imagePickerViewModel)
         imageAdapter.setListener(this)
         binding.recyclerviewImage.adapter = imageAdapter
-        CoroutineScope(Dispatchers.Main).launch {
-            val imageList = imagePickerViewModel.getImageItemList()
-            imageAdapter.submitList(imageList)
+
+        viewLifecycleOwner.repeatWhenUiStarted {
+            imagePickerViewModel.mediaListStateFlow.collect { mediaList ->
+                imageAdapter.submitData(mediaList)
+            }
         }
+
+        imagePickerViewModel.fetchMediaList()
     }
     private fun setupActionBar() {
         (requireActivity() as LoginActivity).setSupportActionBar(binding.toolbar)
@@ -121,7 +136,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         actionBar?.setHomeAsUpIndicator(R.drawable.finish)
 
         // 앨범 선택용 버튼 텍스트 초기화
-        binding.galleryButton.text = imagePickerViewModel.getInitAlbum()
+        //binding.galleryButton.text = imagePickerViewModel.getInitAlbum()
     }
 
 

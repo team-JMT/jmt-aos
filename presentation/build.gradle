@@ -74,6 +74,9 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.45'
     kapt 'com.google.dagger:hilt-android-compiler:2.45'
 
+    // Paging3
+    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+
     // google Social
     implementation 'com.google.android.gms:play-services-auth:20.4.1'
 

@@ -1,7 +1,7 @@
 package org.gdsc.domain.model
 
 
-data class ImageItem(
+data class MediaItem(
     val uri: String,
-    val bucket: String
+    val id: Long
 )

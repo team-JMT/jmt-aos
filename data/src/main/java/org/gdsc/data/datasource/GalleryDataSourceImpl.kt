@@ -1,44 +1,96 @@
 package org.gdsc.data.datasource
 
 import android.content.Context
-import android.os.Build
-import android.provider.MediaStore
+import android.database.Cursor
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.gdsc.data.cursor.CursorFactory
+import org.gdsc.domain.model.MediaItem
 import javax.inject.Inject
 
-private const val INDEX_MEDIA_ID = MediaStore.MediaColumns._ID
-private const val INDEX_MEDIA_URI = MediaStore.MediaColumns.DATA
-private const val INDEX_ALBUM_NAME = MediaStore.Images.Media.BUCKET_DISPLAY_NAME
-private const val INDEX_DATE_ADDED = MediaStore.MediaColumns.DATE_ADDED
 class GalleryDataSourceImpl @Inject constructor(
-    @ApplicationContext private val context: Context
-): GalleryDataSource {
-    override suspend fun getGalleryImage(): List<String> {
-        val imageItemList:MutableList<String> = mutableListOf()
-        val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        val projection = arrayOf(
-            INDEX_MEDIA_ID,
-            INDEX_MEDIA_URI,
-            INDEX_ALBUM_NAME,
-            INDEX_DATE_ADDED
-        )
+    @ApplicationContext private val context: Context,
+    private val cursorFactory: CursorFactory
+): GalleryDataSource, PagingSource<Int, MediaItem>() {
 
-        val selection =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) MediaStore.Images.Media.SIZE + " > 0"
-            else null
-        val sortOrder = "$INDEX_DATE_ADDED DESC"
-        val cursor = context.contentResolver.query(uri, projection, selection, null, sortOrder)
+    private var cursor = cursorFactory.create(context)
 
+    override suspend fun getGalleryImage(): List<MediaItem> {
         cursor?.let {
-            while(cursor.moveToNext()) {
-                val id = cursor.getColumnIndex(INDEX_MEDIA_URI)
-                val filePath = cursor.getString(id)
-                imageItemList.add(filePath)
+            return getMediaList(it, it.count)
+        } ?: run {
+            return listOf()
+        }
+    }
+
+    override suspend fun getGalleryFolderName(): List<String> {
+        /*
+        cursor?.use { c ->
+            cursor?.let {
+                val galleryNames = mutableListOf<String>()
+                val nameColumn: Int = c.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
+                while (c.moveToNext()) {
+                    val name = c.getString(nameColumn)
+                    if (!galleryNames.contains(name)) {
+                        galleryNames.add(name)
+                    }
+                }
+                return galleryNames
+            }
+            while (c.moveToNext()) {
+                val name = c.getString(nameColumn)
+                if (!galleryNames.contains(name)) {
+                    galleryNames.add(name)
+                }
             }
         }
 
-        cursor?.close()
 
-        return imageItemList.toList()
+         */
+        return listOf("")
+    }
+
+    override fun create(): PagingSource<Int, MediaItem> {
+        return this
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, MediaItem>): Int? {
+        return 0
+    }
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MediaItem> {
+        return try {
+            // 현재 페이지의 첫 인덱스 값을 가져옵니다.
+            val currentPage = params.key ?: 0
+
+            var data: ArrayList<MediaItem> = ArrayList()
+
+            cursor?.let {
+                data = getMediaList(it, params.loadSize)
+            }
+            val prevPage = if (currentPage == 0) null else currentPage - 1
+            val nextPage = if (data.size < params.loadSize) null else currentPage + 1
+
+            LoadResult.Page(data, prevPage, nextPage)
+
+        } catch (e: Exception) {
+            LoadResult.Error(e)
+        }
+    }
+
+    private fun getMediaList(cursor: Cursor?, loadSize: Int): ArrayList<MediaItem> {
+        val mediaList = ArrayList<MediaItem>()
+        cursor?.let {
+                for (i in 0 until loadSize) {
+                    if (!it.moveToNext()) {
+                        break
+                    }
+                    mediaList.add(cursorFactory.createMediaItem(it))
+                }
+            return mediaList
+        } ?: run {
+            return mediaList
+        }
     }
 }
