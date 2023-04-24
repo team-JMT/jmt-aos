@@ -39,5 +39,6 @@
     <string name="recommend_menu">(필수) 추천해주고 싶은 메뉴</string>
     <string name="guide_recommend_menu">#으로 시작해주세요 (최대 6개)</string>
     <string name="recommend_menu_hint">#돈까스 #짜장면 #치킨</string>
+    <string name="guide_can_drink">술과 함께 즐길 수 있어요</string>
 
 </resources>
