@@ -1,8 +1,8 @@
 package org.gdsc.presentation.adapter
 
-import org.gdsc.domain.model.ImageItem
+import org.gdsc.domain.model.MediaItem
 
 
 interface GalleryImageClickListener {
-    fun onImageClick(imageItem: ImageItem)
+    fun onImageClick(mediaItem: MediaItem)
 }
