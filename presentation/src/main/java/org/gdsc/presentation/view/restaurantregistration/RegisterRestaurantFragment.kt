@@ -42,6 +42,9 @@ class RegisterRestaurantFragment : Fragment() {
             viewModel.drinkPossibilityState.collect { isSelected ->
                 binding.drinkPossibilityCheckbox.isSelected = isSelected
                 binding.drinkPossibilityCheckboxContainer.isSelected = isSelected
+
+                if (isSelected) binding.recommendDrinkEditText.visibility = View.VISIBLE
+                else binding.recommendDrinkEditText.visibility = View.GONE
             }
         }
 
