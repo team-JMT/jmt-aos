@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRegisterRestaurantBinding
+import org.gdsc.presentation.utils.addAfterTextChangedListener
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 
 @AndroidEntryPoint
@@ -31,6 +33,7 @@ class RegisterRestaurantFragment : Fragment() {
 
         observeStates()
         setDrinkPossibilityCheckbox()
+        setIntroductionEditText()
 
     }
 
@@ -41,11 +44,29 @@ class RegisterRestaurantFragment : Fragment() {
                 binding.drinkPossibilityCheckboxContainer.isSelected = isSelected
             }
         }
+
+        repeatWhenUiStarted {
+            viewModel.introductionTextState.collect { text ->
+                binding.introductionTextCounter.text = getString(R.string.text_counter_max_one_hundred, text.length)
+            }
+        }
     }
 
     private fun setDrinkPossibilityCheckbox() {
         binding.drinkPossibilityCheckboxContainer.setOnClickListener {
             viewModel.setDrinkPossibilityState()
+        }
+    }
+
+    private fun setIntroductionEditText() {
+        binding.introductionEditText.addAfterTextChangedListener {
+            if (it.length <= 100) viewModel.setIntroductionTextState(it)
+            else {
+                with(binding.introductionEditText) {
+                    setText(it.substring(0, 100))
+                    setSelection(100)
+                }
+            }
         }
     }
 
