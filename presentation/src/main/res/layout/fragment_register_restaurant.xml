@@ -69,7 +69,7 @@
                 app:layout_constraintTop_toBottomOf="@id/select_images_button" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/Introduction_edit_text_container"
+                android:id="@+id/introduction_edit_text_container"
                 android:layout_width="0dp"
                 android:layout_height="305dp"
                 android:layout_margin="20dp"
@@ -79,27 +79,26 @@
                 app:layout_constraintTop_toBottomOf="@id/first_divider">
 
                 <EditText
-                    android:id="@+id/Introduction_edit_text"
+                    android:id="@+id/introduction_edit_text"
                     style="@style/text_large_medium"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="4dp"
-                    android:inputType="text"
                     android:background="@null"
                     android:gravity="top"
                     android:hint="@string/restaurant_introduction_hint"
+                    android:inputType="textMultiLine"
                     android:textColorHint="@color/grey300"
-                    app:layout_constraintBottom_toTopOf="@id/Introduction_text_counter"
+                    app:layout_constraintBottom_toTopOf="@id/introduction_text_counter"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/Introduction_text_counter"
+                    android:id="@+id/introduction_text_counter"
                     style="@style/text_medium_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0/100"
                     android:textColor="@color/grey300"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
@@ -115,7 +114,7 @@
                 android:background="@color/grey100"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/Introduction_edit_text_container" />
+                app:layout_constraintTop_toBottomOf="@id/introduction_edit_text_container" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/drink_possibility_container"
@@ -151,18 +150,18 @@
 
                     <ImageView
                         android:id="@+id/drink_possibility_checkbox"
-                        android:background="@drawable/jmt_checkbox_background"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginStart="20dp" />
+                        android:layout_marginStart="20dp"
+                        android:background="@drawable/jmt_checkbox_background" />
 
                     <TextView
                         style="@style/text_large_medium"
-                        android:text="@string/guide_can_drink"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:layout_marginEnd="20dp"
+                        android:text="@string/guide_can_drink"
                         app:layout_constraintStart_toEndOf="@id/drink_possibility_checkbox" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
