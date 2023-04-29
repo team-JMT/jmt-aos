@@ -11,6 +11,8 @@ import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRegisterRestaurantBinding
 import org.gdsc.presentation.utils.addAfterTextChangedListener
 import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.utils.animateExtendWidth
+import org.gdsc.presentation.utils.animateShrinkWidth
 
 @AndroidEntryPoint
 class RegisterRestaurantFragment : Fragment() {
@@ -34,6 +36,7 @@ class RegisterRestaurantFragment : Fragment() {
         observeStates()
         setDrinkPossibilityCheckbox()
         setIntroductionEditText()
+        setAddImageButton()
 
     }
 
@@ -50,7 +53,8 @@ class RegisterRestaurantFragment : Fragment() {
 
         repeatWhenUiStarted {
             viewModel.introductionTextState.collect { text ->
-                binding.introductionTextCounter.text = getString(R.string.text_counter_max_one_hundred, text.length)
+                binding.introductionTextCounter.text =
+                    getString(R.string.text_counter_max_one_hundred, text.length)
             }
         }
     }
@@ -68,6 +72,26 @@ class RegisterRestaurantFragment : Fragment() {
                 with(binding.introductionEditText) {
                     setText(it.substring(0, 100))
                     setSelection(100)
+                }
+            }
+        }
+    }
+
+    private fun setAddImageButton() {
+
+        binding.selectImageCountText.text = getString(R.string.text_counter_max_ten, 0)
+
+        binding.selectImagesButton.setOnClickListener {
+            // TODO: 이미지 선택 후 반영 로직
+            with(viewModel) {
+                if (isImageButtonAnimating.value.not()) {
+                    if (isImageButtonExtended.value) {
+                        setIsImageButtonExtended(false)
+                        it.animateShrinkWidth()
+                    } else {
+                        setIsImageButtonExtended(true)
+                        it.animateExtendWidth()
+                    }
                 }
             }
         }
