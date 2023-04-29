@@ -41,6 +41,7 @@
     <string name="recommend_menu_hint">#돈까스 #짜장면 #치킨</string>
     <string name="guide_can_drink">술과 함께 즐길 수 있어요</string>
     <string name="text_counter_max_one_hundred">%d/100</string>
+    <string name="text_counter_max_ten">%d/10</string>
     <string name="guide_recommend_drink">어떤 술과 어울리는지 알려주세요!</string>
 
 </resources>
