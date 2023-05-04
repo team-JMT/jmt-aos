@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import org.gdsc.domain.Empty
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRegisterRestaurantBinding
 import org.gdsc.presentation.utils.addAfterTextChangedListener
@@ -60,6 +62,12 @@ class RegisterRestaurantFragment : Fragment() {
                     getString(R.string.text_counter_max_one_hundred, text.length)
             }
         }
+
+        repeatWhenUiStarted {
+            viewModel.isRecommendMenuFullState.collect {
+                binding.recommendMenuEditText.visibility = if (it.not()) View.VISIBLE else View.GONE
+            }
+        }
     }
 
     private fun setDrinkPossibilityCheckbox() {
@@ -84,8 +92,16 @@ class RegisterRestaurantFragment : Fragment() {
         binding.recommendMenuEditText.editText.apply {
 
             setOnKeyListener { _, keyCode, _ ->
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    // TODO: chip 생성
+                if (keyCode == KeyEvent.KEYCODE_ENTER &&
+                    binding.recommendMenuEditText.text.isNotEmpty()
+                ) {
+                    viewModel.addRecommendMenu(binding.recommendMenuEditText.text)
+                    binding.recommendMenuChipGroup.addView(
+                        Chip(requireContext()).apply {
+                            text = binding.recommendMenuEditText.text
+                        }
+                    )
+                    binding.recommendMenuEditText.editText.setText(String.Empty)
                 }
                 false
             }
