@@ -67,11 +67,11 @@ class RegisterRestaurantFragment : Fragment() {
 
     private fun setIntroductionEditText() {
         binding.introductionEditText.addAfterTextChangedListener {
-            if (it.length <= 100) viewModel.setIntroductionTextState(it)
+            if (it.length <= INTRODUCE_TEXT_MAX_LENGTH) viewModel.setIntroductionTextState(it)
             else {
                 with(binding.introductionEditText) {
-                    setText(it.substring(0, 100))
-                    setSelection(100)
+                    setText(it.substring(0, INTRODUCE_TEXT_MAX_LENGTH))
+                    setSelection(INTRODUCE_TEXT_MAX_LENGTH)
                 }
             }
         }
@@ -100,6 +100,10 @@ class RegisterRestaurantFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    companion object {
+        private const val INTRODUCE_TEXT_MAX_LENGTH = 100
     }
 
 }
