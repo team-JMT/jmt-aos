@@ -37,6 +37,7 @@ class RegisterRestaurantFragment : Fragment() {
         setDrinkPossibilityCheckbox()
         setIntroductionEditText()
         setAddImageButton()
+        setRecommendDrinkEditText()
 
     }
 
@@ -74,6 +75,12 @@ class RegisterRestaurantFragment : Fragment() {
                     setSelection(INTRODUCE_TEXT_MAX_LENGTH)
                 }
             }
+        }
+    }
+
+    private fun setRecommendDrinkEditText() {
+        binding.recommendDrinkEditText.editText.addAfterTextChangedListener {
+            viewModel.setRecommendDrinkTextState(it)
         }
     }
 

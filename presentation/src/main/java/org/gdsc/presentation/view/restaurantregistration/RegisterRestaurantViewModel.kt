@@ -15,6 +15,9 @@ class RegisterRestaurantViewModel @Inject constructor() : ViewModel() {
     private var _drinkPossibilityState = MutableStateFlow(false)
     val drinkPossibilityState = _drinkPossibilityState.asStateFlow()
 
+    private var _recommendDrinkTextState = MutableStateFlow("")
+    val recommendDrinkTextState = _recommendDrinkTextState.asStateFlow()
+
     private var _introductionTextState = MutableStateFlow("")
     val introductionTextState = _introductionTextState.asStateFlow()
 
@@ -26,6 +29,10 @@ class RegisterRestaurantViewModel @Inject constructor() : ViewModel() {
 
     fun setDrinkPossibilityState() {
         _drinkPossibilityState.value = _drinkPossibilityState.value.not()
+    }
+
+    fun setRecommendDrinkTextState(text: String) {
+        _recommendDrinkTextState.value = text
     }
 
     fun setIntroductionTextState(text: String) {
