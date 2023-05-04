@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.BaseTransientBottomBar.Duration
 import com.google.android.material.snackbar.Snackbar
+import org.gdsc.domain.Empty
 import org.gdsc.presentation.databinding.JmtSnackbarBinding
 
 class JmtSnackbar private constructor(
@@ -14,7 +15,7 @@ class JmtSnackbar private constructor(
 ) {
 
     private val snackbar by lazy {
-        Snackbar.make(view, "", duration)
+        Snackbar.make(view, String.Empty, duration)
     }
     private val snackbarLayout = snackbar.view as (Snackbar.SnackbarLayout)
 

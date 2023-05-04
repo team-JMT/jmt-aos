@@ -7,6 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.gdsc.domain.Empty
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,10 +16,10 @@ class RegisterRestaurantViewModel @Inject constructor() : ViewModel() {
     private var _drinkPossibilityState = MutableStateFlow(false)
     val drinkPossibilityState = _drinkPossibilityState.asStateFlow()
 
-    private var _recommendDrinkTextState = MutableStateFlow("")
+    private var _recommendDrinkTextState = MutableStateFlow(String.Empty)
     val recommendDrinkTextState = _recommendDrinkTextState.asStateFlow()
 
-    private var _introductionTextState = MutableStateFlow("")
+    private var _introductionTextState = MutableStateFlow(String.Empty)
     val introductionTextState = _introductionTextState.asStateFlow()
 
     private var _isImageButtonExtended = MutableStateFlow(true)
