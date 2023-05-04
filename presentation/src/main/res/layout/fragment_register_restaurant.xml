@@ -252,6 +252,7 @@
                     app:layout_constraintTop_toTopOf="@id/recommend_menu_text" />
 
                 <org.gdsc.presentation.view.custom.JmtEditText
+                    android:id="@+id/recommend_menu_edit_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"

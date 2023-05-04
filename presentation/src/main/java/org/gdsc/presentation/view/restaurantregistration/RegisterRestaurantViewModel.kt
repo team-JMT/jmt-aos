@@ -19,6 +19,9 @@ class RegisterRestaurantViewModel @Inject constructor() : ViewModel() {
     private var _recommendDrinkTextState = MutableStateFlow(String.Empty)
     val recommendDrinkTextState = _recommendDrinkTextState.asStateFlow()
 
+    private var _recommendMenuTextState = MutableStateFlow(String.Empty)
+    val recommendMenuTextState = _recommendMenuTextState.asStateFlow()
+
     private var _introductionTextState = MutableStateFlow(String.Empty)
     val introductionTextState = _introductionTextState.asStateFlow()
 
@@ -38,6 +41,10 @@ class RegisterRestaurantViewModel @Inject constructor() : ViewModel() {
 
     fun setIntroductionTextState(text: String) {
         _introductionTextState.value = text
+    }
+
+    fun setRecommendMenuTextState(text: String) {
+        _recommendMenuTextState.value = text
     }
 
     fun setIsImageButtonExtended(isExtended: Boolean) {
