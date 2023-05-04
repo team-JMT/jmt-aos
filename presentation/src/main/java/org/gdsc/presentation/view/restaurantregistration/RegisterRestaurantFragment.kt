@@ -1,6 +1,7 @@
 package org.gdsc.presentation.view.restaurantregistration
 
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -38,6 +39,7 @@ class RegisterRestaurantFragment : Fragment() {
         setIntroductionEditText()
         setAddImageButton()
         setRecommendDrinkEditText()
+        setRecommendMenuEditText()
 
     }
 
@@ -76,6 +78,24 @@ class RegisterRestaurantFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun setRecommendMenuEditText() {
+        binding.recommendMenuEditText.editText.apply {
+
+            setOnKeyListener { _, keyCode, _ ->
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    // TODO: chip 생성
+                }
+                false
+            }
+
+            addAfterTextChangedListener {
+                viewModel.setRecommendMenuTextState(it)
+            }
+
+        }
+
     }
 
     private fun setRecommendDrinkEditText() {
