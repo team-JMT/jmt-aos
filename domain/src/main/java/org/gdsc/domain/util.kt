@@ -9,3 +9,6 @@ fun String.toMeterFormat(): String {
         "$this m"
     }
 }
+
+val String.Companion.Empty
+    inline get() = ""
