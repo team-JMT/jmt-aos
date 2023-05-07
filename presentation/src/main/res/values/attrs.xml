@@ -8,4 +8,13 @@
         <attr name="verifyTextEnabled" format="boolean"/>
         <attr name="jmtEditTextHint" format="string|reference"/>
     </declare-styleable>
+
+    <declare-styleable name="FlexibleCornerImageView">
+        <attr name="top_left_corner_radius" format="dimension"/>
+        <attr name="top_right_corner_radius" format="dimension"/>
+        <attr name="bottom_left_corner_radius" format="dimension"/>
+        <attr name="bottom_right_corner_radius" format="dimension"/>
+        <attr name="all_corner_radius" format="dimension"/>
+    </declare-styleable>
+
 </resources>
