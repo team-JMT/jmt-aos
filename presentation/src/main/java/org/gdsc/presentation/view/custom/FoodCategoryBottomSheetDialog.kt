@@ -19,7 +19,7 @@ import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FoodCategoryBottomSheetDialogBinding
 import org.gdsc.presentation.model.FoodCategoryItem
 import org.gdsc.presentation.utils.toPx
-import org.gdsc.presentation.view.restaurantregistration.FoodCategoryRecyclerAdapter
+import org.gdsc.presentation.view.restaurantregistration.adapter.FoodCategoryRecyclerAdapter
 
 class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<FoodCategoryItem>) -> Unit) :
     BottomSheetDialogFragment() {

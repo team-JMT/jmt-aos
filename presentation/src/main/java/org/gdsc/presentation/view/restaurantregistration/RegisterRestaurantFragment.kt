@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.Empty
@@ -16,6 +17,8 @@ import org.gdsc.presentation.utils.addAfterTextChangedListener
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.utils.animateExtendWidth
 import org.gdsc.presentation.utils.animateShrinkWidth
+import org.gdsc.presentation.view.MainActivity
+import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterRestaurantViewModel
 
 @AndroidEntryPoint
 class RegisterRestaurantFragment : Fragment() {
@@ -24,6 +27,8 @@ class RegisterRestaurantFragment : Fragment() {
     private val binding get() = requireNotNull(_binding)
 
     private val viewModel: RegisterRestaurantViewModel by viewModels()
+
+    private val navArgs by navArgs<RegisterRestaurantFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +47,7 @@ class RegisterRestaurantFragment : Fragment() {
         setAddImageButton()
         setRecommendDrinkEditText()
         setRecommendMenuEditText()
+        setToolbarTitle()
 
     }
 
@@ -138,6 +144,10 @@ class RegisterRestaurantFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun setToolbarTitle() {
+        (requireActivity() as MainActivity).changeToolbarTitle(navArgs.restaurantLocationInfo.placeName)
     }
 
     override fun onDestroyView() {

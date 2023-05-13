@@ -1,4 +1,4 @@
-package org.gdsc.presentation.view.restaurantregistration
+package org.gdsc.presentation.view.restaurantregistration.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
