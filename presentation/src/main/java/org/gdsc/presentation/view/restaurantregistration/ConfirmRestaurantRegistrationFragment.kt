@@ -14,11 +14,13 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.overlay.Marker
+import org.gdsc.domain.Empty
 import org.gdsc.domain.toMeterFormat
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentConfirmRestaurantRegistrationBinding
 import org.gdsc.presentation.utils.deviceMetrics
 import org.gdsc.presentation.utils.getAbsolutePositionOnScreen
+import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.custom.JmtSnackbar
 
 class ConfirmRestaurantRegistrationFragment : Fragment() {
@@ -43,6 +45,8 @@ class ConfirmRestaurantRegistrationFragment : Fragment() {
         setMap(savedInstanceState)
         setRestaurantLocationInfoCard()
         initView(view)
+
+        setToolbarTitle()
 
         binding.selectButton.setOnClickListener {
 
@@ -129,6 +133,10 @@ class ConfirmRestaurantRegistrationFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun setToolbarTitle() {
+        (requireActivity() as MainActivity).changeToolbarTitle(String.Empty)
     }
 
     override fun onStart() {
