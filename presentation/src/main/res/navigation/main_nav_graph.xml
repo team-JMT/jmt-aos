@@ -22,10 +22,10 @@
         tools:layout="@layout/fragment_search_restaurant_location_info" >
         <action
             android:id="@+id/action_search_restaurant_location_info_fragment_to_confirmRestaurantRegistrationFragment"
-            app:destination="@id/confirmRestaurantRegistrationFragment" />
+            app:destination="@id/confirm_restaurant_registration_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/confirmRestaurantRegistrationFragment"
+        android:id="@+id/confirm_restaurant_registration_fragment"
         android:name="org.gdsc.presentation.view.restaurantregistration.ConfirmRestaurantRegistrationFragment"
         android:label="fragment_confirm_restaurant_registration"
         tools:layout="@layout/fragment_confirm_restaurant_registration">
@@ -37,10 +37,10 @@
             app:argType="org.gdsc.domain.model.RestaurantLocationInfo" />
         <action
             android:id="@+id/action_confirmRestaurantRegistrationFragment_to_registerRestaurantFragment"
-            app:destination="@id/registerRestaurantFragment" />
+            app:destination="@id/registerRestaurant_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/registerRestaurantFragment"
+        android:id="@+id/registerRestaurant_fragment"
         android:name="org.gdsc.presentation.view.restaurantregistration.RegisterRestaurantFragment"
         android:label="fragment_register_restaurant"
         tools:layout="@layout/fragment_register_restaurant" >
