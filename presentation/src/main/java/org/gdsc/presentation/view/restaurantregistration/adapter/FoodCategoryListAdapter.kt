@@ -1,4 +1,4 @@
-package org.gdsc.presentation.view.restaurantregistration
+package org.gdsc.presentation.view.restaurantregistration.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -17,7 +17,10 @@ import kotlinx.coroutines.launch
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentSearchRestaurantLocationInfoBinding
 import org.gdsc.presentation.utils.addAfterTextChangedListener
+import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.custom.JmtSnackbar
+import org.gdsc.presentation.view.restaurantregistration.adapter.RestaurantLocationInfoAdapter
+import org.gdsc.presentation.view.restaurantregistration.viewmodel.SearchRestaurantLocationInfoViewModel
 
 @AndroidEntryPoint
 class SearchRestaurantLocationInfoFragment : Fragment() {
@@ -54,6 +57,8 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setAdapter()
+
+        setToolbarTitle()
 
         setSearchEditTextDebounceWatcher {
             if (binding.restaurantNameEditText.text.isNotEmpty()) {
@@ -103,5 +108,9 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
         _binding = null
         debounceJob?.cancel()
         super.onDestroyView()
+    }
+
+    private fun setToolbarTitle() {
+        (requireActivity() as MainActivity).changeToolbarTitle("맛집등록")
     }
 }

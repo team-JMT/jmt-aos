@@ -5,11 +5,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -91,6 +93,8 @@ class MainActivity : AppCompatActivity() {
 
         initBottomNavigationView()
 
+        setToolbar()
+
     }
 
     private fun initBottomNavigationView() {
@@ -114,12 +118,34 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
+
+            // bottomNavigationView Control
             if (destination.id == R.id.home_fragment || destination.id == R.id.my_page_fragment)
                 slideUpBottomNavigationView()
             else
                 slideDownBottomNavigationView()
+
+            // toolbar visibility Control
+            when(destination.id) {
+                R.id.home_fragment -> {
+                    binding.toolBar.visibility = View.GONE
+                }
+                else ->{
+                    binding.toolBar.visibility = View.VISIBLE
+                }
+            }
+
         }
 
+    }
+
+    private fun setToolbar() {
+        setSupportActionBar(binding.toolBar)
+        requireNotNull(supportActionBar).apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.back_arrow)
+            setDisplayShowTitleEnabled(false)
+        }
     }
 
     fun slideDownBottomNavigationView() {
@@ -129,4 +155,16 @@ class MainActivity : AppCompatActivity() {
     fun slideUpBottomNavigationView() {
         binding.bottomNavigationView.slideUp()
     }
+
+    fun changeToolbarTitle(title: String) {
+        binding.toolBarTitle.text = title
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            navController.popBackStack()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 }
