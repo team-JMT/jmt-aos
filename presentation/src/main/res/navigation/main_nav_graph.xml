@@ -45,9 +45,20 @@
         android:label="fragment_register_restaurant"
         tools:layout="@layout/fragment_register_restaurant" >
 
+        <action
+            android:id="@+id/action_registerRestaurant_fragment_to_multiImagePicker_fragment"
+            app:destination="@+id/multi"/>
         <argument
             android:name="restaurantLocationInfo"
             app:argType="org.gdsc.domain.model.RestaurantLocationInfo" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/multiImagePicker_fragment"
+        android:name="org.gdsc.presentation.view.restaurantregistration.MultiImagePickerFragment"
+        android:label="fragment_multi_image_picker"
+        tools:layout="fragment_multi_image_picker" >
+        <action
+            android:id="@+id/action_registerRestaurant_fragment_to_multiImagePicker_fragment" />
     </fragment>
 </navigation>

@@ -1,4 +1,4 @@
-package org.gdsc.presentation.login
+package org.gdsc.presentation.view.restaurantregistration
 
 import android.content.Context
 import android.os.Bundle
@@ -13,28 +13,21 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.gdsc.domain.model.MediaItem
 import org.gdsc.presentation.R
 import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.adapter.ImageAdapter
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
+import org.gdsc.presentation.login.ImagePickerFragmentDirections
+import org.gdsc.presentation.login.LoginActivity
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
-
-@AndroidEntryPoint
-class ImagePickerFragment : Fragment(), GalleryImageClickListener {
+class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
     private lateinit var callback: OnBackPressedCallback
 
-    private lateinit var popupMenu:PopupMenu
+    private lateinit var popupMenu: PopupMenu
 
     private val directions = ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment()
 
@@ -111,10 +104,11 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     // SignUpCompleteFragment로 선택 이미지와 갤러리명 넘기기
     override fun onImageClick(vararg mediaItem: MediaItem) {
         mediaItem.forEach {
-            val imageUri = it.uri
-            val navigation = ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment(imageUri)
-            findNavController().navigate(navigation)
+
         }
+        val imageUri = mediaItem.uri
+        val navigation = ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment(imageUri)
+        findNavController().navigate(navigation)
     }
 
     private fun setupAdapter() {

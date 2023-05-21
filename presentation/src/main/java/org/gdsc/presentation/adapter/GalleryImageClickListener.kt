@@ -4,5 +4,5 @@ import org.gdsc.domain.model.MediaItem
 
 
 interface GalleryImageClickListener {
-    fun onImageClick(mediaItem: MediaItem)
+    fun onImageClick(vararg mediaItem: MediaItem)
 }

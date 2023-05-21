@@ -45,11 +45,10 @@
         <action
             android:id="@+id/action_permissionFragment_to_imagepickerFragment"
             app:destination="@id/ImagePickerFragment"
-            app:popUpTo="@id/signUpCompleteFragment"/>
+            app:popUpTo="@id/PermissionFragment"/>
         <action
             android:id="@+id/action_permissionFragment_to_signUpCompleteFragment"
-            app:destination="@id/signUpCompleteFragment"
-            app:popUpTo="@id/ImagePickerFragment"/>
+            app:destination="@id/signUpCompleteFragment"/>
     </fragment>
     <fragment
         android:id="@+id/ImagePickerFragment"
@@ -58,7 +57,7 @@
         tools:layout="@layout/fragment_image_picker" >
         <action
             android:id="@+id/action_imagepickerFragment_to_signUpCompleteFragment"
-            app:destination="@id/signUpCompleteFragment"
-            app:popUpTo="@id/PermissionFragment"/>
+            app:destination="@id/ImagePickerFragment"
+            app:popUpTo="@id/ImagePickerFragment"/>
     </fragment>
 </navigation>
