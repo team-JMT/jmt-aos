@@ -6,10 +6,10 @@ import org.gdsc.domain.model.MediaItem
 import org.gdsc.domain.repository.GalleryRepository
 import javax.inject.Inject
 
-class GetGalleryUseCase @Inject constructor(
+class GetGalleryFolderNamesUseCase @Inject constructor(
     private val galleryRepository: GalleryRepository
 ) {
-    suspend operator fun invoke(album: String): Flow<PagingData<MediaItem>> {
-        return galleryRepository.getGalleryImage(album)
+    suspend operator fun invoke(): List<String> {
+        return galleryRepository.getGalleryFolderNames()
     }
 }

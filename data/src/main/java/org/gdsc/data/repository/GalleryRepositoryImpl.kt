@@ -12,14 +12,21 @@ import javax.inject.Inject
 class GalleryRepositoryImpl @Inject constructor(
     private val galleryDataSource: GalleryDataSource
 ): GalleryRepository {
-    override suspend fun getGalleryImage(): Flow<PagingData<MediaItem>> {
+    override suspend fun getGalleryImage(album:String): Flow<PagingData<MediaItem>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 10,
+                pageSize = 18,
                 enablePlaceholders = false
             )) {
-            galleryDataSource.create()
+            galleryDataSource.getGalleryImage(album)
         }.flow
+    }
 
+    override suspend fun getGalleryFolderNames(): List<String> {
+        return galleryDataSource.getGalleryFolderName()
+    }
+
+    override fun resetGalleryImage() {
+        galleryDataSource.reset()
     }
 }

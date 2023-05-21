@@ -2,12 +2,13 @@ package org.gdsc.data.datasource
 
 
 import androidx.paging.PagingSource
+import kotlinx.coroutines.flow.Flow
 import org.gdsc.domain.model.MediaItem
 
 interface GalleryDataSource {
-    suspend fun getGalleryImage(): List<MediaItem>
+    fun getGalleryImage(album: String): PagingSource<Int, MediaItem>
 
     suspend fun getGalleryFolderName(): List<String>
 
-    fun create(): PagingSource<Int, MediaItem>
+    fun reset()
 }
