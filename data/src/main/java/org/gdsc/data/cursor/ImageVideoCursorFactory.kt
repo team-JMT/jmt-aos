@@ -10,7 +10,7 @@ import org.gdsc.domain.model.Image
 import org.gdsc.domain.model.MediaItem
 
 class ImageVideoCursorFactory: CursorFactory {
-    override fun create(context: Context): Cursor? {
+    override fun create(context: Context, album: String): Cursor? {
         val projection = getProjection()
         val mediaUri = getContentUri()
         val selection = "" +
@@ -44,6 +44,8 @@ class ImageVideoCursorFactory: CursorFactory {
             MediaStore.Files.FileColumns.SIZE,
             MediaStore.Files.FileColumns.MIME_TYPE,
             MediaStore.Files.FileColumns.DURATION,
+            MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.TITLE,
             MediaStore.Files.FileColumns.ORIENTATION
         )
     }
@@ -56,6 +58,8 @@ class ImageVideoCursorFactory: CursorFactory {
         val mimeType = cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE)
         val orientation = cursor.getColumnIndex(MediaStore.Files.FileColumns.ORIENTATION)
         val url = ContentUris.withAppendedId(getContentUri(),cursor.getLong(id))
+        val albumName = cursor.getColumnIndex(MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME)
+        val albumTitle = cursor.getColumnIndex(MediaStore.Images.Media.TITLE)
         val duration = cursor.getColumnIndex(MediaStore.Files.FileColumns.DURATION)
 
         val image = Image(
@@ -65,12 +69,14 @@ class ImageVideoCursorFactory: CursorFactory {
             fileSize = cursor.getLong(fileSize),
             mimeType = cursor.getString(mimeType),
             orientation = cursor.getInt(orientation),
+            albumName = cursor.getString(albumName) ?: cursor.getString(albumTitle),
             uri = url.toString()
         )
 
         return MediaItem(
             id = image.id,
-            uri = image.uri
+            uri = image.uri,
+            albumName = image.albumName
         )
     }
 }

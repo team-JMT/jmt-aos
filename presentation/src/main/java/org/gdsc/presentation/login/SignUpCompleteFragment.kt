@@ -2,6 +2,7 @@ package org.gdsc.presentation.login
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -37,7 +38,6 @@ class SignUpCompleteFragment : Fragment() {
         setProfileImageButtonAnimation()
 
         args.imageUri?.let {
-
             Glide.with(binding.root)
                 .load(it.toUri())
                 .centerCrop()

@@ -6,7 +6,7 @@ import android.net.Uri
 import org.gdsc.domain.model.MediaItem
 
 interface CursorFactory {
-    fun create(context: Context):Cursor?
+    fun create(context: Context, album: String):Cursor?
 
     fun getContentUri() : Uri
 

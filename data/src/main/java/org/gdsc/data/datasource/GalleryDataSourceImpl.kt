@@ -2,95 +2,90 @@ package org.gdsc.data.datasource
 
 import android.content.Context
 import android.database.Cursor
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.gdsc.data.cursor.CursorFactory
+import org.gdsc.data.cursor.ImageCursorFactory
 import org.gdsc.domain.model.MediaItem
 import javax.inject.Inject
 
 class GalleryDataSourceImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val cursorFactory: CursorFactory
-): GalleryDataSource, PagingSource<Int, MediaItem>() {
+    private val cursorFactory: ImageCursorFactory
+): GalleryDataSource {
 
-    private var cursor = cursorFactory.create(context)
+    private var cursor: Cursor? = null
 
-    override suspend fun getGalleryImage(): List<MediaItem> {
-        cursor?.let {
-            return getMediaList(it, it.count)
-        } ?: run {
-            return listOf()
-        }
+    override fun reset() {
+        cursor?.close()
     }
 
     override suspend fun getGalleryFolderName(): List<String> {
-        /*
+
+        cursor = cursorFactory.create(context, "")
+
+        val galleryNames = ArrayList<String>()
+
         cursor?.use { c ->
-            cursor?.let {
-                val galleryNames = mutableListOf<String>()
-                val nameColumn: Int = c.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
-                while (c.moveToNext()) {
-                    val name = c.getString(nameColumn)
-                    if (!galleryNames.contains(name)) {
-                        galleryNames.add(name)
-                    }
-                }
-                return galleryNames
-            }
             while (c.moveToNext()) {
-                val name = c.getString(nameColumn)
-                if (!galleryNames.contains(name)) {
-                    galleryNames.add(name)
+                val item = cursorFactory.createMediaItem(c)
+                if(!galleryNames.contains(item.albumName)) {
+                    galleryNames.add(item.albumName)
                 }
             }
         }
 
-
-         */
-        return listOf("")
+        cursor?.close()
+        return galleryNames
     }
 
-    override fun create(): PagingSource<Int, MediaItem> {
-        return this
-    }
-
-    override fun getRefreshKey(state: PagingState<Int, MediaItem>): Int? {
-        return 0
-    }
-
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MediaItem> {
-        return try {
-            // 현재 페이지의 첫 인덱스 값을 가져옵니다.
-            val currentPage = params.key ?: 0
-
-            var data: ArrayList<MediaItem> = ArrayList()
-
-            cursor?.let {
-                data = getMediaList(it, params.loadSize)
-            }
-            val prevPage = if (currentPage == 0) null else currentPage - 1
-            val nextPage = if (data.size < params.loadSize) null else currentPage + 1
-
-            LoadResult.Page(data, prevPage, nextPage)
-
-        } catch (e: Exception) {
-            LoadResult.Error(e)
-        }
-    }
 
     private fun getMediaList(cursor: Cursor?, loadSize: Int): ArrayList<MediaItem> {
         val mediaList = ArrayList<MediaItem>()
-        cursor?.let {
-                for (i in 0 until loadSize) {
-                    if (!it.moveToNext()) {
-                        break
-                    }
-                    mediaList.add(cursorFactory.createMediaItem(it))
+        cursor?.let { c ->
+            for (i in 0 until loadSize) {
+                if (!c.moveToNext()) {
+                    break
                 }
+                mediaList.add(cursorFactory.createMediaItem(c))
+            }
             return mediaList
         } ?: run {
             return mediaList
+        }
+    }
+
+    override fun getGalleryImage(album: String): PagingSource<Int, MediaItem> {
+        cursor = cursorFactory.create(context, album)
+        return object : PagingSource<Int, MediaItem>() {
+
+            override fun getRefreshKey(state: PagingState<Int, MediaItem>): Int? {
+                return null
+            }
+
+            override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MediaItem> {
+                return try {
+
+                    val currentPage = params.key ?: 0
+                    val data = ArrayList<MediaItem>()
+
+                    cursor?.let { c ->
+                        data.addAll(getMediaList(c, params.loadSize))
+                    }
+
+                    val prevPage = if (currentPage == 0) null else currentPage - 1
+                    val nextPage = if (data.size < params.loadSize) null else currentPage + 1
+                    LoadResult.Page(data, prevPage, nextPage)
+                } catch (e: Exception) {
+                    cursor?.close()
+                    LoadResult.Error(e)
+                }
+            }
+
         }
     }
 }

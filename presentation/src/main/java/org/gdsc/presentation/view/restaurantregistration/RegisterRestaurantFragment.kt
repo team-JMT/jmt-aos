@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -128,10 +130,15 @@ class RegisterRestaurantFragment : Fragment() {
 
     private fun setAddImageButton() {
 
-        binding.selectImageCountText.text = getString(R.string.text_counter_max_ten, 0)
+        binding.selectImageCountText.text = getString(R.string.text_counter_max_ten, navArgs.imageUri?.size ?: 0)
 
         binding.selectImagesButton.setOnClickListener {
-            // TODO: 이미지 선택 후 반영 로직
+            val directions = RegisterRestaurantFragmentDirections
+                .actionRegisterRestaurantFragmentToMultiImagePickerFragment(
+                    navArgs.restaurantLocationInfo
+                )
+            findNavController().navigate(directions)
+
             with(viewModel) {
                 if (isImageButtonAnimating.value.not()) {
                     if (isImageButtonExtended.value) {
