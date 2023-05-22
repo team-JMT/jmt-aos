@@ -21,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.model.MediaItem
 import org.gdsc.presentation.R
 import org.gdsc.presentation.adapter.GalleryImageClickListener
-import org.gdsc.presentation.adapter.MultiImagePickerAdapter
+import org.gdsc.presentation.view.restaurantregistration.adapter.MultiImagePickerAdapter
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.MainActivity
@@ -95,6 +95,8 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
     private fun setupView() {
         binding.multiImageInfoLayout.isVisible = args.multiple
 
+        binding.multiImageSaveBtn.text = getString(R.string.select_text_counter_max_ten, imageList.size)
+
         binding.multiImageSaveBtn.setOnClickListener {
             val navigation = MultiImagePickerFragmentDirections.actionMultiImagePickerFragmentToRegisterRestaurantFragment(
                 restaurantLocationInfo = args.restaurantLocationInfo, imageUri = imageList.map { it.uri }.toTypedArray())
@@ -130,6 +132,7 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         } else {
             imageList.add(mediaItem)
         }
+        binding.multiImageSaveBtn.text = getString(R.string.select_text_counter_max_ten, imageList.size)
     }
 
     private fun setupAdapter() {
