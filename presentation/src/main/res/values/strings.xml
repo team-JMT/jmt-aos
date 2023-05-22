@@ -44,4 +44,9 @@
     <string name="text_counter_max_ten">%d/10</string>
     <string name="guide_recommend_drink">어떤 술과 어울리는지 알려주세요!</string>
 
+    <!-- myPage-->
+    <string name="liked_restaurant">좋아한 맛집</string>
+    <string name="my_review">나의 후기</string>
+    <string name="registered_restaurant">등록한 맛집</string>
+
 </resources>
