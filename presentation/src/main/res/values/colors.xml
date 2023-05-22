@@ -31,4 +31,6 @@
     <color name="grayscale600">#75798C</color>
 
     <color name="unable_nickname_color">#FF785A</color>
+
+    <color name="alpha_60_white">#99FFFFFF</color>
 </resources>

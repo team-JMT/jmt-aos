@@ -1,6 +1,7 @@
 package org.gdsc.presentation.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -9,10 +10,12 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -21,6 +24,7 @@ import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.ActivityMainBinding
 import org.gdsc.presentation.utils.slideDown
 import org.gdsc.presentation.utils.slideUp
+import org.gdsc.presentation.utils.toPx
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -88,13 +92,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         checkLocationRequest()
-
         setContentView(binding.root)
-
         initBottomNavigationView()
-
         setToolbar()
-
+        setToFullPage()
     }
 
     private fun initBottomNavigationView() {
@@ -127,10 +128,16 @@ class MainActivity : AppCompatActivity() {
 
             // toolbar visibility Control
             when(destination.id) {
-                R.id.home_fragment -> {
+                R.id.home_fragment, R.id.confirm_restaurant_registration_fragment -> {
                     binding.toolBar.visibility = View.GONE
                 }
+                // TODO: Notification Icon
+                R.id.my_page_fragment -> {
+                    requireNotNull(supportActionBar).setDisplayHomeAsUpEnabled(false)
+                    binding.toolBar.visibility = View.VISIBLE
+                }
                 else ->{
+                    requireNotNull(supportActionBar).setDisplayHomeAsUpEnabled(true)
                     binding.toolBar.visibility = View.VISIBLE
                 }
             }
@@ -140,12 +147,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setToolbar() {
-        setSupportActionBar(binding.toolBar)
+        val toolBarView = binding.toolBar
+        setSupportActionBar(toolBarView)
         requireNotNull(supportActionBar).apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.back_arrow)
             setDisplayShowTitleEnabled(false)
         }
+
+        // for status bar size margin
+        (toolBarView.layoutParams as ViewGroup.MarginLayoutParams).apply {
+            setMargins(0, getStatusBarHeight(), 0, 0)
+        }
+
+    }
+
+    private fun setToFullPage() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 
     fun slideDownBottomNavigationView() {
@@ -165,6 +183,16 @@ class MainActivity : AppCompatActivity() {
             navController.popBackStack()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    @SuppressLint("InternalInsetResource", "DiscouragedApi")
+    private fun getStatusBarHeight(): Int {
+        var result = 24.toPx
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = resources.getDimensionPixelSize(resourceId)
+        }
+        return result
     }
 
 }
