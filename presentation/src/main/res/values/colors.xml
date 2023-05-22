@@ -8,15 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="main100">#E9FBEB</color>
-    <color name="main200">#CFF7D3</color>
-    <color name="main300">#9BEEA3</color>
-    <color name="main400">#66E573</color>
-    <color name="main500">#32DC43</color>
-    <color name="main600">#20BC2F</color>
-    <color name="main700">#189024</color>
-    <color name="main800">#116419</color>
-    <color name="main900">#0A390E</color>
+    <color name="main100">#FFD9CC</color>
+    <color name="main200">#FFC6B2</color>
+    <color name="main300">#FF9F80</color>
+    <color name="main400">#FF794D</color>
+    <color name="main500">#FF531A</color>
+    <color name="main600">#E53900</color>
+    <color name="main700">#B22D00</color>
+    <color name="main800">#802000</color>
+    <color name="main900">#4D1300</color>
 
     <color name="grey100">#F1F3F4</color>
     <color name="grey200">#D4DADE</color>
