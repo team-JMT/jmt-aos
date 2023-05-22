@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.JMT" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/main600</item>
+        <item name="colorPrimary">@color/main500</item>
         <item name="colorPrimaryVariant">@color/main700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
