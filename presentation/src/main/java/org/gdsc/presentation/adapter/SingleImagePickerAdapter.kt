@@ -49,7 +49,7 @@ class SingleImagePickerAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(mediaItem: MediaItem) {
 
-            binding.checkbox.isVisible = false
+            binding.checkBox.isVisible = false
 
             val requestBuilder: RequestBuilder<Drawable> =
                 Glide.with(binding.root.context)
