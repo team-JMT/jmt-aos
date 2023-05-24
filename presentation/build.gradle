@@ -116,4 +116,6 @@ dependencies {
 
     // Fused Location Provider
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
 }
