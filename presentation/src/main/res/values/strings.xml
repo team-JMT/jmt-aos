@@ -50,5 +50,6 @@
     <string name="registered_restaurant">등록한 맛집</string>
     <string name="follower">팔로워</string>
     <string name="following">팔로잉</string>
+    <string name="spinner_button">스피너 버튼</string>
 
 </resources>
