@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.Empty
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentMyPageBinding
@@ -16,6 +17,7 @@ import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.LI
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.MY_REVIEW
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.REGISTERED_RESTAURANT
 
+@AndroidEntryPoint
 class MyPageFragment : Fragment() {
 
     private var _binding: FragmentMyPageBinding? = null
