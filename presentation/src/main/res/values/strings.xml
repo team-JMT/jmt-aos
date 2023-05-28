@@ -48,5 +48,7 @@
     <string name="liked_restaurant">좋아한 맛집</string>
     <string name="my_review">나의 후기</string>
     <string name="registered_restaurant">등록한 맛집</string>
+    <string name="follower">팔로워</string>
+    <string name="following">팔로잉</string>
 
 </resources>
