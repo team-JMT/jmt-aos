@@ -52,4 +52,9 @@
     <string name="following">팔로잉</string>
     <string name="spinner_button">스피너 버튼</string>
 
+
+
+    <string name="service_not_yet">앗, 서비스 준비 중이에요!\n &#160;&#160;조금만 기다려주세요.</string>
+    <string name="jmt_character_image">존마탱 캐릭터 이미지</string>
+
 </resources>
