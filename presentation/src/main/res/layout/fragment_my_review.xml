@@ -5,9 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".view.mypage.MyReviewFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/my_review" />
+    <include layout="@layout/not_yet_layout" />
 
 </androidx.core.widget.NestedScrollView>
