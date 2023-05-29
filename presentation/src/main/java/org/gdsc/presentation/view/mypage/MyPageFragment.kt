@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.Empty
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentMyPageBinding
@@ -15,6 +17,7 @@ import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.LI
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.MY_REVIEW
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.REGISTERED_RESTAURANT
 
+@AndroidEntryPoint
 class MyPageFragment : Fragment() {
 
     private var _binding: FragmentMyPageBinding? = null
@@ -31,9 +34,11 @@ class MyPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setToolbarTitle()
         setPager()
         setTabLayout()
+        setCollapsingToolbarOffChangedCallback()
+        setMoreIcon()
+
     }
 
     override fun onDestroyView() {
@@ -55,8 +60,26 @@ class MyPageFragment : Fragment() {
         }.attach()
     }
 
-    private fun setToolbarTitle() {
-        (requireActivity() as MainActivity).changeToolbarTitle(String.Empty)
+    private fun setCollapsingToolbarOffChangedCallback() {
+        binding.appBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
+            if (verticalOffset == -binding.collapsingToolbar.height) {
+                // TODO: User Nickname From ViewModel
+                setToolbarTitle("Treenamu")
+            } else {
+                setToolbarTitle()
+            }
+        }
+    }
+
+    private fun setMoreIcon() {
+        binding.moreIcon.setOnClickListener {
+            // TODO: 프로필 수정 화면으로 이동
+            Toast.makeText(requireContext(), "TODO: 프로필 수정 화면", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setToolbarTitle(title: String = String.Empty) {
+        (requireActivity() as MainActivity).changeToolbarTitle(title)
     }
 
 }
