@@ -11,18 +11,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
-import org.gdsc.domain.Empty
 import org.gdsc.domain.model.MediaItem
 import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.databinding.ItemImageCheckboxBinding
-import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
-class MultiImagePickerAdapter(
-    private val parentViewModel: ImagePickerViewModel
-): PagingDataAdapter<MediaItem, MultiImagePickerAdapter.ImageViewHolder>(ImageDiffCallback) {
+class MultiImagePickerAdapter(): PagingDataAdapter<MediaItem, MultiImagePickerAdapter.ImageViewHolder>(ImageDiffCallback) {
     private lateinit var listener: GalleryImageClickListener
-    private val checkBoxList = mutableListOf<CheckBoxData>()
     private val checkedList = mutableListOf<Long>()
+
+    // 갤러리 선택에 맞게 이미지 배열을 선택 할 수 있도록, 전체 이미지에 대한 id 값을 갖는 배열을 포함
+    // 갤러리 선택에 맞게 각 파트로 쪼개지는 배열을 포함
 
     private fun checkedListSize(): Int = checkedList.size
     fun setListener(listener: GalleryImageClickListener) {
@@ -47,13 +45,6 @@ class MultiImagePickerAdapter(
         private val binding: ItemImageCheckboxBinding
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(position:Int, mediaItem: MediaItem) {
-            if(position >= checkBoxList.size)
-                checkBoxList.add(position, CheckBoxData(mediaItem.id, false))
-
-            binding.checkBox.isVisible = true
-            binding.imageViewBorder.isVisible = if(checkBoxList[position].id == mediaItem.id) checkBoxList[position].checked else false
-            binding.checkBox.isChecked = checkBoxList[position].checked
-            binding.checkBox.text = checkBoxList[position].text
 
             binding.image.setOnClickListener {
                 if(checkedListSize() == 10 && binding.checkBox.isChecked.not()) {
@@ -65,30 +56,31 @@ class MultiImagePickerAdapter(
 
                 if(binding.checkBox.isChecked) {
                     binding.checkBox.text = checkedListSize().inc().toString()
-                    checkBoxList[position].text = binding.checkBox.text.toString()
-                    checkBoxList[position].checked = binding.checkBox.isChecked
-                    checkedList.add(checkBoxList[position].id)
+                    checkedList.add(mediaItem.id)
                     binding.imageViewBorder.isVisible = true
                 } else {
-                    for (i in 0 until checkedListSize()) {
-                        if (checkedList[i] == checkBoxList[position].id) {
-                            for (j in i until checkedListSize()) {
-                                checkBoxList.findByID(checkedList[j])?.let { num ->
-                                    checkBoxList[num].text = j.toString()
-                                }
-                            }
-
-                            binding.imageViewBorder.isVisible = false
-                            checkBoxList[position].text = String.Empty
-                            checkBoxList[position].checked = false
-                            checkedList.removeAt(i)
-                            break
-                        }
-                    }
+                    val itemPosition = checkedList.indexOf(mediaItem.id)
+                    checkedList.removeAt(itemPosition)
                     notifyDataSetChanged()
                 }
 
                 listener.onImageClick(mediaItem)
+            }
+
+            binding.checkBox.isVisible = true
+            if(mediaItem.id in checkedList) {
+                binding.apply {
+                    imageViewBorder.isVisible = true
+                    checkBox.isChecked = true
+                    checkBox.text = checkedList.indexOf(mediaItem.id).inc().toString()
+                }
+            } else {
+                binding.apply {
+                    imageViewBorder.isVisible = false
+                    checkBox.isChecked = false
+                    checkBox.text = ""
+                }
+
             }
 
             val requestBuilder: RequestBuilder<Drawable> =
@@ -111,20 +103,4 @@ class MultiImagePickerAdapter(
             return oldItem == newItem
         }
     }
-}
-
-
-data class CheckBoxData(
-    val id: Long,
-    var checked: Boolean,
-    var text: String = String.Empty
-)
-
-fun MutableList<CheckBoxData>.findByID(id: Long): Int? {
-    for (i in 0 until this.size) {
-        if (this[i].id == id) {
-            return i
-        }
-    }
-    return null
 }

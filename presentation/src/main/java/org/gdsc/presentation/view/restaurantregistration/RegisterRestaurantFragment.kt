@@ -174,7 +174,7 @@ class RegisterRestaurantFragment : Fragment() {
     }
 
     private fun setToolbarTitle() {
-        (requireActivity() as MainActivity).changeToolbarTitle(navArgs.restaurantLocationInfo.placeName)
+        (requireActivity() as MainActivity).changeToolbarTitle(navArgs.restaurantLocationInfo?.placeName ?: String.Empty)
     }
 
     override fun onDestroyView() {

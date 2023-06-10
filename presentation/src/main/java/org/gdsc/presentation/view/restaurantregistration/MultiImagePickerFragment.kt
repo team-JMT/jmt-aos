@@ -14,10 +14,10 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import org.gdsc.domain.Empty
 import org.gdsc.domain.model.MediaItem
 import org.gdsc.presentation.R
 import org.gdsc.presentation.adapter.GalleryImageClickListener
@@ -67,6 +67,7 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
 
         popupMenu.setOnMenuItemClickListener {item ->
             // 앨범 선택 버튼 텍스트 변경
+
             binding.galleryButton.text = item.title.toString()
             imagePickerViewModel.album.value = item.title.toString()
 
@@ -103,13 +104,17 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
             findNavController().navigate(navigation)
         }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupActionBar()
         setupMenu()
         setupAdapter()
         setupView()
+
+        setupActionBar()
+        setToolbarTitle()
+        addToolbarCustomView()
 
         // 앨범 선택용 버튼 (팝업 메뉴)
         binding.galleryButton.setOnClickListener { view ->
@@ -137,7 +142,7 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     private fun setupAdapter() {
 
-        imageAdapter = MultiImagePickerAdapter(imagePickerViewModel)
+        imageAdapter = MultiImagePickerAdapter()
         imageAdapter.setListener(this)
         binding.recyclerviewImage.adapter = imageAdapter
 
@@ -169,7 +174,7 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         val actionBar = (requireActivity() as MainActivity).supportActionBar
         actionBar?.setDisplayShowTitleEnabled(false)
         actionBar?.setDisplayHomeAsUpEnabled(true)
-        actionBar?.setHomeAsUpIndicator(R.drawable.finish)
+        actionBar?.setHomeAsUpIndicator(R.drawable.back_arrow)
     }
 
 
