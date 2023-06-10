@@ -113,8 +113,6 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         setupView()
 
         setupActionBar()
-        setToolbarTitle()
-        addToolbarCustomView()
 
         // 앨범 선택용 버튼 (팝업 메뉴)
         binding.galleryButton.setOnClickListener { view ->
