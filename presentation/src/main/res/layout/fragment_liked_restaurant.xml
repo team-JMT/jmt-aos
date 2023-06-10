@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.mypage.LikedRestaurantFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <org.gdsc.presentation.view.custom.JmtSpinner
+            android:id="@+id/sort_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/spinner_divider"
+            android:layout_width="2dp"
+            android:layout_height="14sp"
+            app:dividerColor="@color/grey200"
+            android:layout_marginStart="11dp"
+            app:layout_constraintStart_toEndOf="@id/sort_spinner"
+            app:layout_constraintTop_toTopOf="@id/sort_spinner"
+            app:layout_constraintBottom_toBottomOf="@id/sort_spinner"/>
+
+
+        <org.gdsc.presentation.view.custom.JmtSpinner
+            android:id="@+id/food_category_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            app:isSolidType="true"
+            app:layout_constraintStart_toEndOf="@id/spinner_divider"
+            app:layout_constraintTop_toTopOf="@id/sort_spinner"
+            app:layout_constraintBottom_toBottomOf="@id/sort_spinner"/>
+
+        <org.gdsc.presentation.view.custom.JmtSpinner
+            android:id="@+id/drink_possibility_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:isSolidType="true"
+            app:layout_constraintStart_toEndOf="@id/food_category_spinner"
+            app:layout_constraintTop_toTopOf="@id/sort_spinner"
+            app:layout_constraintBottom_toBottomOf="@id/sort_spinner" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

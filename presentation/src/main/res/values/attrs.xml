@@ -17,4 +17,8 @@
         <attr name="all_corner_radius" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="JmtSpinner">
+        <attr name="isSolidType" format="boolean"/>
+    </declare-styleable>
+
 </resources>
