@@ -30,7 +30,9 @@
         tools:layout="@layout/fragment_sign_up_complete" >
         <action
             android:id="@+id/action_signUpCompleteFragment_to_permissionFragment"
-            app:destination="@id/PermissionFragment"/>
+            app:destination="@id/PermissionFragment"
+            app:popUpTo="@id/signUpCompleteFragment"
+            app:popUpToInclusive="true"/>
         <argument
             android:name="imageUri"
             app:argType="string"
@@ -45,11 +47,12 @@
         <action
             android:id="@+id/action_permissionFragment_to_imagepickerFragment"
             app:destination="@id/ImagePickerFragment"
-            app:popUpTo="@id/signUpCompleteFragment"/>
+            app:popUpTo="@id/PermissionFragment"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_permissionFragment_to_signUpCompleteFragment"
             app:destination="@id/signUpCompleteFragment"
-            app:popUpTo="@id/ImagePickerFragment"/>
+            app:popUpTo="@id/PermissionFragment"/>
     </fragment>
     <fragment
         android:id="@+id/ImagePickerFragment"
@@ -59,6 +62,11 @@
         <action
             android:id="@+id/action_imagepickerFragment_to_signUpCompleteFragment"
             app:destination="@id/signUpCompleteFragment"
-            app:popUpTo="@id/PermissionFragment"/>
+            app:popUpTo="@id/ImagePickerFragment"
+            app:popUpToInclusive="true"/>
+        <argument
+            android:name="multiple"
+            app:argType="boolean"
+            android:defaultValue="false"/>
     </fragment>
 </navigation>

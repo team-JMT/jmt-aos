@@ -1,52 +1,65 @@
 package org.gdsc.presentation.viewmodel
 
-import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.gdsc.domain.model.ImageItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
+import org.gdsc.domain.model.MediaItem
+import org.gdsc.domain.usecase.GetGalleryFolderNamesUseCase
 import org.gdsc.domain.usecase.GetGalleryUseCase
-import java.io.File
+import org.gdsc.domain.usecase.ResetGalleryUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class ImagePickerViewModel @Inject constructor(
-    private val getGalleryUseCase: GetGalleryUseCase
+    private val getGalleryUseCase: GetGalleryUseCase,
+    private val initGalleryUseCase: ResetGalleryUseCase,
+    private val getGalleryFolderNamesUseCase: GetGalleryFolderNamesUseCase
 ): ViewModel() {
     private val TAG = "ImagePickerViewModel"
-    private val initAlbum = "전체"
 
-    private lateinit var imageList: List<ImageItem>
+    val album = MutableStateFlow("전체")
 
-    private val albumList: List<String> by lazy {
-        imageList.map { imageItem ->
-            imageItem.bucket
-        }.distinct()
-    }
+    private val _galleryFolderFlow = MutableStateFlow(listOf<String>(album.toString()))
+    val galleryFolderFlow: StateFlow<List<String>> = _galleryFolderFlow
 
-    fun getInitAlbum():String {
-        return initAlbum
-    }
+    private val _mediaListStateFlow = MutableStateFlow<PagingData<MediaItem>>(PagingData.empty())
+    val mediaListStateFlow: StateFlow<PagingData<MediaItem>> = _mediaListStateFlow
 
-    suspend fun getImageItemList():List<ImageItem> {
-        return withContext(Dispatchers.IO) {
-            getGalleryUseCase()
-                .runCatching {
-                    imageList = this.map { filePath ->
-                        val filePathSplit = filePath.split(File.separator)
-                        ImageItem(Uri.fromFile(File(filePath)).toString(), filePathSplit[filePathSplit.size - 2])
+
+    fun fetchMediaList() {
+        viewModelScope.launch {
+            try {
+                album.flatMapLatest {
+                    getGalleryUseCase(it)
+                }.cachedIn(viewModelScope)
+                    .collectLatest {
+                        _mediaListStateFlow.emit(it)
                     }
-                }
-            return@withContext imageList
+            } catch (e: Exception) {
+                // Handle the error
+            }
         }
     }
 
-    fun getGalleryAlbum():List<String> {
-        return listOf(initAlbum) + albumList
+    fun resetGallery() {
+        initGalleryUseCase()
     }
 
-    fun getFilterImageList(album: String):List<ImageItem> {
-        return imageList.filter { if(album == initAlbum) true else it.bucket == album }
+    fun fetchGalleryFolderNames() {
+        viewModelScope.launch {
+            getGalleryFolderNamesUseCase().runCatching {
+                _galleryFolderFlow.emit(this)
+            }.onFailure {
+                Log.e(TAG, "fetchGalleryFolderNames: $it")
+            }
+        }
     }
 }

@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.gdsc.data.cursor.CursorFactory
+import org.gdsc.data.cursor.ImageCursorFactory
 import org.gdsc.data.datasource.GalleryDataSource
 import org.gdsc.data.datasource.GalleryDataSourceImpl
 import org.gdsc.data.repository.GalleryRepositoryImpl
@@ -21,4 +23,8 @@ abstract class GalleryModule {
     @Singleton
     @Binds
     abstract fun bindGalleryRepository(galleryRepositoryImpl: GalleryRepositoryImpl): GalleryRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindCursorFactory(imageCursorFactory: ImageCursorFactory): CursorFactory
 }

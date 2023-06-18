@@ -33,7 +33,6 @@ class HomeFragment : Fragment() {
             settings.javaScriptEnabled = true
             webViewClient = WebViewClient()
         }
-
     }
 
     override fun onDestroyView() {

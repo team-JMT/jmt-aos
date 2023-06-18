@@ -1,15 +1,21 @@
 package org.gdsc.presentation.view.restaurantregistration
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.gdsc.domain.Empty
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRegisterRestaurantBinding
@@ -19,6 +25,8 @@ import org.gdsc.presentation.utils.animateExtendWidth
 import org.gdsc.presentation.utils.animateShrinkWidth
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
+import org.gdsc.presentation.view.restaurantregistration.adapter.RegisterRestaurantAdapter
+import org.gdsc.presentation.view.restaurantregistration.adapter.RestaurantLocationInfoAdapter
 import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterRestaurantViewModel
 
 @AndroidEntryPoint
@@ -39,6 +47,7 @@ class RegisterRestaurantFragment : Fragment() {
         }
     }
 
+    private val adapter by lazy { RegisterRestaurantAdapter() }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,6 +67,8 @@ class RegisterRestaurantFragment : Fragment() {
         setRecommendDrinkEditText()
         setRecommendMenuEditText()
         setToolbarTitle()
+
+        setAdapter()
 
     }
 
@@ -138,9 +149,7 @@ class RegisterRestaurantFragment : Fragment() {
             addAfterTextChangedListener {
                 viewModel.setRecommendMenuTextState(it)
             }
-
         }
-
     }
 
     private fun setRecommendDrinkEditText() {
@@ -151,26 +160,44 @@ class RegisterRestaurantFragment : Fragment() {
 
     private fun setAddImageButton() {
 
-        binding.selectImageCountText.text = getString(R.string.text_counter_max_ten, 0)
+        binding.selectImageCountText.text = getString(R.string.text_counter_max_ten, navArgs.imageUri?.size ?: 0)
 
-        binding.selectImagesButton.setOnClickListener {
-            // TODO: 이미지 선택 후 반영 로직
+        navArgs.imageUri?.let { images ->
+            adapter.submitList(images)
+
             with(viewModel) {
                 if (isImageButtonAnimating.value.not()) {
-                    if (isImageButtonExtended.value) {
-                        setIsImageButtonExtended(false)
-                        it.animateShrinkWidth()
-                    } else {
-                        setIsImageButtonExtended(true)
-                        it.animateExtendWidth()
+                    binding.selectImagesButton.run {
+                        if (isImageButtonExtended.value) {
+                            setIsImageButtonExtended(false)
+                            animateShrinkWidth()
+                        } else {
+                            setIsImageButtonExtended(true)
+                            animateExtendWidth()
+                        }
                     }
                 }
             }
         }
+
+        binding.selectImagesButton.setOnClickListener {
+            val directions = RegisterRestaurantFragmentDirections
+                .actionRegisterRestaurantFragmentToMultiImagePickerFragment(
+                    navArgs.restaurantLocationInfo
+                )
+
+            findNavController().navigate(directions)
+
+        }
+    }
+
+    private fun setAdapter() {
+        binding.selectedImagesRecyclerView.adapter = adapter
+        binding.selectedImagesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun setToolbarTitle() {
-        (requireActivity() as MainActivity).changeToolbarTitle(navArgs.restaurantLocationInfo.placeName)
+        (requireActivity() as MainActivity).changeToolbarTitle(navArgs.restaurantLocationInfo?.placeName ?: String.Empty)
     }
 
     override fun onDestroyView() {
