@@ -1,44 +1,91 @@
 package org.gdsc.data.datasource
 
 import android.content.Context
-import android.os.Build
-import android.provider.MediaStore
+import android.database.Cursor
+import android.util.Log
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import org.gdsc.data.cursor.CursorFactory
+import org.gdsc.data.cursor.ImageCursorFactory
+import org.gdsc.domain.model.MediaItem
 import javax.inject.Inject
 
-private const val INDEX_MEDIA_ID = MediaStore.MediaColumns._ID
-private const val INDEX_MEDIA_URI = MediaStore.MediaColumns.DATA
-private const val INDEX_ALBUM_NAME = MediaStore.Images.Media.BUCKET_DISPLAY_NAME
-private const val INDEX_DATE_ADDED = MediaStore.MediaColumns.DATE_ADDED
 class GalleryDataSourceImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val cursorFactory: ImageCursorFactory
 ): GalleryDataSource {
-    override suspend fun getGalleryImage(): List<String> {
-        val imageItemList:MutableList<String> = mutableListOf()
-        val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        val projection = arrayOf(
-            INDEX_MEDIA_ID,
-            INDEX_MEDIA_URI,
-            INDEX_ALBUM_NAME,
-            INDEX_DATE_ADDED
-        )
 
-        val selection =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) MediaStore.Images.Media.SIZE + " > 0"
-            else null
-        val sortOrder = "$INDEX_DATE_ADDED DESC"
-        val cursor = context.contentResolver.query(uri, projection, selection, null, sortOrder)
+    private var cursor: Cursor? = null
 
-        cursor?.let {
-            while(cursor.moveToNext()) {
-                val id = cursor.getColumnIndex(INDEX_MEDIA_URI)
-                val filePath = cursor.getString(id)
-                imageItemList.add(filePath)
+    override fun reset() {
+        cursor?.close()
+    }
+
+    override suspend fun getGalleryFolderName(): List<String> {
+
+        cursor = cursorFactory.create(context, "")
+
+        val galleryNames = ArrayList<String>()
+
+        cursor?.use { c ->
+            while (c.moveToNext()) {
+                val item = cursorFactory.createMediaItem(c)
+                if(!galleryNames.contains(item.albumName)) {
+                    galleryNames.add(item.albumName)
+                }
             }
         }
 
         cursor?.close()
+        return galleryNames
+    }
 
-        return imageItemList.toList()
+
+    private fun getMediaList(cursor: Cursor?, loadSize: Int): ArrayList<MediaItem> {
+        val mediaList = ArrayList<MediaItem>()
+        cursor?.let { c ->
+            for (i in 0 until loadSize) {
+                if (!c.moveToNext()) {
+                    break
+                }
+                mediaList.add(cursorFactory.createMediaItem(c))
+            }
+            return mediaList
+        } ?: run {
+            return mediaList
+        }
+    }
+
+    override fun getGalleryImage(album: String): PagingSource<Int, MediaItem> {
+        cursor = cursorFactory.create(context, album)
+        return object : PagingSource<Int, MediaItem>() {
+
+            override fun getRefreshKey(state: PagingState<Int, MediaItem>): Int? {
+                return null
+            }
+
+            override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MediaItem> {
+                return try {
+
+                    val currentPage = params.key ?: 0
+                    val data = ArrayList<MediaItem>()
+
+                    cursor?.let { c ->
+                        data.addAll(getMediaList(c, params.loadSize))
+                    }
+
+                    val prevPage = if (currentPage == 0) null else currentPage - 1
+                    val nextPage = if (data.size < params.loadSize) null else currentPage + 1
+                    LoadResult.Page(data, prevPage, nextPage)
+                } catch (e: Exception) {
+                    cursor?.close()
+                    LoadResult.Error(e)
+                }
+            }
+
+        }
     }
 }
