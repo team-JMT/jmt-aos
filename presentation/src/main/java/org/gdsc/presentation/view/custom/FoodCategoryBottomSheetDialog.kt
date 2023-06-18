@@ -21,7 +21,7 @@ import org.gdsc.presentation.model.FoodCategoryItem
 import org.gdsc.presentation.utils.toPx
 import org.gdsc.presentation.view.restaurantregistration.adapter.FoodCategoryRecyclerAdapter
 
-class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<FoodCategoryItem>) -> Unit) :
+class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (FoodCategoryItem?) -> Unit) :
     BottomSheetDialogFragment() {
 
     private val items by lazy {
@@ -29,6 +29,8 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<Foo
             FoodCategoryItem(it)
         }
     }
+
+    private var selectedItem: FoodCategoryItem? = null
 
     private var _binding: FoodCategoryBottomSheetDialogBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -75,7 +77,9 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<Foo
 
     private fun setRecyclerView() {
 
-        val adapter = FoodCategoryRecyclerAdapter()
+        val adapter = FoodCategoryRecyclerAdapter {
+            selectedItem = it
+        }
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -84,7 +88,7 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (List<Foo
 
     private fun setSelectButton() {
         binding.selectButton.setOnClickListener {
-            onSelectButtonClicked(items.filter { it.isSelected })
+            onSelectButtonClicked(selectedItem)
             dismiss()
         }
     }
