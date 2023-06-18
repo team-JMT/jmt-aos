@@ -18,6 +18,7 @@ import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.utils.animateExtendWidth
 import org.gdsc.presentation.utils.animateShrinkWidth
 import org.gdsc.presentation.view.MainActivity
+import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
 import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterRestaurantViewModel
 
 @AndroidEntryPoint
@@ -29,6 +30,14 @@ class RegisterRestaurantFragment : Fragment() {
     private val viewModel: RegisterRestaurantViewModel by viewModels()
 
     private val navArgs by navArgs<RegisterRestaurantFragmentArgs>()
+
+    private val foodCategoryDialog by lazy {
+        FoodCategoryBottomSheetDialog { selectedItem ->
+            selectedItem?.let {
+                viewModel.setFoodCategoryState(it)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +51,7 @@ class RegisterRestaurantFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         observeStates()
+        setFoodCategoryContainer()
         setDrinkPossibilityCheckbox()
         setIntroductionEditText()
         setAddImageButton()
@@ -52,6 +62,13 @@ class RegisterRestaurantFragment : Fragment() {
     }
 
     private fun observeStates() {
+
+        repeatWhenUiStarted {
+            viewModel.foodCategoryState.collect {
+                binding.foodCategoryText.text = it.name
+            }
+        }
+
         repeatWhenUiStarted {
             viewModel.drinkPossibilityState.collect { isSelected ->
                 binding.drinkPossibilityCheckbox.isSelected = isSelected
@@ -73,6 +90,12 @@ class RegisterRestaurantFragment : Fragment() {
             viewModel.isRecommendMenuFullState.collect {
                 binding.recommendMenuEditText.visibility = if (it.not()) View.VISIBLE else View.GONE
             }
+        }
+    }
+
+    private fun setFoodCategoryContainer() {
+        binding.foodCategoryContainer.setOnClickListener {
+            foodCategoryDialog.show(childFragmentManager, null)
         }
     }
 
