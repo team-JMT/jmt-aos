@@ -8,17 +8,25 @@ import androidx.recyclerview.widget.RecyclerView
 import org.gdsc.presentation.databinding.FoodCategoryItemBinding
 import org.gdsc.presentation.model.FoodCategoryItem
 
-class FoodCategoryRecyclerAdapter :
+class FoodCategoryRecyclerAdapter(
+    private val onItemSelected: (FoodCategoryItem) -> Unit
+) :
     ListAdapter<FoodCategoryItem, FoodCategoryRecyclerAdapter.FoodCategoryViewHolder>(
-    diffUtil
-) {
+        diffUtil
+    ) {
 
-    class FoodCategoryViewHolder(private val binding: FoodCategoryItemBinding): RecyclerView.ViewHolder(binding.root) {
+    private var previousPosition = 0
+    private var selectedItem: FoodCategoryItem? = null
+
+    inner class FoodCategoryViewHolder(private val binding: FoodCategoryItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FoodCategoryItem) {
             binding.categoryName.text = item.name
-            binding.root.isSelected = item.isSelected
+            binding.root.isSelected =
+                selectedItem?.name == item.name
         }
     }
+
     companion object {
         private val diffUtil = object : DiffUtil.ItemCallback<FoodCategoryItem>() {
             override fun areItemsTheSame(
@@ -50,8 +58,13 @@ class FoodCategoryRecyclerAdapter :
         val item = getItem(position)
         holder.bind(item)
         holder.itemView.setOnClickListener {
-            item.isSelected = item.isSelected.not()
-            this.notifyItemChanged(position)
+            item.let {
+                selectedItem = it
+                onItemSelected(it)
+                this.notifyItemChanged(previousPosition)
+                this.notifyItemChanged(holder.absoluteAdapterPosition)
+                previousPosition = holder.absoluteAdapterPosition
+            }
         }
     }
 
