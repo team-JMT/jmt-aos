@@ -12,10 +12,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.gdsc.domain.Empty
+import org.gdsc.presentation.model.FoodCategoryItem
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterRestaurantViewModel @Inject constructor() : ViewModel() {
+
+    private var _foodCategoryState = MutableStateFlow(FoodCategoryItem.INIT)
+    val foodCategoryState = _foodCategoryState.asStateFlow()
 
     private var _drinkPossibilityState = MutableStateFlow(false)
     val drinkPossibilityState = _drinkPossibilityState.asStateFlow()
@@ -48,6 +52,9 @@ class RegisterRestaurantViewModel @Inject constructor() : ViewModel() {
     private var _isImageButtonAnimating = MutableStateFlow(false)
     val isImageButtonAnimating = _isImageButtonAnimating.asStateFlow()
 
+    fun setFoodCategoryState(foodCategoryItem: FoodCategoryItem) {
+        _foodCategoryState.value = foodCategoryItem
+    }
     fun setDrinkPossibilityState() {
         _drinkPossibilityState.value = _drinkPossibilityState.value.not()
     }
