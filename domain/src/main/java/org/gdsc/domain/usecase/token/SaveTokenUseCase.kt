@@ -1,6 +1,6 @@
 package org.gdsc.domain.usecase.token
 
-import org.gdsc.domain.model.TokenResponse
+import org.gdsc.domain.model.response.TokenResponse
 import org.gdsc.domain.repository.TokenManager
 import javax.inject.Inject
 
