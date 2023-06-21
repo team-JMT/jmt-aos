@@ -1,4 +1,4 @@
-package org.gdsc.domain.model
+package org.gdsc.domain.model.response
 
 data class TokenResponse(
     val accessToken: String,
