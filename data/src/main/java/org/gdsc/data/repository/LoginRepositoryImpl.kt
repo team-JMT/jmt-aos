@@ -1,7 +1,7 @@
 package org.gdsc.data.repository
 
 import org.gdsc.data.datasource.LoginDataSource
-import org.gdsc.domain.model.TokenResponse
+import org.gdsc.domain.model.response.TokenResponse
 import org.gdsc.domain.repository.LoginRepository
 import javax.inject.Inject
 
