@@ -1,6 +1,6 @@
 package org.gdsc.domain.usecase
 
-import org.gdsc.domain.model.TokenResponse
+import org.gdsc.domain.model.response.TokenResponse
 import org.gdsc.domain.repository.LoginRepository
 import javax.inject.Inject
 

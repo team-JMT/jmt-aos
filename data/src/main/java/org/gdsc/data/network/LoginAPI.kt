@@ -2,9 +2,9 @@ package org.gdsc.data.network
 
 
 import org.gdsc.data.model.Response
-import org.gdsc.domain.model.GoogleLoginRequest
-import org.gdsc.domain.model.AppleLoginRequest
-import org.gdsc.domain.model.TokenResponse
+import org.gdsc.domain.model.request.GoogleLoginRequest
+import org.gdsc.domain.model.request.AppleLoginRequest
+import org.gdsc.domain.model.response.TokenResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
 

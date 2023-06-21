@@ -1,9 +1,9 @@
 package org.gdsc.data.datasource
 
 import org.gdsc.data.network.LoginAPI
-import org.gdsc.domain.model.AppleLoginRequest
-import org.gdsc.domain.model.GoogleLoginRequest
-import org.gdsc.domain.model.TokenResponse
+import org.gdsc.domain.model.request.AppleLoginRequest
+import org.gdsc.domain.model.request.GoogleLoginRequest
+import org.gdsc.domain.model.response.TokenResponse
 import javax.inject.Inject
 
 

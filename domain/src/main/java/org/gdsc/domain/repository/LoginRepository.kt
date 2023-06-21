@@ -1,6 +1,6 @@
 package org.gdsc.domain.repository
 
-import org.gdsc.domain.model.TokenResponse
+import org.gdsc.domain.model.response.TokenResponse
 
 interface LoginRepository {
 
