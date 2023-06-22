@@ -71,9 +71,10 @@ class SignUpCompleteFragment : Fragment() {
                 val body =
                     MultipartBody.Part.createFormData("profileImgFile", file.name, requestFile)
 
-                viewModel.postProfileImage(body) {
+                viewModel.requestSignUp(body) {
                     val intent = Intent(requireContext(), MainActivity::class.java)
                     startActivity(intent)
+                    requireActivity().finish()
                 }
             } ?: kotlin.run {
                 Toast.makeText(requireContext(), "프로필 사진을 선택해주세요.", Toast.LENGTH_SHORT).show()
@@ -109,8 +110,4 @@ class SignUpCompleteFragment : Fragment() {
         super.onDestroyView()
     }
 
-    companion object {
-        const val URI_SELECTED = "URI_SELECTED"
-        const val TAG = "SignUpCompleteFragment"
-    }
 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import org.gdsc.domain.Empty
 import org.gdsc.domain.usecase.CheckDuplicatedNicknameUseCase
+import org.gdsc.domain.usecase.PostNicknameUseCase
 import org.gdsc.domain.usecase.PostSignUpWithGoogleTokenUseCase
 import org.gdsc.domain.usecase.token.SaveTokenUseCase
 import org.gdsc.domain.usecase.user.PostProfileImageUseCase
@@ -23,6 +24,7 @@ class LoginViewModel @Inject constructor(
     private val postSignUpWithGoogleTokenUseCase: PostSignUpWithGoogleTokenUseCase,
     private val saveTokenUseCase: SaveTokenUseCase,
     private val checkDuplicatedNicknameUseCase: CheckDuplicatedNicknameUseCase,
+    private val postNicknameUseCase: PostNicknameUseCase,
     private val postProfileImageUseCase: PostProfileImageUseCase
 ) : ViewModel() {
 
@@ -50,10 +52,11 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun postProfileImage(file: MultipartBody.Part, afterSuccessPostProfileImage: () -> Unit) {
+    fun requestSignUp(file: MultipartBody.Part, afterSuccessSignUp: () -> Unit) {
         viewModelScope.launch {
-            val response = postProfileImageUseCase(file)
-            afterSuccessPostProfileImage()
+            postProfileImageUseCase(file)
+            postNicknameUseCase(nicknameState.value)
+            afterSuccessSignUp()
         }
     }
 
