@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import org.gdsc.domain.Empty
+import org.gdsc.domain.usecase.CheckDuplicatedNicknameUseCase
 import org.gdsc.domain.usecase.PostSignUpWithGoogleTokenUseCase
 import org.gdsc.domain.usecase.token.SaveTokenUseCase
 import org.gdsc.domain.usecase.user.PostProfileImageUseCase
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val postSignUpWithGoogleTokenUseCase: PostSignUpWithGoogleTokenUseCase,
     private val saveTokenUseCase: SaveTokenUseCase,
+    private val checkDuplicatedNicknameUseCase: CheckDuplicatedNicknameUseCase,
     private val postProfileImageUseCase: PostProfileImageUseCase
 ) : ViewModel() {
 
@@ -52,6 +54,21 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             val response = postProfileImageUseCase(file)
             afterSuccessPostProfileImage()
+        }
+    }
+
+    fun checkDuplicatedNickname(
+        onNicknameIsNotDuplicated: () -> Unit = {},
+        onNicknameIsDuplicated: () -> Unit = {}
+    ) {
+        viewModelScope.launch {
+            checkDuplicatedNicknameUseCase(nicknameState.value).let { isNotDuplicated ->
+                if (isNotDuplicated) {
+                    onNicknameIsNotDuplicated()
+                } else {
+                    onNicknameIsDuplicated()
+                }
+            }
         }
     }
 
