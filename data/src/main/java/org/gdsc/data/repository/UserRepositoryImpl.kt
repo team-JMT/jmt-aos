@@ -18,4 +18,8 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.postProfileImg(file)
     }
 
+    override suspend fun checkDuplicatedNickname(nickname: String): Boolean {
+        return userDataSource.checkDuplicatedNickname(nickname)
+    }
+
 }
