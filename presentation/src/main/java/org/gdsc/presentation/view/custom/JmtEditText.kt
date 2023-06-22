@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Toast
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.JmtEditTextBinding
 import org.gdsc.presentation.utils.addAfterTextChangedListener
@@ -44,34 +45,47 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
 
     }
 
-    fun checkNickname() {
+    private fun checkNickname(inputText: String) {
         with(binding) {
 
-            val nicknameText = nicknameEditText.text.toString()
-
-            if (nicknameText.isBlank()) {
+            if (inputText.isBlank()) {
                 hideVerifyLayout()
-                // TODO: 불가능한 닉네임 처리
-            } else if (nicknameEditText.text.toString() == "불가능한 닉네임") {
+                // 특수문자 포함 시
+            } else if (inputText.containsSpecialCharacters()) {
                 showVerifyLayout()
                 verifyIcon.setImageResource(R.drawable.cancel_icon)
                 verifyText.apply {
                     setTextColor(resources.getColor(R.color.unable_nickname_color, null))
-                    text = context.getString(R.string.unable_nickname)
+                    text = context.getString(R.string.unable_nickname_cause_special_characters)
                 }
             } else {
                 showVerifyLayout()
                 verifyIcon.setImageResource(R.drawable.check_icon)
                 verifyText.apply {
-                    setTextColor(resources.getColor(R.color.main600, null))
+                    setTextColor(resources.getColor(R.color.green500, null))
                     text = context.getString(R.string.enable_nickname)
                 }
+            }
+
+            if (inputText.length == 10) {
+                Toast.makeText(context, "닉네임은 최대 10글자입니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun setDuplicatedNickname() {
+        with(binding) {
+            showVerifyLayout()
+            verifyIcon.setImageResource(R.drawable.cancel_icon)
+            verifyText.apply {
+                setTextColor(resources.getColor(R.color.unable_nickname_color, null))
+                text = context.getString(R.string.unable_nickname_cause_duplicated)
             }
         }
     }
 
     private fun setNicknameEditTextWatcher() {
-        binding.nicknameEditText.addAfterTextChangedListener { checkNickname() }
+        binding.nicknameEditText.addAfterTextChangedListener { checkNickname(it) }
     }
 
     private fun hideVerifyLayout() {
@@ -82,6 +96,11 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
     private fun showVerifyLayout() {
         binding.verifyIcon.visibility = View.VISIBLE
         binding.verifyText.visibility = View.VISIBLE
+    }
+
+    private fun String.containsSpecialCharacters(): Boolean {
+        val regex = Regex("[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s]")
+        return regex.containsMatchIn(this)
     }
 
 }
