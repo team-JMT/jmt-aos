@@ -13,7 +13,7 @@
 
     <application>
         <activity
-            android:name="org.gdsc.presentation.login.LoginActivity"
+            android:name=".view.MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true" />
         <activity

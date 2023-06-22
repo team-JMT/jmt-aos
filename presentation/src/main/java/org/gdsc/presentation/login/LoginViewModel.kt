@@ -10,15 +10,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import org.gdsc.domain.Empty
 import org.gdsc.domain.usecase.PostSignUpWithGoogleToken
 import org.gdsc.domain.usecase.token.SaveTokenUseCase
+import org.gdsc.domain.usecase.user.PostProfileImageUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val postSignUpWithGoogleToken: PostSignUpWithGoogleToken,
     private val saveTokenUseCase: SaveTokenUseCase,
+    private val postProfileImageUseCase: PostProfileImageUseCase
 ) : ViewModel() {
 
     private var _nicknameState = MutableStateFlow(String.Empty)
@@ -42,6 +45,13 @@ class LoginViewModel @Inject constructor(
             val response = postSignUpWithGoogleToken.invoke(token)
             saveTokenUseCase.invoke(response)
             afterSuccessSignUp()
+        }
+    }
+
+    fun postProfileImage(file: MultipartBody.Part, afterSuccessPostProfileImage: () -> Unit) {
+        viewModelScope.launch {
+            val response = postProfileImageUseCase(file)
+            afterSuccessPostProfileImage()
         }
     }
 
