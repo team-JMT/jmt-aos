@@ -6,7 +6,8 @@
     <string name="next">다음</string>
 
     <string name="enable_nickname">사용 가능한 닉네임입니다.</string>
-    <string name="unable_nickname">사용 불가능한 닉네임입니다.</string>
+    <string name="unable_nickname_cause_special_characters">특수 문자는 사용이 불가능합니다.</string>
+    <string name="unable_nickname_cause_duplicated">이미 사용중인 닉네임입니다.</string>
     <string name="nickname_hint">닉네임을 입력하세요.</string>
     <string name="search_hint">음식이나 식당명을 검색하세요</string>
     <string name="already_registered">이미 등록된 식당입니다.</string>
