@@ -12,14 +12,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import org.gdsc.domain.Empty
-import org.gdsc.domain.usecase.PostSignUpWithGoogleToken
+import org.gdsc.domain.usecase.PostSignUpWithGoogleTokenUseCase
 import org.gdsc.domain.usecase.token.SaveTokenUseCase
 import org.gdsc.domain.usecase.user.PostProfileImageUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val postSignUpWithGoogleToken: PostSignUpWithGoogleToken,
+    private val postSignUpWithGoogleTokenUseCase: PostSignUpWithGoogleTokenUseCase,
     private val saveTokenUseCase: SaveTokenUseCase,
     private val postProfileImageUseCase: PostProfileImageUseCase
 ) : ViewModel() {
@@ -42,7 +42,7 @@ class LoginViewModel @Inject constructor(
 
     fun postSignUpWithGoogleToken(token: String, afterSuccessSignUp: () -> Unit) {
         viewModelScope.launch {
-            val response = postSignUpWithGoogleToken.invoke(token)
+            val response = postSignUpWithGoogleTokenUseCase.invoke(token)
             saveTokenUseCase.invoke(response)
             afterSuccessSignUp()
         }
