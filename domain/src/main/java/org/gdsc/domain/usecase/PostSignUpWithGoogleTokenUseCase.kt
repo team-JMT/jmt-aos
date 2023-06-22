@@ -6,7 +6,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PostSignUpWithGoogleToken @Inject constructor(
+class PostSignUpWithGoogleTokenUseCase @Inject constructor(
     private val loginRepository: LoginRepository
 ) {
     suspend operator fun invoke(token: String): TokenResponse {
