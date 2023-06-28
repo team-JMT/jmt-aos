@@ -1,7 +1,10 @@
 package org.gdsc.presentation.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.database.Cursor
+import android.net.Uri
 import android.os.Build
 import android.util.DisplayMetrics
 import android.view.View
@@ -12,6 +15,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
+import org.gdsc.domain.Empty
 
 val Fragment.deviceMetrics
     get() = run {
@@ -43,13 +47,15 @@ val Fragment.deviceMetrics
     }
 
 fun Fragment.hideKeyBoard(activity: Activity) {
-    val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val inputMethodManager =
+        activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 }
 
 fun Fragment.showKeyBoard(activity: Activity, view: View) {
     view.requestFocus()
-    val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val inputMethodManager =
+        activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.showSoftInput(view, 0)
 }
 
@@ -58,5 +64,14 @@ fun LifecycleOwner.repeatWhenUiStarted(block: suspend () -> Unit) {
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             block.invoke()
         }
+    }
+}
+
+@SuppressLint("Range")
+fun Uri.findPath(context: Context): String {
+    val cursor: Cursor? = context.contentResolver.query(this, null, null, null, null)
+    cursor.use {
+        cursor?.moveToNext()
+        return cursor?.getString(cursor.getColumnIndex("_data")) ?: String.Empty
     }
 }
