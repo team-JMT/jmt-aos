@@ -56,8 +56,16 @@ class SignUpNicknameFragment : Fragment() {
 
     private fun setNextButton() {
         binding.nextBtn.setOnClickListener {
-            val action = SignUpNicknameFragmentDirections.actionSignUpNicknameFragmentToSignUpCompleteFragment()
-            findNavController().navigate(action)
+            viewModel.checkDuplicatedNickname(
+                onNicknameIsNotDuplicated = {
+                    val action =
+                        SignUpNicknameFragmentDirections.actionSignUpNicknameFragmentToSignUpCompleteFragment()
+                    findNavController().navigate(action)
+                },
+                onNicknameIsDuplicated = {
+                    binding.nicknameEditText.setDuplicatedNickname()
+                }
+            )
         }
     }
 

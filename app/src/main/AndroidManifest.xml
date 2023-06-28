@@ -14,7 +14,8 @@
         android:theme="@style/Theme.JMT"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="org.gdsc.presentation.view.MainActivity"
+            android:name="org.gdsc.presentation.login.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,20 +1,28 @@
 package org.gdsc.presentation.login
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.gdsc.presentation.databinding.FragmentSignUpCompleteBinding
 import com.bumptech.glide.Glide
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import org.gdsc.presentation.databinding.FragmentSignUpCompleteBinding
+import org.gdsc.presentation.utils.findPath
+import org.gdsc.presentation.view.MainActivity
+import java.io.File
+
 
 class SignUpCompleteFragment : Fragment() {
 
@@ -49,8 +57,28 @@ class SignUpCompleteFragment : Fragment() {
         binding.nicknameText.text = viewModel.nicknameState.value
 
         binding.profileImageAddButton.setOnClickListener {
-            val action = SignUpCompleteFragmentDirections.actionSignUpCompleteFragmentToPermissionFragment()
+            val action =
+                SignUpCompleteFragmentDirections.actionSignUpCompleteFragmentToPermissionFragment()
             findNavController().navigate(action)
+        }
+
+        binding.nextBtn.setOnClickListener {
+            // TODO: Base Image
+            args.imageUri?.let {
+
+                val file = File(it.toUri().findPath(requireContext()))
+                val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                val body =
+                    MultipartBody.Part.createFormData("profileImgFile", file.name, requestFile)
+
+                viewModel.requestSignUp(body) {
+                    val intent = Intent(requireContext(), MainActivity::class.java)
+                    startActivity(intent)
+                    requireActivity().finish()
+                }
+            } ?: kotlin.run {
+                Toast.makeText(requireContext(), "프로필 사진을 선택해주세요.", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
@@ -65,6 +93,7 @@ class SignUpCompleteFragment : Fragment() {
                         .scaleX(1.2f)
                         .scaleY(1.2f)
                 }
+
                 MotionEvent.ACTION_UP -> {
                     val parent = v.parent as CardView
                     parent.animate()
@@ -81,8 +110,4 @@ class SignUpCompleteFragment : Fragment() {
         super.onDestroyView()
     }
 
-    companion object {
-        const val URI_SELECTED = "URI_SELECTED"
-        const val TAG = "SignUpCompleteFragment"
-    }
 }

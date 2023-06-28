@@ -10,7 +10,7 @@ import javax.inject.Inject
 class LoginDataSourceImpl @Inject constructor(
     private val loginAPI: LoginAPI
 ) : LoginDataSource {
-    override suspend fun postGoogleToken(token: String): TokenResponse {
+    override suspend fun postSignUpWithGoogleToken(token: String): TokenResponse {
         return loginAPI.postUserGoogleToken(GoogleLoginRequest(token)).data
     }
 
