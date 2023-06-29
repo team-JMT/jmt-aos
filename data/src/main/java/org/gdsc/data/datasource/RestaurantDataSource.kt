@@ -10,4 +10,6 @@ interface RestaurantDataSource {
     ): List<RestaurantLocationInfo>
 
     suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean
+
+    suspend fun postRestaurantLocationInfo(restaurantLocationInfo: RestaurantLocationInfo): String
 }
