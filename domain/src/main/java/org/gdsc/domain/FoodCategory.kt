@@ -1,15 +1,14 @@
 package org.gdsc.domain
 
-enum class FoodCategory(val text: String) {
-    KOREAN("한식"),
-    JAPANESE("일식"),
-    CHINESE("중식"),
-    WESTERN("양식"),
-    FUSION("퓨전"),
-    CAFE("카페"),
-    BAR("주점"),
-    ETC("기타"),
-    INIT("종류");
+enum class FoodCategory(val id: Long, val text: String) {
+    KOREAN(1L, "한식"),
+    JAPANESE(2L, "일식"),
+    CHINESE(3L, "중식"),
+    WESTERN(4L, "양식"),
+    CAFE(6L, "카페"),
+    BAR(7L, "주점"),
+    ETC(8L, "기타"),
+    INIT(-1L, "(필수) 어떤 종류의 식당인가요?");
 
     companion object {
         fun getAllText(): List<String> {
@@ -18,11 +17,12 @@ enum class FoodCategory(val text: String) {
                 JAPANESE.text,
                 CHINESE.text,
                 WESTERN.text,
-                FUSION.text,
                 CAFE.text,
                 BAR.text,
                 ETC.text
             )
         }
+
+        val ALL = values().toList().dropLast(1)
     }
 }

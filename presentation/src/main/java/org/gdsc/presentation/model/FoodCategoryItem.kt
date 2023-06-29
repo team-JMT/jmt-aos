@@ -1,9 +1,11 @@
 package org.gdsc.presentation.model
 
+import org.gdsc.domain.FoodCategory
+
 data class FoodCategoryItem(
-    val name: String,
+    val categoryItem: FoodCategory,
 ) {
     companion object {
-        val INIT = FoodCategoryItem("(필수) 어떤 종류의 식당인가요?")
+        val INIT = FoodCategoryItem(FoodCategory.INIT)
     }
 }
