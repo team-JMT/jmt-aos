@@ -2,7 +2,9 @@ package org.gdsc.data.network
 
 import org.gdsc.data.model.Response
 import org.gdsc.domain.model.RestaurantLocationInfo
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -20,4 +22,9 @@ interface RestaurantAPI {
     suspend fun checkRestaurantRegistration(
         @Path("kakaoSubId") kakaoSubId: String,
     ): Response<Boolean>
+
+    @POST("api/v1/restaurant/location")
+    suspend fun postRestaurantLocationInfo(
+        @Body restaurantLocationInfo: RestaurantLocationInfo,
+    ): Response<String>
 }

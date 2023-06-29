@@ -18,4 +18,8 @@ class RestaurantRepositoryImpl @Inject constructor(
     override suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean {
         return restaurantDataSource.checkRestaurantRegistration(kakaoSubId)
     }
+
+    override suspend fun postRestaurantLocationInfo(restaurantLocationInfo: RestaurantLocationInfo): String {
+        return restaurantDataSource.postRestaurantLocationInfo(restaurantLocationInfo)
+    }
 }

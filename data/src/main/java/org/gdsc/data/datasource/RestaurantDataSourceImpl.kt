@@ -38,4 +38,8 @@ class RestaurantDataSourceImpl @Inject constructor(
         }
         return true
     }
+
+    override suspend fun postRestaurantLocationInfo(restaurantLocationInfo: RestaurantLocationInfo): String {
+        return restaurantAPI.postRestaurantLocationInfo(restaurantLocationInfo).data
+    }
 }
