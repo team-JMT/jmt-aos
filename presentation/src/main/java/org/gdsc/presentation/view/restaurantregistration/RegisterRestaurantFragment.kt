@@ -6,12 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.gdsc.domain.Empty
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRegisterRestaurantBinding
@@ -19,10 +23,12 @@ import org.gdsc.presentation.utils.addAfterTextChangedListener
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.utils.animateExtendWidth
 import org.gdsc.presentation.utils.animateShrinkWidth
+import org.gdsc.presentation.utils.findPath
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
 import org.gdsc.presentation.view.restaurantregistration.adapter.RegisterRestaurantAdapter
 import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterRestaurantViewModel
+import java.io.File
 
 @AndroidEntryPoint
 class RegisterRestaurantFragment : Fragment() {
@@ -59,6 +65,7 @@ class RegisterRestaurantFragment : Fragment() {
         setDrinkPossibilityCheckbox()
         setIntroductionEditText()
         setAddImageButton()
+        setRegisterButton()
         setRecommendDrinkEditText()
         setRecommendMenuEditText()
         setToolbarTitle()
@@ -199,6 +206,29 @@ class RegisterRestaurantFragment : Fragment() {
         )
     }
 
+    private fun setRegisterButton() {
+        binding.registerButton.setOnClickListener {
+
+            val pictures = mutableListOf<MultipartBody.Part>()
+
+            navArgs.imageUri?.forEach {
+
+                val file = File(it.toUri().findPath(requireContext()))
+
+                val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                val body =
+                    MultipartBody.Part.createFormData("pictures", file.name, requestFile)
+
+                pictures.add(body)
+
+            }
+
+            viewModel.registerRestaurant(pictures, navArgs.restaurantLocationInfo) { restaurantId ->
+                // TODO: 등록된 상세 페이지로 이동
+            }
+
+        }
+    }
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
