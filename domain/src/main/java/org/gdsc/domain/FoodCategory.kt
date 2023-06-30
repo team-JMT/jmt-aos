@@ -5,9 +5,9 @@ enum class FoodCategory(val id: Long, val text: String) {
     JAPANESE(2L, "일식"),
     CHINESE(3L, "중식"),
     WESTERN(4L, "양식"),
-    CAFE(6L, "카페"),
-    BAR(7L, "주점"),
-    ETC(8L, "기타"),
+    CAFE(5L, "카페"),
+    BAR(6L, "주점"),
+    ETC(7L, "기타"),
     INIT(-1L, "(필수) 어떤 종류의 식당인가요?");
 
     companion object {
