@@ -1,6 +1,7 @@
 package org.gdsc.domain.repository
 
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.request.RestaurantRegistrationRequest
 
 interface RestaurantRepository {
 
@@ -12,4 +13,6 @@ interface RestaurantRepository {
     suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean
 
     suspend fun postRestaurantLocationInfo(restaurantLocationInfo: RestaurantLocationInfo): String
+
+    suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String
 }

@@ -2,6 +2,7 @@ package org.gdsc.data.repository
 
 import org.gdsc.data.datasource.RestaurantDataSource
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.request.RestaurantRegistrationRequest
 import org.gdsc.domain.repository.RestaurantRepository
 import javax.inject.Inject
 
@@ -21,5 +22,9 @@ class RestaurantRepositoryImpl @Inject constructor(
 
     override suspend fun postRestaurantLocationInfo(restaurantLocationInfo: RestaurantLocationInfo): String {
         return restaurantDataSource.postRestaurantLocationInfo(restaurantLocationInfo)
+    }
+
+    override suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String {
+        return restaurantDataSource.postRestaurantInfo(restaurantRegistrationRequest)
     }
 }
