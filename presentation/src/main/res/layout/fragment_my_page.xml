@@ -21,7 +21,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="132dp"
-                app:layout_collapseMode="parallax">
+                app:layout_collapseMode="none">
 
                 <org.gdsc.presentation.view.custom.FlexibleCornerImageView
                     android:id="@+id/profile_image"
@@ -112,7 +112,8 @@
             android:layout_height="wrap_content"
             app:tabTextColor="@color/grey300"
             app:tabIndicatorColor="@color/grey900"
-            app:tabSelectedTextColor="@color/grey900"/>
+            app:tabSelectedTextColor="@color/grey900"
+            app:tabTextAppearance="@style/text_medium_bold"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager2.widget.ViewPager2
