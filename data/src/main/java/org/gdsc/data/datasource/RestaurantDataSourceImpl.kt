@@ -1,8 +1,10 @@
 package org.gdsc.data.datasource
 
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.gdsc.data.network.RestaurantAPI
 import org.gdsc.domain.RestaurantRegistrationState
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.request.RestaurantRegistrationRequest
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -30,6 +32,7 @@ class RestaurantDataSourceImpl @Inject constructor(
                     RestaurantRegistrationState.NO_EXIST.code -> {
                         return true
                     }
+
                     RestaurantRegistrationState.ALL_EXIST.code -> {
                         return false
                     }
@@ -41,5 +44,21 @@ class RestaurantDataSourceImpl @Inject constructor(
 
     override suspend fun postRestaurantLocationInfo(restaurantLocationInfo: RestaurantLocationInfo): String {
         return restaurantAPI.postRestaurantLocationInfo(restaurantLocationInfo).data
+    }
+
+    override suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String {
+        return restaurantAPI.postRestaurantInfo(
+            mapOf(
+                "name" to restaurantRegistrationRequest.name.toRequestBody(),
+                "introduce" to restaurantRegistrationRequest.introduce.toRequestBody(),
+                "categoryId" to restaurantRegistrationRequest.categoryId.toString().toRequestBody(),
+                "canDrinkLiquor" to restaurantRegistrationRequest.canDrinkLiquor.toString()
+                    .toRequestBody(),
+                "goWellWithLiquor" to restaurantRegistrationRequest.goWellWithLiquor.toRequestBody(),
+                "recommendMenu" to restaurantRegistrationRequest.recommendMenu.toRequestBody(),
+                "restaurantLocationAggregateId" to restaurantRegistrationRequest.restaurantLocationAggregateId.toRequestBody()
+            ),
+            pictures = restaurantRegistrationRequest.pictures
+        ).data.recommendRestaurantAggregateId
     }
 }
