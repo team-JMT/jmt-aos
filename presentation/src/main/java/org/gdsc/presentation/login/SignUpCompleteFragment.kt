@@ -67,7 +67,7 @@ class SignUpCompleteFragment : Fragment() {
             args.imageUri?.let {
 
                 val file = File(it.toUri().findPath(requireContext()))
-                val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                val requestFile = RequestBody.create(MediaType.parse("image/png"), file)
                 val body =
                     MultipartBody.Part.createFormData("profileImgFile", file.name, requestFile)
 
