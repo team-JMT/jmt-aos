@@ -31,6 +31,7 @@
                     android:src="@drawable/dummy_profile"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="20dp"
+                    android:scaleType="centerCrop"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 

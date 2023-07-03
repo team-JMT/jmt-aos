@@ -6,22 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.Empty
+import org.gdsc.domain.model.UserInfo
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentMyPageBinding
+import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.LIKED_RESTAURANT
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.MY_REVIEW
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.REGISTERED_RESTAURANT
+import org.gdsc.presentation.view.mypage.viewmodel.MyPageViewModel
 
 @AndroidEntryPoint
 class MyPageFragment : Fragment() {
 
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: MyPageViewModel by viewModels()
+
+    private var user: UserInfo = UserInfo()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +47,32 @@ class MyPageFragment : Fragment() {
         setTabLayout()
         setCollapsingToolbarOffChangedCallback()
         setMoreIcon()
+        initUserInfo()
 
+        viewLifecycleOwner.repeatWhenUiStarted {
+            viewModel.getUserInfo()
+        }
+
+        viewLifecycleOwner.repeatWhenUiStarted {
+            viewModel.userInfoState.collect {
+                user = it
+                initUserInfo()
+            }
+        }
+    }
+
+    fun initUserInfo() {
+        // 이미지 값을 확인해보면 "/https:://~~~~"로 되어있음. 앞에 슬래쉬 때문에 데이터가 읽히지 않는듯.
+        Glide.with(this)
+            .load(
+                if(user.profileImg.isEmpty()) user.profileImg
+                else user.profileImg.substring(1)
+            )
+            .placeholder(R.drawable.base_profile_image)
+            .into(binding.profileImage)
+
+        binding.nickName.text = user.nickname
+        // TODO:Email
     }
 
     override fun onDestroyView() {

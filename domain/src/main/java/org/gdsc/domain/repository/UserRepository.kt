@@ -3,6 +3,7 @@ package org.gdsc.domain.repository
 import okhttp3.MultipartBody
 import org.gdsc.domain.model.request.NicknameRequest
 import org.gdsc.domain.model.response.NicknameResponse
+import org.gdsc.domain.model.UserInfo
 
 interface UserRepository {
 
@@ -13,4 +14,6 @@ interface UserRepository {
     suspend fun postDefaultProfileImg(): String
 
     suspend fun checkDuplicatedNickname(nickname: String): Boolean
+
+    suspend fun getUserInfo(): UserInfo
 }
