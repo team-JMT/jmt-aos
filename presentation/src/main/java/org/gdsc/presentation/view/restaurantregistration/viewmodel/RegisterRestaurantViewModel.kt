@@ -11,12 +11,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import org.gdsc.domain.Empty
+import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.usecase.PostRestaurantInfoUseCase
+import org.gdsc.domain.usecase.PostRestaurantLocationInfoUseCase
 import org.gdsc.presentation.model.FoodCategoryItem
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterRestaurantViewModel @Inject constructor() : ViewModel() {
+class RegisterRestaurantViewModel @Inject constructor(
+    private val postRestaurantLocationInfoUseCase: PostRestaurantLocationInfoUseCase,
+    private val postRestaurantInfoUseCase: PostRestaurantInfoUseCase
+) : ViewModel() {
 
     private var _foodCategoryState = MutableStateFlow(FoodCategoryItem.INIT)
     val foodCategoryState = _foodCategoryState.asStateFlow()
@@ -55,6 +62,7 @@ class RegisterRestaurantViewModel @Inject constructor() : ViewModel() {
     fun setFoodCategoryState(foodCategoryItem: FoodCategoryItem) {
         _foodCategoryState.value = foodCategoryItem
     }
+
     fun setDrinkPossibilityState() {
         _drinkPossibilityState.value = _drinkPossibilityState.value.not()
     }
@@ -85,6 +93,31 @@ class RegisterRestaurantViewModel @Inject constructor() : ViewModel() {
             _isImageButtonAnimating.value = true
             delay(animationTime)
             _isImageButtonAnimating.value = false
+        }
+    }
+
+    fun registerRestaurant(
+        pictures: List<MultipartBody.Part>,
+        restaurantLocationInfo: RestaurantLocationInfo,
+        actionAfterRegisterSuccess: (String) -> Unit = {}
+    ) {
+        viewModelScope.launch {
+            val restaurantLocationInfoId = postRestaurantLocationInfoUseCase(restaurantLocationInfo)
+
+            val restaurantId = postRestaurantInfoUseCase(
+                name = restaurantLocationInfo.placeName,
+                introduce = introductionTextState.value,
+                categoryId = foodCategoryState.value.categoryItem.id,
+                pictures = pictures,
+                canDrinkLiquor = _drinkPossibilityState.value,
+                goWellWithLiquor = recommendDrinkTextState.value,
+                recommendMenu = recommendMenuListState.value.joinToString(" ") {
+                    "#$it"
+                },
+                restaurantLocationAggregateIdg = restaurantLocationInfoId
+            )
+
+            actionAfterRegisterSuccess(restaurantId)
         }
     }
 

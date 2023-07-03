@@ -21,9 +21,9 @@ class FoodCategoryRecyclerAdapter(
     inner class FoodCategoryViewHolder(private val binding: FoodCategoryItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FoodCategoryItem) {
-            binding.categoryName.text = item.name
+            binding.categoryName.text = item.categoryItem.text
             binding.root.isSelected =
-                selectedItem?.name == item.name
+                selectedItem?.categoryItem?.text == item.categoryItem.text
         }
     }
 
@@ -32,7 +32,7 @@ class FoodCategoryRecyclerAdapter(
             override fun areItemsTheSame(
                 oldItem: FoodCategoryItem,
                 newItem: FoodCategoryItem
-            ) = oldItem.name == newItem.name
+            ) = oldItem.categoryItem.text == newItem.categoryItem.text
 
             override fun areContentsTheSame(
                 oldItem: FoodCategoryItem,

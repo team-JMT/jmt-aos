@@ -22,7 +22,7 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideRestaurantApi(@NormalClient retrofit: Retrofit): RestaurantAPI {
+    fun provideRestaurantApi(@AuthClient retrofit: Retrofit): RestaurantAPI {
         return retrofit.create(RestaurantAPI::class.java)
     }
 
