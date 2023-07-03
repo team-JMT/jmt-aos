@@ -4,6 +4,7 @@ import okhttp3.MultipartBody
 import org.gdsc.data.datasource.UserDataSource
 import org.gdsc.domain.model.request.NicknameRequest
 import org.gdsc.domain.model.response.NicknameResponse
+import org.gdsc.domain.model.UserInfo
 import org.gdsc.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -24,6 +25,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun checkDuplicatedNickname(nickname: String): Boolean {
         return userDataSource.checkDuplicatedNickname(nickname)
+    }
+
+    override suspend fun getUserInfo(): UserInfo {
+        return userDataSource.getUserInfo()
     }
 
 }

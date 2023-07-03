@@ -4,6 +4,7 @@ import okhttp3.MultipartBody
 import org.gdsc.data.model.Response
 import org.gdsc.domain.model.request.NicknameRequest
 import org.gdsc.domain.model.response.NicknameResponse
+import org.gdsc.domain.model.UserInfo
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -25,5 +26,8 @@ interface UserAPI {
 
     @GET("api/v1/user/{nickname}")
     suspend fun checkDuplicatedNickname(@Path(value = "nickname") targetNickname: String): Response<Boolean>
+
+    @GET("api/v1/user/info")
+    suspend fun getUserInfo(): Response<UserInfo>
 
 }
