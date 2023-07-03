@@ -309,7 +309,7 @@
             android:background="@color/grey100" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/select_button"
+            android:id="@+id/register_button"
             style="@style/JmtButton"
             android:layout_width="match_parent"
             android:layout_height="62dp"

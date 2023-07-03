@@ -1,21 +1,21 @@
 package org.gdsc.presentation.view.restaurantregistration
 
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.gdsc.domain.Empty
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRegisterRestaurantBinding
@@ -23,11 +23,12 @@ import org.gdsc.presentation.utils.addAfterTextChangedListener
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.utils.animateExtendWidth
 import org.gdsc.presentation.utils.animateShrinkWidth
+import org.gdsc.presentation.utils.findPath
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
 import org.gdsc.presentation.view.restaurantregistration.adapter.RegisterRestaurantAdapter
-import org.gdsc.presentation.view.restaurantregistration.adapter.RestaurantLocationInfoAdapter
 import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterRestaurantViewModel
+import java.io.File
 
 @AndroidEntryPoint
 class RegisterRestaurantFragment : Fragment() {
@@ -64,6 +65,7 @@ class RegisterRestaurantFragment : Fragment() {
         setDrinkPossibilityCheckbox()
         setIntroductionEditText()
         setAddImageButton()
+        setRegisterButton()
         setRecommendDrinkEditText()
         setRecommendMenuEditText()
         setToolbarTitle()
@@ -76,7 +78,7 @@ class RegisterRestaurantFragment : Fragment() {
 
         repeatWhenUiStarted {
             viewModel.foodCategoryState.collect {
-                binding.foodCategoryText.text = it.name
+                binding.foodCategoryText.text = it.categoryItem.text
             }
         }
 
@@ -160,7 +162,8 @@ class RegisterRestaurantFragment : Fragment() {
 
     private fun setAddImageButton() {
 
-        binding.selectImageCountText.text = getString(R.string.text_counter_max_ten, navArgs.imageUri?.size ?: 0)
+        binding.selectImageCountText.text =
+            getString(R.string.text_counter_max_ten, navArgs.imageUri?.size ?: 0)
 
         navArgs.imageUri?.let { images ->
             adapter.submitList(images)
@@ -193,13 +196,39 @@ class RegisterRestaurantFragment : Fragment() {
 
     private fun setAdapter() {
         binding.selectedImagesRecyclerView.adapter = adapter
-        binding.selectedImagesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.selectedImagesRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun setToolbarTitle() {
-        (requireActivity() as MainActivity).changeToolbarTitle(navArgs.restaurantLocationInfo?.placeName ?: String.Empty)
+        (requireActivity() as MainActivity).changeToolbarTitle(
+            navArgs.restaurantLocationInfo.placeName
+        )
     }
 
+    private fun setRegisterButton() {
+        binding.registerButton.setOnClickListener {
+
+            val pictures = mutableListOf<MultipartBody.Part>()
+
+            navArgs.imageUri?.forEach {
+
+                val file = File(it.toUri().findPath(requireContext()))
+
+                val requestFile = RequestBody.create(MediaType.parse("image/png"), file)
+                val body =
+                    MultipartBody.Part.createFormData("pictures", file.name, requestFile)
+
+                pictures.add(body)
+
+            }
+
+            viewModel.registerRestaurant(pictures, navArgs.restaurantLocationInfo) { restaurantId ->
+                // TODO: 등록된 상세 페이지로 이동
+            }
+
+        }
+    }
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

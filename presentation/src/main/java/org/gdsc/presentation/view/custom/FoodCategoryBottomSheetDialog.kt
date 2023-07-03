@@ -15,7 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
-import org.gdsc.presentation.R
+import org.gdsc.domain.FoodCategory
 import org.gdsc.presentation.databinding.FoodCategoryBottomSheetDialogBinding
 import org.gdsc.presentation.model.FoodCategoryItem
 import org.gdsc.presentation.utils.toPx
@@ -25,7 +25,7 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (FoodCate
     BottomSheetDialogFragment() {
 
     private val items by lazy {
-        resources.getStringArray(R.array.food_categories).map {
+        FoodCategory.ALL.map {
             FoodCategoryItem(it)
         }
     }
