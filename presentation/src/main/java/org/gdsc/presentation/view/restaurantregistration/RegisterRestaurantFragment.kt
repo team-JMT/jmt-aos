@@ -60,6 +60,7 @@ class RegisterRestaurantFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initInfo()
         observeStates()
         setFoodCategoryContainer()
         setDrinkPossibilityCheckbox()
@@ -72,6 +73,13 @@ class RegisterRestaurantFragment : Fragment() {
 
         setAdapter()
 
+    }
+
+    // nullable한 타입이 있다면 핸들링 처리 해주기
+    private fun initInfo() {
+        navArgs.restaurantDetailInfo?.let {
+            viewModel.setRestaurantDetailInfo(it)
+        }
     }
 
     private fun observeStates() {

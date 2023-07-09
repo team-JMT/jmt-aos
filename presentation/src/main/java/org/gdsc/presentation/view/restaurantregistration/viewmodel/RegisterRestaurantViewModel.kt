@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import org.gdsc.domain.Empty
+import org.gdsc.domain.FoodCategory
+import org.gdsc.domain.model.RestaurantDetailInfo
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.usecase.PostRestaurantInfoUseCase
 import org.gdsc.domain.usecase.PostRestaurantLocationInfoUseCase
@@ -94,6 +96,14 @@ class RegisterRestaurantViewModel @Inject constructor(
             delay(animationTime)
             _isImageButtonAnimating.value = false
         }
+    }
+
+    fun setRestaurantDetailInfo(detailData : RestaurantDetailInfo) {
+        _foodCategoryState.value = FoodCategoryItem(FoodCategory.fromId(detailData.categoryId))
+        _drinkPossibilityState.value = detailData.canDrinkLiquor
+        _recommendDrinkTextState.value = detailData.goWellWithLiquor
+        _recommendMenuListState.value = detailData.recommendMenu.split(" ")
+        _introductionTextState.value = detailData.introduce
     }
 
     fun registerRestaurant(
