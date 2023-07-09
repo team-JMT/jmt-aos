@@ -166,7 +166,6 @@ class RegisterRestaurantFragment : Fragment() {
             getString(R.string.text_counter_max_ten, navArgs.imageUri?.size ?: 0)
 
         navArgs.imageUri?.let { images ->
-            adapter.submitList(images)
 
             with(viewModel) {
                 if (isImageButtonAnimating.value.not()) {
@@ -181,6 +180,7 @@ class RegisterRestaurantFragment : Fragment() {
                     }
                 }
             }
+            adapter.submitList(images)
         }
 
         binding.selectImagesButton.setOnClickListener {

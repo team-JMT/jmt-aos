@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.EditText
@@ -56,31 +57,43 @@ fun View.fadeOut() {
 }
 
 fun View.animateShrinkWidth(ratio: Int = 2) {
-    val self = this
-    val anim = ValueAnimator.ofInt(this.width, this.width / ratio).apply {
-        addUpdateListener { valueAnimator ->
-            val value = valueAnimator.animatedValue as Int
-            val layoutParams = self.layoutParams
-            layoutParams.width = value
-            self.layoutParams = layoutParams
+    val self = this@animateShrinkWidth
+    this.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        override fun onPreDraw(): Boolean {
+            self.viewTreeObserver.removeOnPreDrawListener(this)
+            val anim = ValueAnimator.ofInt(self.width, self.width / ratio).apply {
+                addUpdateListener { valueAnimator ->
+                    val value = valueAnimator.animatedValue as Int
+                    val layoutParams = self.layoutParams
+                    layoutParams.width = value
+                    self.layoutParams = layoutParams
+                }
+                duration = 300
+            }
+            anim.start()
+            return true
         }
-        duration = 300
-    }
-    anim.start()
+    })
 }
 
 fun View.animateExtendWidth(ratio: Int = 2) {
-    val self = this
-    val anim = ValueAnimator.ofInt(this.width, this.width * ratio).apply {
-        addUpdateListener { valueAnimator ->
-            val value = valueAnimator.animatedValue as Int
-            val layoutParams = self.layoutParams
-            layoutParams.width = value
-            self.layoutParams = layoutParams
+    val self = this@animateExtendWidth
+    this.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        override fun onPreDraw(): Boolean {
+            self.viewTreeObserver.removeOnPreDrawListener(this)
+            val anim = ValueAnimator.ofInt(self.width, self.width * ratio).apply {
+                addUpdateListener { valueAnimator ->
+                    val value = valueAnimator.animatedValue as Int
+                    val layoutParams = self.layoutParams
+                    layoutParams.width = value
+                    self.layoutParams = layoutParams
+                }
+                duration = 300
+            }
+            anim.start()
+            return true
         }
-        duration = 300
-    }
-    anim.start()
+    })
 }
 
 fun View.getAbsolutePositionOnScreen(): Pair<Float, Float> {
