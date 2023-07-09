@@ -24,7 +24,7 @@ interface RestaurantAPI {
         @Query("page") page: Int,
     ): Response<List<RestaurantLocationInfo>>
 
-    @GET("api/v1/restaurant/{kakaoSubId}")
+    @GET("api/v1/restaurant/registration/{kakaoSubId}")
     suspend fun checkRestaurantRegistration(
         @Path("kakaoSubId") kakaoSubId: String,
     ): Response<Boolean>
