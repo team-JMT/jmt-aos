@@ -18,6 +18,10 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.postProfileImg(file)
     }
 
+    override suspend fun postDefaultProfileImg(): String {
+        return userDataSource.postDefaultProfileImg()
+    }
+
     override suspend fun checkDuplicatedNickname(nickname: String): Boolean {
         return userDataSource.checkDuplicatedNickname(nickname)
     }

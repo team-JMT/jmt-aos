@@ -63,24 +63,27 @@ class SignUpCompleteFragment : Fragment() {
         }
 
         binding.nextBtn.setOnClickListener {
-            // TODO: Base Image
             args.imageUri?.let {
-
                 val file = File(it.toUri().findPath(requireContext()))
                 val requestFile = RequestBody.create(MediaType.parse("image/png"), file)
                 val body =
                     MultipartBody.Part.createFormData("profileImgFile", file.name, requestFile)
-
-                viewModel.requestSignUp(body) {
-                    val intent = Intent(requireContext(), MainActivity::class.java)
-                    startActivity(intent)
-                    requireActivity().finish()
+                viewModel.requestSignUpWithImage(body!!) {
+                    moveToMain()
                 }
-            } ?: kotlin.run {
-                Toast.makeText(requireContext(), "프로필 사진을 선택해주세요.", Toast.LENGTH_SHORT).show()
+            }?: run{
+                viewModel.requestSignUpWithoutImage() {
+                    moveToMain()
+                }
             }
         }
 
+    }
+
+    private fun moveToMain() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     @SuppressLint("ClickableViewAccessibility")
