@@ -20,6 +20,9 @@ interface UserAPI {
     @POST("api/v1/user/profileImg")
     suspend fun postProfileImg(@Part profileImageFile: MultipartBody.Part): Response<String>
 
+    @POST("api/v1/user/defaultProfileImg")
+    suspend fun postDefaultProfileImg(): Response<String>
+
     @GET("api/v1/user/{nickname}")
     suspend fun checkDuplicatedNickname(@Path(value = "nickname") targetNickname: String): Response<Boolean>
 
