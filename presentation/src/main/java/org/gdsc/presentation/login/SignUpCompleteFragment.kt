@@ -67,7 +67,7 @@ class SignUpCompleteFragment : Fragment() {
                 val file = File(it.toUri().findPath(requireContext()))
                 val requestFile = RequestBody.create(MediaType.parse("image/png"), file)
                 val body =
-                    MultipartBody.Part.createFormData("profileImgFile", file.name, requestFile)
+                    MultipartBody.Part.createFormData("profileImg", file.name, requestFile)
                 viewModel.requestSignUpWithImage(body!!) {
                     moveToMain()
                 }
