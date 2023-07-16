@@ -16,6 +16,7 @@ import org.gdsc.domain.usecase.CheckDuplicatedNicknameUseCase
 import org.gdsc.domain.usecase.PostNicknameUseCase
 import org.gdsc.domain.usecase.PostSignUpWithGoogleTokenUseCase
 import org.gdsc.domain.usecase.token.SaveTokenUseCase
+import org.gdsc.domain.usecase.user.PostDefaultProfileImageUseCase
 import org.gdsc.domain.usecase.user.PostProfileImageUseCase
 import javax.inject.Inject
 
@@ -25,7 +26,8 @@ class LoginViewModel @Inject constructor(
     private val saveTokenUseCase: SaveTokenUseCase,
     private val checkDuplicatedNicknameUseCase: CheckDuplicatedNicknameUseCase,
     private val postNicknameUseCase: PostNicknameUseCase,
-    private val postProfileImageUseCase: PostProfileImageUseCase
+    private val postProfileImageUseCase: PostProfileImageUseCase,
+    private val postDefaultProfileImageUseCase: PostDefaultProfileImageUseCase,
 ) : ViewModel() {
 
     private var _nicknameState = MutableStateFlow(String.Empty)
@@ -52,9 +54,17 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun requestSignUp(file: MultipartBody.Part, afterSuccessSignUp: () -> Unit) {
+    fun requestSignUpWithImage(file: MultipartBody.Part, afterSuccessSignUp: () -> Unit) {
         viewModelScope.launch {
             postProfileImageUseCase(file)
+            postNicknameUseCase(nicknameState.value)
+            afterSuccessSignUp()
+        }
+    }
+
+    fun requestSignUpWithoutImage(afterSuccessSignUp: () -> Unit) {
+        viewModelScope.launch {
+            postDefaultProfileImageUseCase()
             postNicknameUseCase(nicknameState.value)
             afterSuccessSignUp()
         }
