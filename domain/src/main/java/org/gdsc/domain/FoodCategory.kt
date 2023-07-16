@@ -24,5 +24,6 @@ enum class FoodCategory(val id: Long, val text: String) {
         }
 
         val ALL = values().toList().dropLast(1)
+        fun fromId(id: Long) = values().first { it.id == id }
     }
 }

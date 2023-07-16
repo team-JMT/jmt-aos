@@ -1,5 +1,6 @@
 package org.gdsc.data.datasource
 
+import android.util.Log
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.gdsc.data.network.RestaurantAPI
 import org.gdsc.domain.RestaurantRegistrationState
@@ -56,9 +57,9 @@ class RestaurantDataSourceImpl @Inject constructor(
                     .toRequestBody(),
                 "goWellWithLiquor" to restaurantRegistrationRequest.goWellWithLiquor.toRequestBody(),
                 "recommendMenu" to restaurantRegistrationRequest.recommendMenu.toRequestBody(),
-                "restaurantLocationAggregateId" to restaurantRegistrationRequest.restaurantLocationAggregateId.toRequestBody()
+                "restaurantLocationId" to restaurantRegistrationRequest.restaurantLocationAggregateId.toRequestBody()
             ),
             pictures = restaurantRegistrationRequest.pictures
-        ).data.recommendRestaurantAggregateId
+        ).data.recommendRestaurantId
     }
 }
