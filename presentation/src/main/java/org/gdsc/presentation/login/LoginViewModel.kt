@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import org.gdsc.domain.Empty
+import org.gdsc.domain.model.response.TokenResponse
 import org.gdsc.domain.usecase.CheckDuplicatedNicknameUseCase
 import org.gdsc.domain.usecase.PostNicknameUseCase
 import org.gdsc.domain.usecase.PostSignUpWithGoogleTokenUseCase
@@ -44,11 +45,11 @@ class LoginViewModel @Inject constructor(
         _nicknameState.value = nickname
     }
 
-    fun postSignUpWithGoogleToken(token: String, afterSuccessSignUp: () -> Unit) {
+    fun postSignUpWithGoogleToken(token: String, afterSuccessSignUp: (TokenResponse) -> Unit) {
         viewModelScope.launch {
             val response = postSignUpWithGoogleTokenUseCase.invoke(token)
             saveTokenUseCase.invoke(response)
-            afterSuccessSignUp()
+            afterSuccessSignUp(response)
         }
     }
 
