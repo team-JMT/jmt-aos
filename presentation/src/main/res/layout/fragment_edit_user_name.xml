@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".login.SignUpNicknameFragment">
+
+    <TextView
+        android:id="@+id/ask_nickname_text"
+        style="@style/text_large_medium"
+        android:textColor="@color/grey500"
+        android:text="@string/title_user_name"
+        android:textAppearance="@style/title_medium_bold"
+        android:lineSpacingExtra="12dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/username_edit_text"
+        style="@style/text_large_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:backgroundTint="@color/grey400"
+        android:drawableRight="@drawable/ic_cancel"
+        app:layout_constraintTop_toBottomOf="@+id/ask_nickname_text"/>
+
+    <LinearLayout
+        android:id="@+id/verify_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="@id/username_edit_text"
+        app:layout_constraintTop_toBottomOf="@id/username_edit_text">
+
+        <ImageView
+            android:id="@+id/verify_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            tools:src="@drawable/check_icon"
+            android:contentDescription="@string/content_description_nickname_verify" />
+        <Space
+            android:layout_width="4dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/verify_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/main600"
+            android:textAppearance="@style/text_small_medium"
+            tools:text="@string/enable_nickname"/>
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:paddingBottom="36dp"
+        android:elevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/next_btn"
+            android:text="@string/next"
+            android:layout_width="0dp"
+            android:layout_height="62dp"
+            style="@style/JmtButton"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

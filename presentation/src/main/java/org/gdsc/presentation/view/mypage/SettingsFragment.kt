@@ -1,12 +1,17 @@
 package org.gdsc.presentation.view.mypage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.Empty
 import org.gdsc.domain.model.UserInfo
@@ -14,6 +19,7 @@ import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentSettingsBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.MainActivity
+import org.gdsc.presentation.view.custom.JmtSnackbar
 import org.gdsc.presentation.view.mypage.viewmodel.MyPageViewModel
 
 @AndroidEntryPoint
@@ -39,6 +45,8 @@ class SettingsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setToolbarTitle()
+
         viewLifecycleOwner.repeatWhenUiStarted {
             viewModel.getUserInfo()
         }
@@ -48,6 +56,30 @@ class SettingsFragment: Fragment() {
                 user = it
                 initUserInfo()
             }
+        }
+
+        binding.btnChangeUserName.setOnClickListener {
+            setFragmentResultListener("requestKey") { _, bundle ->
+                val result = bundle.getString("bundleKey")
+                when(result) {
+                    "success" -> {
+                        JmtSnackbar.make(
+                            binding.root,
+                            getString(R.string.enable_nick_name_change),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    "fail" -> {
+                        JmtSnackbar.make(
+                            binding.root,
+                            getString(R.string.unable_nick_name_change),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+            val navigate = SettingsFragmentDirections.actionSettingsFragmentToEditUserNameFragment()
+            findNavController().navigate(navigate)
         }
     }
 
