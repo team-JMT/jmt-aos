@@ -35,4 +35,6 @@
     <color name="green500">#3CC449</color>
 
     <color name="alpha_60_white">#99FFFFFF</color>
+
+    <color name="text_button_color">#7BAFFD</color>
 </resources>

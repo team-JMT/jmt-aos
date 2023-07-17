@@ -1,12 +1,14 @@
 package org.gdsc.presentation.view.mypage
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,18 +63,16 @@ class MyPageFragment : Fragment() {
         }
     }
 
-    fun initUserInfo() {
-        // 이미지 값을 확인해보면 "/https:://~~~~"로 되어있음. 앞에 슬래쉬 때문에 데이터가 읽히지 않는듯.
+    private fun initUserInfo() {
         Glide.with(this)
             .load(
-                if(user.profileImg.isEmpty()) user.profileImg
-                else user.profileImg.substring(1)
+                if(user.profileImg.isNullOrEmpty()) user.profileImg
+                else user.profileImg
             )
             .placeholder(R.drawable.base_profile_image)
             .into(binding.profileImage)
 
         binding.nickName.text = user.nickname
-        // TODO:Email
     }
 
     override fun onDestroyView() {
@@ -107,8 +107,8 @@ class MyPageFragment : Fragment() {
 
     private fun setMoreIcon() {
         binding.moreIcon.setOnClickListener {
-            // TODO: 프로필 수정 화면으로 이동
-            Toast.makeText(requireContext(), "TODO: 프로필 수정 화면", Toast.LENGTH_SHORT).show()
+            val navigation = MyPageFragmentDirections.actionMyPageFragmentToSettingsFragment()
+            findNavController().navigate(navigation)
         }
     }
 
