@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.JmtEditTextBinding
+import org.gdsc.presentation.utils.ValidationUtils
 import org.gdsc.presentation.utils.addAfterTextChangedListener
 
 // TODO: 공백 처리 정책
@@ -51,7 +52,7 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
             if (inputText.isBlank()) {
                 hideVerifyLayout()
                 // 특수문자 포함 시
-            } else if (inputText.containsSpecialCharacters()) {
+            } else if (ValidationUtils.checkName(inputText)) {
                 showVerifyLayout()
                 verifyIcon.setImageResource(R.drawable.cancel_icon)
                 verifyText.apply {
@@ -97,10 +98,4 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
         binding.verifyIcon.visibility = View.VISIBLE
         binding.verifyText.visibility = View.VISIBLE
     }
-
-    private fun String.containsSpecialCharacters(): Boolean {
-        val regex = Regex("[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s]")
-        return regex.containsMatchIn(this)
-    }
-
 }
