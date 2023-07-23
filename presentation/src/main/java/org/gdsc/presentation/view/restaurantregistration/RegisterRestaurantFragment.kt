@@ -154,15 +154,10 @@ class RegisterRestaurantFragment : Fragment() {
 
                     lifecycleScope.launch(Dispatchers.IO) {
                         viewModel.registerRestaurant(pictures, navArgs.restaurantLocationInfo) { restaurantId ->
-                            // TODO: 등록된 상세 페이지로 이동
-                            Toast(requireContext()).apply {
-                                setText("등록 성공 !! $restaurantId")
-                                duration = Toast.LENGTH_SHORT
-                            }.show()
-                            Log.d("testLog", "등록 성공 !! $restaurantId")
 
                             val intent = Intent(requireContext(), WebViewActivity::class.java)
-                            intent.putExtra("url", "http://localhost:3000/detail/$restaurantId")
+                            // 주소는 변경 되어야 함, 현재는 Lucy LocalHost 테스트
+                            intent.putExtra("url", "http://172.20.10.13:3000/detail/$restaurantId")
                             startActivity(intent)
                         }
                     }
