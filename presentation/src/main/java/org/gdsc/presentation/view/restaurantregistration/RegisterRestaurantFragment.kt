@@ -170,35 +170,31 @@ class RegisterRestaurantFragment : Fragment() {
 
     private fun setAddImageButton() {
 
-        binding.selectImageCountText.text =
-            getString(R.string.text_counter_max_ten, navArgs.imageUri?.size ?: 0)
+        binding.selectImagesButton.setOnClickListener {
+            setFragmentResultListener("pickImages") { _, bundle ->
+                val images = bundle.getStringArray("imagesUri")
+                viewModel.setFoodImagesListState(images ?: arrayOf<String>())
 
-        navArgs.imageUri?.let { images ->
+                if(images.isNullOrEmpty()) return@setFragmentResultListener
 
-            with(viewModel) {
-                if (isImageButtonAnimating.value.not()) {
-                    binding.selectImagesButton.run {
-                        if (isImageButtonExtended.value) {
-                            setIsImageButtonExtended(false)
-                            animateShrinkWidth()
-                        } else {
-                            setIsImageButtonExtended(true)
-                            animateExtendWidth()
+                with(viewModel) {
+                    if (isImageButtonAnimating.value.not()) {
+                        binding.selectImagesButton.run {
+                            if (isImageButtonExtended.value) {
+                                setIsImageButtonExtended(false)
+                                animateShrinkWidth()
+                            }
                         }
                     }
-                }
+                } 
             }
-            adapter.submitList(images)
-        }
 
-        binding.selectImagesButton.setOnClickListener {
+            viewModel.setIsImageButtonExtended(true)
+
             val directions = RegisterRestaurantFragmentDirections
-                .actionRegisterRestaurantFragmentToMultiImagePickerFragment(
-                    navArgs.restaurantLocationInfo
-                )
+                .actionRegisterRestaurantFragmentToMultiImagePickerFragment()
 
             findNavController().navigate(directions)
-
         }
     }
 
@@ -214,29 +210,6 @@ class RegisterRestaurantFragment : Fragment() {
         )
     }
 
-    private fun setRegisterButton() {
-        binding.registerButton.setOnClickListener {
-
-            val pictures = mutableListOf<MultipartBody.Part>()
-
-            navArgs.imageUri?.forEach {
-
-                val file = File(it.toUri().findPath(requireContext()))
-
-                val requestFile = RequestBody.create(MediaType.parse("image/png"), file)
-                val body =
-                    MultipartBody.Part.createFormData("pictures", file.name, requestFile)
-
-                pictures.add(body)
-
-            }
-
-            viewModel.registerRestaurant(pictures, navArgs.restaurantLocationInfo) { restaurantId ->
-                // TODO: 등록된 상세 페이지로 이동
-            }
-
-        }
-    }
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
