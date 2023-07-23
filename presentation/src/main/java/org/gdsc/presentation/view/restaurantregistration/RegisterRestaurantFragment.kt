@@ -1,18 +1,27 @@
 package org.gdsc.presentation.view.restaurantregistration
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.net.toUri
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -25,6 +34,7 @@ import org.gdsc.presentation.utils.animateExtendWidth
 import org.gdsc.presentation.utils.animateShrinkWidth
 import org.gdsc.presentation.utils.findPath
 import org.gdsc.presentation.view.MainActivity
+import org.gdsc.presentation.view.WebViewActivity
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
 import org.gdsc.presentation.view.restaurantregistration.adapter.RegisterRestaurantAdapter
 import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterRestaurantViewModel
@@ -66,7 +76,6 @@ class RegisterRestaurantFragment : Fragment() {
         setDrinkPossibilityCheckbox()
         setIntroductionEditText()
         setAddImageButton()
-        setRegisterButton()
         setRecommendDrinkEditText()
         setRecommendMenuEditText()
         setToolbarTitle()
@@ -77,6 +86,9 @@ class RegisterRestaurantFragment : Fragment() {
 
     // nullable한 타입이 있다면 핸들링 처리 해주기
     private fun initInfo() {
+        navArgs.restaurantLocationInfo.let {
+            viewModel.setRestaurantLocationIno(it)
+        }
         navArgs.restaurantDetailInfo?.let {
             viewModel.setRestaurantDetailInfo(it)
         }
@@ -110,6 +122,51 @@ class RegisterRestaurantFragment : Fragment() {
         repeatWhenUiStarted {
             viewModel.isRecommendMenuFullState.collect {
                 binding.recommendMenuEditText.visibility = if (it.not()) View.VISIBLE else View.GONE
+            }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.isFoodImagesListState.collect { list ->
+
+                binding.selectImageCountText.text =
+                    getString(
+                        R.string.text_counter_max_ten,
+                        viewModel.isFoodImagesListState.value.size ?: 0
+                    )
+
+                adapter.submitList(list)
+
+                binding.registerButton.setOnClickListener {
+
+                    val pictures = mutableListOf<MultipartBody.Part>()
+
+                    list.forEach {
+
+                        val file = File(it.toUri().findPath(requireContext()))
+
+                        val requestFile = RequestBody.create(MediaType.parse("image/png"), file)
+                        val body =
+                            MultipartBody.Part.createFormData("pictures", file.name, requestFile)
+
+                        pictures.add(body)
+
+                    }
+
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        viewModel.registerRestaurant(pictures, navArgs.restaurantLocationInfo) { restaurantId ->
+                            // TODO: 등록된 상세 페이지로 이동
+                            Toast(requireContext()).apply {
+                                setText("등록 성공 !! $restaurantId")
+                                duration = Toast.LENGTH_SHORT
+                            }.show()
+                            Log.d("testLog", "등록 성공 !! $restaurantId")
+
+                            val intent = Intent(requireContext(), WebViewActivity::class.java)
+                            intent.putExtra("url", "http://localhost:3000/detail/$restaurantId")
+                            startActivity(intent)
+                        }
+                    }
+                }
             }
         }
     }

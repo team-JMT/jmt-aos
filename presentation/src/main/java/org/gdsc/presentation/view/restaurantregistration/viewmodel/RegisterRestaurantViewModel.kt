@@ -1,5 +1,7 @@
 package org.gdsc.presentation.view.restaurantregistration.viewmodel
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +28,12 @@ class RegisterRestaurantViewModel @Inject constructor(
     private val postRestaurantLocationInfoUseCase: PostRestaurantLocationInfoUseCase,
     private val postRestaurantInfoUseCase: PostRestaurantInfoUseCase
 ) : ViewModel() {
+
+    private var _restaurantPlaceName = MutableStateFlow("")
+    val restaurantPlaceName = _restaurantPlaceName.asStateFlow()
+
+    private var _restaurantLocationId = MutableStateFlow("")
+    val restaurantLocationId = _restaurantLocationId.asStateFlow()
 
     private var _foodCategoryState = MutableStateFlow(FoodCategoryItem.INIT)
     val foodCategoryState = _foodCategoryState.asStateFlow()
@@ -60,6 +68,14 @@ class RegisterRestaurantViewModel @Inject constructor(
 
     private var _isImageButtonAnimating = MutableStateFlow(false)
     val isImageButtonAnimating = _isImageButtonAnimating.asStateFlow()
+
+    private var _isFoodImagesListState: MutableStateFlow<Array<String>> =
+        MutableStateFlow(emptyArray())
+    val isFoodImagesListState = _isFoodImagesListState.asStateFlow()
+
+    fun setFoodImagesListState(list: Array<String>) {
+        _isFoodImagesListState.value = list
+    }
 
     fun setFoodCategoryState(foodCategoryItem: FoodCategoryItem) {
         _foodCategoryState.value = foodCategoryItem
@@ -104,6 +120,11 @@ class RegisterRestaurantViewModel @Inject constructor(
         _recommendDrinkTextState.value = detailData.goWellWithLiquor
         _recommendMenuListState.value = detailData.recommendMenu.split(" ")
         _introductionTextState.value = detailData.introduce
+    }
+
+    fun setRestaurantLocationIno(restaurantLocationInfo: RestaurantLocationInfo) {
+        _restaurantPlaceName.value = restaurantLocationInfo.placeName
+        _restaurantLocationId.value = restaurantLocationInfo.id
     }
 
     fun registerRestaurant(
