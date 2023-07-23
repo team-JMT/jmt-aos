@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -176,6 +177,10 @@ class MainActivity : AppCompatActivity() {
 
     fun changeToolbarTitle(title: String) {
         binding.toolBarTitle.text = title
+    }
+
+    fun changeToolbarVisible(isVisible: Boolean) {
+        binding.toolBar.isVisible = isVisible
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

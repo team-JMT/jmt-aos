@@ -9,8 +9,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/white"
+        android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent">
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/gallery_button"
@@ -18,7 +17,8 @@
             android:layout_height="wrap_content"
             android:text="최근 항목"
             android:textSize="16sp"
-            android:drawableRight="@drawable/down_arrow_resize"
+            android:drawablePadding="3dp"
+            android:drawableRight="@drawable/ic_down_arrow"
             android:layout_gravity="center"
             android:outlineProvider="none"
             android:background="@color/white"/>

@@ -1,5 +1,6 @@
 package org.gdsc.presentation.view.restaurantregistration
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +11,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import org.gdsc.domain.Empty
 import org.gdsc.domain.model.MediaItem
 import org.gdsc.presentation.R
 import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.view.restaurantregistration.adapter.MultiImagePickerAdapter
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.utils.toPx
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
@@ -44,8 +47,6 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     private val imageList = mutableListOf<MediaItem>()
 
-    private val args: MultiImagePickerFragmentArgs by navArgs()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,7 +56,7 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         return binding.root
     }
     private fun setupPopUpMenu(view: View) {
-        val albumNameList = (listOf("전체") + albumFolderList).toTypedArray()
+        val albumNameList = (listOf(getString(R.string.album_all)) + albumFolderList).toTypedArray()
 
         popupMenu = PopupMenu(requireContext(), view)
         (requireActivity() as MainActivity).menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
@@ -74,7 +75,7 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
             return@setOnMenuItemClickListener true
         }
     }
-    private fun setupMenu() {
+    private fun setMenu() {
         (requireActivity() as MainActivity).addMenuProvider(object: MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.tolbar_menu, menu)
@@ -93,39 +94,36 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         })
     }
 
-    private fun setupView() {
-        binding.multiImageInfoLayout.isVisible = args.multiple
+    private fun setView() {
+        binding.multiImageInfoLayout.isVisible = true
 
         binding.multiImageSaveBtn.text = getString(R.string.select_text_counter_max_ten, imageList.size)
 
         binding.multiImageSaveBtn.setOnClickListener {
-            val navigation = MultiImagePickerFragmentDirections.actionMultiImagePickerFragmentToRegisterRestaurantFragment(
-                restaurantLocationInfo = args.restaurantLocationInfo, imageUri = imageList.map { it.uri }.toTypedArray())
-            findNavController().navigate(navigation)
+            setFragmentResult(
+                "pickImages", bundleOf(
+                    "imagesUri" to (imageList.map { it.uri }.toTypedArray()?: arrayOf())
+                ))
+
+            findNavController().navigateUp()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupMenu()
-        setupAdapter()
-        setupView()
+        setMenu()
+        setAdapter()
+        setView()
 
-        setupActionBar()
+        setBaseToolbarVisible()
+        setActionBar()
 
         // 앨범 선택용 버튼 (팝업 메뉴)
         binding.galleryButton.setOnClickListener { view ->
             setupPopUpMenu(view)
             popupMenu.show()
         }
-        binding.multiImageSaveBtn.setOnClickListener {
-
-            val navigation = MultiImagePickerFragmentDirections.actionMultiImagePickerFragmentToRegisterRestaurantFragment(
-                restaurantLocationInfo = args.restaurantLocationInfo, imageUri = imageList.map { it.uri }.toTypedArray())
-            findNavController().navigate(navigation)
-        }
-
     }
 
     // SignUpCompleteFragment로 선택 이미지와 갤러리명 넘기기
@@ -138,7 +136,7 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         binding.multiImageSaveBtn.text = getString(R.string.select_text_counter_max_ten, imageList.size)
     }
 
-    private fun setupAdapter() {
+    private fun setAdapter() {
 
         imageAdapter = MultiImagePickerAdapter()
         imageAdapter.setListener(this)
@@ -167,12 +165,21 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         imagePickerViewModel.fetchMediaList()
 
     }
-    private fun setupActionBar() {
-        (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
-        val actionBar = (requireActivity() as MainActivity).supportActionBar
-        actionBar?.setDisplayShowTitleEnabled(false)
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-        actionBar?.setHomeAsUpIndicator(R.drawable.back_arrow)
+    private fun setActionBar() {
+
+        val toolbarView = binding.toolbar
+
+        (requireActivity() as MainActivity).setSupportActionBar(toolbarView)
+        requireNotNull((requireActivity() as MainActivity).supportActionBar).apply {
+            setDisplayShowTitleEnabled(false)
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.back_arrow)
+        }
+
+        // for status bar size margin
+        (toolbarView.layoutParams as ViewGroup.MarginLayoutParams).apply {
+            setMargins(0, getStatusBarHeight(), 0, 0)
+        }
     }
 
 
@@ -185,12 +192,9 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
     private fun attachBackPressedCallback() {
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                findNavController().navigate(
-                    MultiImagePickerFragmentDirections
-                        .actionMultiImagePickerFragmentToRegisterRestaurantFragment(
-                        restaurantLocationInfo = args.restaurantLocationInfo
-                        )
-                )
+
+                findNavController().navigateUp()
+
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
@@ -209,5 +213,19 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         imagePickerViewModel.resetGallery()
         callback.remove()
 
+    }
+
+    private fun setBaseToolbarVisible() {
+        (requireActivity() as MainActivity).changeToolbarVisible(false)
+    }
+
+    @SuppressLint("InternalInsetResource", "DiscouragedApi")
+    private fun getStatusBarHeight(): Int {
+        var result = 24.toPx
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = resources.getDimensionPixelSize(resourceId)
+        }
+        return result
     }
 }

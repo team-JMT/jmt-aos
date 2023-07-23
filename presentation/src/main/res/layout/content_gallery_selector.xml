@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:text="최근 항목"
         android:textSize="16sp"
-        android:drawableRight="@drawable/down_arrow_resize"
+        android:drawableRight="@drawable/ic_down_arrow"
         android:layout_gravity="center"
         android:outlineProvider="none"
         android:background="@color/white"
