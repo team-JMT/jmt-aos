@@ -5,6 +5,8 @@
     <string name="confirm">확인</string>
     <string name="next">다음</string>
 
+    <string name="album_all">전체</string>
+
     <string name="enable_nickname">사용 가능한 닉네임입니다.</string>
     <string name="unable_nickname_cause_special_characters">특수 문자는 사용이 불가능합니다.</string>
     <string name="unable_nickname_cause_duplicated">이미 사용중인 닉네임입니다.</string>
