@@ -34,6 +34,9 @@ class LoginViewModel @Inject constructor(
     private var _nicknameState = MutableStateFlow(String.Empty)
     val nicknameState = _nicknameState.asStateFlow()
 
+    private var _profileImageState = MutableStateFlow(String.Empty)
+    val profileImageState = _profileImageState.asStateFlow()
+
     val isNicknameVerified: StateFlow<Boolean>
         get() = nicknameState.map { nickname ->
             nickname.isNotBlank()
@@ -45,6 +48,10 @@ class LoginViewModel @Inject constructor(
 
     fun updateNicknameState(nickname: String) {
         _nicknameState.value = nickname
+    }
+
+    fun updateProfileImageState(profileImage: String) {
+        _profileImageState.value = profileImage
     }
 
     fun postSignUpWithGoogleToken(token: String, afterSuccessSignUp: (TokenResponse) -> Unit) {
