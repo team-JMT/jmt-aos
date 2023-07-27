@@ -14,7 +14,12 @@
         android:id="@+id/my_page_fragment"
         android:name="org.gdsc.presentation.view.mypage.MyPageFragment"
         android:label="fragment_my_page"
-        tools:layout="@layout/fragment_my_page" />
+        tools:layout="@layout/fragment_my_page" >
+
+        <action
+            android:id="@+id/action_myPageFragment_to_settingsFragment"
+            app:destination="@id/settings_fragment" />
+    </fragment>
     <fragment
         android:id="@+id/search_restaurant_location_info_fragment"
         android:name="org.gdsc.presentation.view.restaurantregistration.SearchRestaurantLocationInfoFragment"
@@ -76,4 +81,35 @@
             app:popUpTo="@id/multiImagePicker_fragment"
             app:popUpToInclusive="true"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="org.gdsc.presentation.view.mypage.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings">
+
+        <action
+            android:id="@+id/action_settingsFragment_to_editUserNameFragment"
+            app:destination="@id/edit_user_name_fragment" />
+
+        <action
+            android:id="@+id/action_settingsFragment_to_imagePickerFragment"
+            app:destination="@id/ImagePickerFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/edit_user_name_fragment"
+        android:name="org.gdsc.presentation.view.mypage.EditUserNameFragment"
+        android:label="fragment_edit_user_name"
+        tools:layout="@layout/fragment_edit_user_name">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/ImagePickerFragment"
+        android:name="org.gdsc.presentation.login.ImagePickerFragment"
+        label="fragment_image_picker"
+        tools:layout="@layout/fragment_image_picker" >
+    </fragment>
+
 </navigation>

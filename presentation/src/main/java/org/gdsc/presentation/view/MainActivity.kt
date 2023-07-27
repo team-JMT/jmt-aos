@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import org.gdsc.presentation.BaseActivity
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.ActivityMainBinding
 import org.gdsc.presentation.utils.slideDown
@@ -28,7 +29,7 @@ import org.gdsc.presentation.utils.slideUp
 import org.gdsc.presentation.utils.toPx
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private val navController by lazy {
         requireNotNull(supportFragmentManager.findFragmentById(R.id.nav_host_fragment)).findNavController()

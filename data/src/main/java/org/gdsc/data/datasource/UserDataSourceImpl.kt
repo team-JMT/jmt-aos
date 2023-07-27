@@ -4,6 +4,7 @@ import okhttp3.MultipartBody
 import org.gdsc.data.network.UserAPI
 import org.gdsc.domain.model.request.NicknameRequest
 import org.gdsc.domain.model.response.NicknameResponse
+import org.gdsc.domain.model.UserInfo
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -42,5 +43,16 @@ class UserDataSourceImpl @Inject constructor(
             }
         }
         return true
+    }
+
+    override suspend fun getUserInfo(): UserInfo {
+        kotlin.runCatching {
+            userAPI.getUserInfo().data
+        }.onSuccess {
+            return it
+        }.onFailure {
+            throw it
+        }
+        return UserInfo()
     }
 }

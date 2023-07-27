@@ -142,20 +142,20 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         imageAdapter.setListener(this)
         binding.recyclerviewImage.adapter = imageAdapter
 
-        viewLifecycleOwner.repeatWhenUiStarted {
+        repeatWhenUiStarted {
             imagePickerViewModel.galleryFolderFlow.collect { galleryFolderNames ->
                 // 앨범 선택용 버튼 텍스트 초기화
                 albumFolderList = galleryFolderNames
             }
         }
 
-        viewLifecycleOwner.repeatWhenUiStarted {
+        repeatWhenUiStarted {
             imagePickerViewModel.mediaListStateFlow.collect { mediaList ->
                 imageAdapter.submitData(mediaList)
             }
         }
 
-        viewLifecycleOwner.repeatWhenUiStarted {
+        repeatWhenUiStarted {
             imagePickerViewModel.album.collect {
                 binding.galleryButton.text = it
             }

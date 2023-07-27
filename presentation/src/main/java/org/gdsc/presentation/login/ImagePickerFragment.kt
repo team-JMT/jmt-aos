@@ -13,11 +13,13 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.model.MediaItem
+import org.gdsc.presentation.BaseActivity
 import org.gdsc.presentation.R
 import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.adapter.SingleImagePickerAdapter
@@ -42,8 +44,6 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     private lateinit var imageAdapter: SingleImagePickerAdapter
 
     private var albumFolderList: List<String> = listOf()
-
-    private val args: ImagePickerFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,7 +73,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         }
     }
     private fun setupMenu() {
-        (requireActivity() as LoginActivity).addMenuProvider(object: MenuProvider {
+        (requireActivity() as BaseActivity).addMenuProvider(object: MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.tolbar_menu, menu)
             }
@@ -92,7 +92,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     }
 
     private fun setupView() {
-        binding.multiImageInfoLayout.isVisible = args.multiple
+        binding.multiImageInfoLayout.isVisible = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,8 +115,12 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     // SignUpCompleteFragment로 선택 이미지와 갤러리명 넘기기
     override fun onImageClick(mediaItem: MediaItem) {
         val imageUri = mediaItem.uri
-        val navigation = ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment(imageUri)
-        findNavController().navigate(navigation)
+
+        setFragmentResult("pickImage", Bundle().apply {
+            putString("imageUri", imageUri)
+        })
+
+        findNavController().navigateUp()
     }
 
     private fun setupAdapter() {
@@ -125,20 +129,20 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         imageAdapter.setListener(this)
         binding.recyclerviewImage.adapter = imageAdapter
 
-        viewLifecycleOwner.repeatWhenUiStarted {
+        repeatWhenUiStarted {
             imagePickerViewModel.galleryFolderFlow.collect { galleryFolderNames ->
                 // 앨범 선택용 버튼 텍스트 초기화
                 albumFolderList = galleryFolderNames
             }
         }
 
-        viewLifecycleOwner.repeatWhenUiStarted {
+        repeatWhenUiStarted {
             imagePickerViewModel.mediaListStateFlow.collect { mediaList ->
                 imageAdapter.submitData(mediaList)
             }
         }
 
-        viewLifecycleOwner.repeatWhenUiStarted {
+        repeatWhenUiStarted {
             imagePickerViewModel.album.collect {
                 binding.galleryButton.text = it
             }
@@ -149,8 +153,8 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     }
     private fun setupActionBar() {
-        (requireActivity() as LoginActivity).setSupportActionBar(binding.toolbar)
-        val actionBar = (requireActivity() as LoginActivity).supportActionBar
+        (requireActivity() as BaseActivity).setSupportActionBar(binding.toolbar)
+        val actionBar = (requireActivity() as BaseActivity).supportActionBar
         actionBar?.setDisplayShowTitleEnabled(false)
         actionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setHomeAsUpIndicator(R.drawable.finish)
@@ -166,8 +170,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     private fun attachBackPressedCallback() {
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val navigations = ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment()
-                findNavController().navigate(navigations)
+                findNavController().navigateUp()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
