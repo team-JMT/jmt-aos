@@ -104,8 +104,8 @@
             app:destination="@id/edit_user_name_fragment" />
 
         <action
-            android:id="@+id/action_settingsFragment_to_multiImagePickerFragment"
-            app:destination="@id/multiImagePicker_fragment"/>
+            android:id="@+id/action_settingsFragment_to_imagePickerFragment"
+            app:destination="@id/ImagePickerFragment"/>
     </fragment>
 
     <fragment
@@ -115,4 +115,12 @@
         tools:layout="@layout/fragment_edit_user_name">
 
     </fragment>
+
+    <fragment
+        android:id="@+id/ImagePickerFragment"
+        android:name="org.gdsc.presentation.login.ImagePickerFragment"
+        label="fragment_image_picker"
+        tools:layout="@layout/fragment_image_picker" >
+    </fragment>
+
 </navigation>

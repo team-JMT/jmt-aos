@@ -1,17 +1,28 @@
 package org.gdsc.presentation.view.restaurantregistration
 
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -23,7 +34,9 @@ import org.gdsc.presentation.utils.addAfterTextChangedListener
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.utils.animateExtendWidth
 import org.gdsc.presentation.utils.animateShrinkWidth
+import org.gdsc.presentation.utils.checkMediaPermissions
 import org.gdsc.presentation.utils.findPath
+import org.gdsc.presentation.utils.showMediaPermissionsDialog
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
 import org.gdsc.presentation.view.restaurantregistration.adapter.RegisterRestaurantAdapter
@@ -49,6 +62,27 @@ class RegisterRestaurantFragment : Fragment() {
     }
 
     private val adapter by lazy { RegisterRestaurantAdapter() }
+
+    private val onSuccess: () -> Unit = {
+        val directions = RegisterRestaurantFragmentDirections
+            .actionRegisterRestaurantFragmentToMultiImagePickerFragment(
+                navArgs.restaurantLocationInfo
+            )
+
+        findNavController().navigate(directions)
+    }
+
+    private val requestPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { isGranted ->
+        if(isGranted.all{ it.value }) {
+            onSuccess.invoke()
+        }else{
+            this.showMediaPermissionsDialog()
+        }
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -192,13 +226,9 @@ class RegisterRestaurantFragment : Fragment() {
         }
 
         binding.selectImagesButton.setOnClickListener {
-            val directions = RegisterRestaurantFragmentDirections
-                .actionRegisterRestaurantFragmentToMultiImagePickerFragment(
-                    navArgs.restaurantLocationInfo
-                )
-
-            findNavController().navigate(directions)
-
+            this.checkMediaPermissions(
+                requestPermissionsLauncher
+            ) { onSuccess.invoke() }
         }
     }
 
