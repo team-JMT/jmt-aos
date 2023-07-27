@@ -40,11 +40,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-//
-//    lintOptions {
-//        checkReleaseBuilds false
-//        abortOnError false
-//    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

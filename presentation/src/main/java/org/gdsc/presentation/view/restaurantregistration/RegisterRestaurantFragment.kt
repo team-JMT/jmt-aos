@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -20,8 +20,6 @@ import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -30,9 +28,10 @@ import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRegisterRestaurantBinding
 import org.gdsc.presentation.utils.addAfterTextChangedListener
 import org.gdsc.presentation.utils.repeatWhenUiStarted
-import org.gdsc.presentation.utils.animateExtendWidth
 import org.gdsc.presentation.utils.animateShrinkWidth
+import org.gdsc.presentation.utils.checkMediaPermissions
 import org.gdsc.presentation.utils.findPath
+import org.gdsc.presentation.utils.showMediaPermissionsDialog
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.WebViewActivity
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
@@ -59,6 +58,26 @@ class RegisterRestaurantFragment : Fragment() {
     }
 
     private val adapter by lazy { RegisterRestaurantAdapter() }
+
+    private val onSuccess: () -> Unit = {
+
+        val directions = RegisterRestaurantFragmentDirections
+            .actionRegisterRestaurantFragmentToMultiImagePickerFragment()
+
+        findNavController().navigate(directions)
+    }
+
+    private val requestPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { isGranted ->
+        if(isGranted.all{ it.value }) {
+            onSuccess.invoke()
+        }else{
+            this.showMediaPermissionsDialog()
+        }
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,12 +95,35 @@ class RegisterRestaurantFragment : Fragment() {
         setDrinkPossibilityCheckbox()
         setIntroductionEditText()
         setAddImageButton()
+        setImageList()
         setRecommendDrinkEditText()
         setRecommendMenuEditText()
         setToolbarTitle()
 
         setAdapter()
 
+    }
+
+    private fun setImageList() {
+        setFragmentResultListener("pickImages") { _, bundle ->
+            val images = bundle.getStringArray("imagesUri")
+            viewModel.setFoodImagesListState(images ?: arrayOf<String>())
+
+            Log.d("testLog", "onSuccess")
+            if (images.isNullOrEmpty()) return@setFragmentResultListener
+            Log.d("testLog", "images: ${images.size}")
+
+            with(viewModel) {
+                if (isImageButtonAnimating.value.not()) {
+                    binding.selectImagesButton.run {
+                        if (isImageButtonExtended.value) {
+                            setIsImageButtonExtended(false)
+                            animateShrinkWidth()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // nullable한 타입이 있다면 핸들링 처리 해주기
@@ -221,32 +263,12 @@ class RegisterRestaurantFragment : Fragment() {
     }
 
     private fun setAddImageButton() {
-
         binding.selectImagesButton.setOnClickListener {
-            setFragmentResultListener("pickImages") { _, bundle ->
-                val images = bundle.getStringArray("imagesUri")
-                viewModel.setFoodImagesListState(images ?: arrayOf<String>())
-
-                if(images.isNullOrEmpty()) return@setFragmentResultListener
-
-                with(viewModel) {
-                    if (isImageButtonAnimating.value.not()) {
-                        binding.selectImagesButton.run {
-                            if (isImageButtonExtended.value) {
-                                setIsImageButtonExtended(false)
-                                animateShrinkWidth()
-                            }
-                        }
-                    }
-                } 
-            }
+            this.checkMediaPermissions(
+                requestPermissionsLauncher
+            ) { onSuccess.invoke() }
 
             viewModel.setIsImageButtonExtended(true)
-
-            val directions = RegisterRestaurantFragmentDirections
-                .actionRegisterRestaurantFragmentToMultiImagePickerFragment()
-
-            findNavController().navigate(directions)
         }
     }
 

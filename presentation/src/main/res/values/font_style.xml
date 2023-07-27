@@ -52,4 +52,56 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+
+    <style name="pretendard_bold_clickable" parent="pretendard_bold">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="pretendard_medium_clickable" parent="pretendard_medium">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="title_large_bold_clickable" parent="title_large_bold">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="title_medium_bold_clickable" parent="title_medium_bold">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="title_medium_medium_clickable" parent="title_medium_medium">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="title_small_bold_clickable" parent="title_small_bold">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="title_small_medium_clickable" parent="title_small_medium">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="text_large_bold_clickable" parent="text_large_bold">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="text_large_medium_clickable" parent="text_large_medium">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="text_medium_bold_clickable" parent="text_medium_bold">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="text_medium_medium_clickable" parent="text_medium_medium">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="text_small_bold_clickable" parent="text_small_bold">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="text_small_medium_clickable" parent="text_small_medium">
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
 </resources>
