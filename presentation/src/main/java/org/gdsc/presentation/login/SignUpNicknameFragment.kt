@@ -47,7 +47,7 @@ class SignUpNicknameFragment : Fragment() {
     }
 
     private fun observeNicknameValidation() {
-        viewLifecycleOwner.repeatWhenUiStarted {
+        repeatWhenUiStarted {
             viewModel.isNicknameVerified.collect { isVerified ->
                 binding.nextBtn.isEnabled = isVerified
             }
