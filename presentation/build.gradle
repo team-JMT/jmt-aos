@@ -24,7 +24,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("../../jmtKey.jks")
+            storeFile file("../jmtKey")
             storePassword "$System.env.KEYSTORE_PASSWORD"
             keyAlias "$System.env.KEY_ALIAS"
             keyPassword "$System.env.KEY_PASSWORD"
@@ -38,7 +38,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+
+            resValue("string", "my_web_client_id", properties['MyWebClientID'])
+            resValue("string", "ios_client_id", properties['IOSClientID'])
         }
     }
     compileOptions {
