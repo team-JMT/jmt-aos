@@ -58,6 +58,12 @@ class SettingsFragment: Fragment() {
             }
         }
 
+        binding.profileImageButton.setOnClickListener {
+            setFragmentResultListener("pickImages") { _, bundle ->
+                val result = bundle.getStringArray("imagesUri")
+            }
+        }
+
         binding.btnChangeUserName.setOnClickListener {
             setFragmentResultListener("requestKey") { _, bundle ->
                 val result = bundle.getString("bundleKey")
@@ -78,6 +84,7 @@ class SettingsFragment: Fragment() {
                     }
                 }
             }
+
             val navigate = SettingsFragmentDirections.actionSettingsFragmentToEditUserNameFragment()
             findNavController().navigate(navigate)
         }

@@ -102,6 +102,10 @@
         <action
             android:id="@+id/action_settingsFragment_to_editUserNameFragment"
             app:destination="@id/edit_user_name_fragment" />
+
+        <action
+            android:id="@+id/action_settingsFragment_to_multiImagePickerFragment"
+            app:destination="@id/multiImagePicker_fragment"/>
     </fragment>
 
     <fragment
