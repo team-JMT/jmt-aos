@@ -1,7 +1,14 @@
 package org.gdsc.presentation.utils
 
+import android.Manifest
 import android.animation.ValueAnimator
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -9,6 +16,10 @@ import android.view.ViewTreeObserver
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.EditText
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 fun EditText.addAfterTextChangedListener(block: (String) -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
@@ -100,6 +111,51 @@ fun View.getAbsolutePositionOnScreen(): Pair<Float, Float> {
     val location = IntArray(2)
     getLocationOnScreen(location)
     return Pair(location[0].toFloat(), location[1].toFloat())
+}
+
+fun Fragment.showMediaPermissionsDialog() {
+    MaterialAlertDialogBuilder(requireContext())
+        .setTitle("갤러 접근 권한 요청")
+        .setMessage("갤러리 접근 권한 설정 창으로 이동할까요?")
+        .setPositiveButton("네") { _, _ ->
+
+            startActivity(
+                Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:${activity?.packageName}")
+                )
+            )
+        }.setNegativeButton("아니오") { _, _ ->
+            Toast.makeText(requireContext(), "갤러리 접근 권한이 꼭 필요합니다.", Toast.LENGTH_SHORT).show()
+        }.show()
+}
+
+fun Fragment.checkMediaPermissions(
+    requestPermissionsLauncher: androidx.activity.result.ActivityResultLauncher<Array<String>>,
+    onSuccess: () -> Unit
+) {
+
+    val requiredPermissionsTIRAMISU = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+    val requiredPermissionsOTHER = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+
+
+    fun hasAllPermissions(context: Context, requiredPermissions: Array<String>) = requiredPermissions.all {
+        ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun checkPermission(requiredPermissions:Array<String>) {
+        if(hasAllPermissions(requireContext(), requiredPermissions)) {
+            onSuccess.invoke()
+        }else{
+            requestPermissionsLauncher.launch(requiredPermissions)
+        }
+    }
+
+    if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
+        checkPermission(requiredPermissionsTIRAMISU)
+    } else{
+        checkPermission(requiredPermissionsOTHER)
+    }
 }
 
 val Int.toPx: Int
