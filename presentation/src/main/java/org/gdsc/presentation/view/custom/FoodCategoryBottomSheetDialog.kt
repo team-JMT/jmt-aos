@@ -5,10 +5,14 @@ import android.app.Dialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet.Constraint
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -18,6 +22,7 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import org.gdsc.domain.FoodCategory
 import org.gdsc.presentation.databinding.FoodCategoryBottomSheetDialogBinding
 import org.gdsc.presentation.model.FoodCategoryItem
+import org.gdsc.presentation.utils.toDp
 import org.gdsc.presentation.utils.toPx
 import org.gdsc.presentation.view.restaurantregistration.adapter.FoodCategoryRecyclerAdapter
 
@@ -70,6 +75,22 @@ class FoodCategoryBottomSheetDialog(private val onSelectButtonClicked: (FoodCate
                         peekHeight = (resources.displayMetrics.heightPixels * 0.4).toInt()
                         maxHeight = (resources.displayMetrics.heightPixels * 0.85).toInt()
                     }
+                }
+
+                val dialog = it as BottomSheetDialog
+                val container = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.container)
+
+                binding.buttonContainer.run {
+                    (parent as ViewGroup).removeView(this)
+
+                    layoutParams = FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        height,
+                    ).apply {
+                        gravity = Gravity.BOTTOM
+                    }
+
+                    container?.addView(this)
                 }
             }
         }
