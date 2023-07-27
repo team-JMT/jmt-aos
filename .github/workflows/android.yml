@@ -25,14 +25,22 @@ jobs:
       - name: Create Local Properties
         run: echo '${{ secrets.LOCAL_PROPERTIES }}' > ./local.properties
 
-      - name: Build debug APK
-        run: bash ./gradlew assembleDebug --stacktrace
+      - name: Set up Keystore
+        run: |
+          echo "${{ secrets.KEY_STORE }}" | base64 --decode > jmtKey
+
+      - name: Build release APK
+        run: bash ./gradlew assembleRelease --stacktrace
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
           name: app
-          path: app/build/outputs/apk/debug
+          path: app/build/outputs/apk/release
 
       - name: Slack - Upload APK
         uses: MeilCli/slack-upload-file@v3
@@ -40,6 +48,9 @@ jobs:
           slack_token: ${{ secrets.SLACK_TOKEN }}
           channel_id: ${{ secrets.SLACK_CHANNEL }}
           initial_comment: 'APK File Upload'
-          file_path: 'app/build/outputs/apk/debug/app-debug.apk'
-          file_name: 'app-debug.apk'
+          file_path: 'app/build/outputs/apk/release/app-release.apk'
+          file_name: 'app-release.apk'
           file_type: 'apk'
+          
+      - name: Clean up Keystore
+        run: rm jmtKey
