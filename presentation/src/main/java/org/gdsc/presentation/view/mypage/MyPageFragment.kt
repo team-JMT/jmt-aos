@@ -32,8 +32,6 @@ class MyPageFragment : Fragment() {
 
     private val viewModel: MyPageViewModel by viewModels()
 
-    private var user: UserInfo = UserInfo()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,34 +43,45 @@ class MyPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initUserInfo()
         setPager()
         setTabLayout()
         setCollapsingToolbarOffChangedCallback()
         setMoreIcon()
-        initUserInfo()
+        observeState()
 
-        viewLifecycleOwner.repeatWhenUiStarted {
-            viewModel.getUserInfo()
-        }
-
-        viewLifecycleOwner.repeatWhenUiStarted {
-            viewModel.userInfoState.collect {
-                user = it
-                initUserInfo()
-            }
-        }
     }
 
     private fun initUserInfo() {
-        Glide.with(this)
-            .load(
-                if(user.profileImg.isNullOrEmpty()) user.profileImg
-                else user.profileImg
-            )
-            .placeholder(R.drawable.base_profile_image)
-            .into(binding.profileImage)
+        repeatWhenUiStarted {
+            viewModel.getUserInfo()
+        }
+    }
 
-        binding.nickName.text = user.nickname
+    private fun observeState() {
+        repeatWhenUiStarted {
+            viewModel.nicknameState.collect {
+                binding.nickName.text = it
+            }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.profileImageState.collect {
+                Glide.with(this)
+                    .load(it)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(binding.profileImage)
+            }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.profileImageState.collect {
+                Glide.with(this)
+                    .load(it)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(binding.profileImage)
+            }
+        }
     }
 
     override fun onDestroyView() {
