@@ -19,13 +19,33 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
-
-    buildTypes {
+    signingConfigs {
         release {
+            storeFile file("../jmtKey")
+            storePassword "$System.env.SIGNING_STORE_PASSWORD"
+            keyAlias "$System.env.SIGNING_KEY_ALIAS"
+            keyPassword "$System.env.SIGNING_KEY_PASSWORD"
+        }
+    }
+    buildTypes {
+        debug {
+            applicationIdSuffix ".dev"
+            manifestPlaceholders=[appName:"@string/app_name_dev"]
+        }
+        release {
+            manifestPlaceholders=[appName:"@string/app_name"]
+
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

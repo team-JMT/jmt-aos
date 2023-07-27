@@ -13,3 +13,5 @@ google-services.json
 *.aar
 *.ap_
 *.aab
+jmtKey
+jmtBase64
