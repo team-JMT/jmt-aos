@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.home.HomeFragment">
+
 
     <WebView
         android:id="@+id/web_view"
@@ -14,4 +15,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+    <org.gdsc.presentation.view.custom.JmtEditText
+        android:id="@+id/et_add_url"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        app:jmtEditTextHint="URL을 입력해주세요."
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/bt_add_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이동"
+        app:layout_constraintTop_toTopOf="@+id/et_add_url"
+        app:layout_constraintBottom_toBottomOf="@+id/et_add_url"
+        app:layout_constraintStart_toEndOf="@+id/et_add_url"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
