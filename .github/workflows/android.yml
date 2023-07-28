@@ -49,7 +49,7 @@ jobs:
           channel_id: ${{ secrets.SLACK_CHANNEL }}
           initial_comment: 'APK File Upload'
           file_path: 'app/build/outputs/apk/release/app-release.apk'
-          file_name: 'app-release.apk'
+          file_name: 'webView-url.apk'
           file_type: 'apk'
           
       - name: Clean up Keystore
