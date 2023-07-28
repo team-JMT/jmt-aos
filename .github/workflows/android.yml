@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "develop", "feat/add_url" ]
   pull_request:
     branches: [ "develop" ]
 
