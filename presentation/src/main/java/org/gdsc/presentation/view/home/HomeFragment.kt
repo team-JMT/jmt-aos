@@ -33,6 +33,12 @@ class HomeFragment : Fragment() {
             settings.javaScriptEnabled = true
             webViewClient = WebViewClient()
         }
+        
+        binding.btAddUrl.setOnClickListener {
+            val intent = Intent(requireContext(), WebViewActivity::class.java)
+            intent.putExtra("url", binding.etAddUrl.text)
+            startActivity(intent)
+        }
     }
 
     override fun onDestroyView() {
