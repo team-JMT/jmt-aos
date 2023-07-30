@@ -97,7 +97,7 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
         initBottomNavigationView()
         setToolbar()
-        setToFullPage()
+//        setToFullPage()
     }
 
     private fun initBottomNavigationView() {
@@ -158,9 +158,9 @@ class MainActivity : BaseActivity() {
         }
 
         // for status bar size margin
-        (toolBarView.layoutParams as ViewGroup.MarginLayoutParams).apply {
-            setMargins(0, getStatusBarHeight(), 0, 0)
-        }
+//        (toolBarView.layoutParams as ViewGroup.MarginLayoutParams).apply {
+//            setMargins(0, getStatusBarHeight(), 0, 0)
+//        }
 
     }
 
