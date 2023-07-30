@@ -1,6 +1,7 @@
 package org.gdsc.presentation.view.home
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.webkit.WebViewClient
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.databinding.FragmentHomeBinding
+import org.gdsc.presentation.view.WebViewActivity
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
