@@ -47,20 +47,16 @@ class LoginFragment : Fragment() {
 
     // TODO: 가입 여부 확인 후 가입되어있으면 메인 화면으로 그렇지 않으면 가입 화면으로 이동
     private fun setLoginButton() {
-        binding.googleLoginBtn.apply {
-
-            val child = getChildAt(0) as? TextView
-            child?.text = context.getString(R.string.continue_with_google)
-
-            setOnClickListener {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    startForResult.launch(
-                        IntentSenderRequest.Builder(loginManager.signInIntent(requireActivity()))
-                            .build()
-                    )
-                }
+        binding.googleLoginBtnTemplate.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                startForResult.launch(
+                    IntentSenderRequest.Builder(loginManager.signInIntent(requireActivity()))
+                        .build()
+                )
             }
         }
+
+        binding.googleLoginBtnText.text = context?.getString(R.string.continue_with_google)
 
         // TODO: Apple Login
         binding.appleLoginBtn.setOnClickListener {
