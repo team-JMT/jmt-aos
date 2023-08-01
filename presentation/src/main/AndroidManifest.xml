@@ -12,10 +12,13 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application>
+        <activity android:name=".login.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true" />
         <activity
             android:name=".view.MainActivity"
             android:windowSoftInputMode="adjustResize"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name="org.gdsc.presentation.view.WebViewActivity"
             android:exported="false" />
