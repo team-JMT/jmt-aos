@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.model.MediaItem
 import org.gdsc.presentation.BaseActivity
@@ -57,7 +56,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         val albumNameList = (listOf("전체") + albumFolderList).toTypedArray()
 
         popupMenu = PopupMenu(requireContext(), view)
-        (requireActivity() as LoginActivity).menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
+        (requireActivity() as BaseActivity).menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
 
         for(i in albumNameList.indices) {
             // 갤러리 아이템 리스트 초기화
