@@ -6,6 +6,8 @@ import org.gdsc.domain.model.request.GoogleLoginRequest
 import org.gdsc.domain.model.request.AppleLoginRequest
 import org.gdsc.domain.model.response.TokenResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.HTTP
 import retrofit2.http.POST
 
 interface LoginAPI {

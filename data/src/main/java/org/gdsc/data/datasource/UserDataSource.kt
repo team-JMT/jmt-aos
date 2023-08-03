@@ -16,4 +16,8 @@ interface UserDataSource {
     suspend fun checkDuplicatedNickname(nickname: String): Boolean
 
     suspend fun getUserInfo(): UserInfo
+
+    suspend fun postUserLogout(refreshToken: String): String
+
+    suspend fun postUserSignout(): String
 }
