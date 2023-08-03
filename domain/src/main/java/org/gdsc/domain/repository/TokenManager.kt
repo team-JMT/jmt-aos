@@ -13,5 +13,7 @@ interface TokenManager {
     suspend fun getGrantType(): String
 
     suspend fun getRefreshToken(): String
+
+    suspend fun clearTokenInfo()
     
 }

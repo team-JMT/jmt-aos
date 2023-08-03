@@ -38,7 +38,18 @@ class AccountManagementFragment: Fragment() {
         setToolbarTitle()
 
         binding.signOutLay.setOnClickListener {
-
+            JmtAlert(requireContext())
+                .title("정말로 탈퇴하시겠어요?")
+                .content("계정 정보를 포함한 모든 데이터가\n" +
+                        "영구적으로 삭제되며 복구가 어려워요.")
+                .multiButton {
+                    leftButton("탈퇴하기", JmtAlert.FILL_OUTLINE) {
+                        viewModel.signout {
+                            startActivity(Intent(requireContext(), LoginActivity::class.java))
+                        }
+                    }
+                    rightButton("유지하기", JmtAlert.FILL_FILL)
+                }.show()
         }
 
         binding.tvLogOut.setOnClickListener {

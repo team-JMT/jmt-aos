@@ -16,6 +16,7 @@ class TokenManagerImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ): TokenManager {
 
+
     override suspend fun saveTokenInfo(tokenResponse: TokenResponse) {
         dataStore.edit { preferences ->
             preferences[ACCESS_TOKEN] = tokenResponse.accessToken
@@ -47,6 +48,15 @@ class TokenManagerImpl @Inject constructor(
         return dataStore.data.map { preferences ->
             preferences[REFRESH_TOKEN]
         }.first() ?: String.Empty
+    }
+
+    override suspend fun clearTokenInfo() {
+        dataStore.edit { preferences ->
+            preferences.remove(ACCESS_TOKEN)
+            preferences.remove(ACCESS_TOKEN_EXPIRES_IN)
+            preferences.remove(GRANT_TYPE)
+            preferences.remove(REFRESH_TOKEN)
+        }
     }
 
     companion object {

@@ -15,6 +15,9 @@ import org.gdsc.domain.model.UserInfo
 import org.gdsc.domain.model.response.NicknameResponse
 import org.gdsc.domain.usecase.CheckDuplicatedNicknameUseCase
 import org.gdsc.domain.usecase.PostNicknameUseCase
+import org.gdsc.domain.usecase.PostUserLogoutUseCase
+import org.gdsc.domain.usecase.token.ClearTokenInfoUseCase
+import org.gdsc.domain.usecase.token.GetRefreshTokenUseCase
 import org.gdsc.domain.usecase.user.GetUserInfoUseCase
 import org.gdsc.domain.usecase.user.PostDefaultProfileImageUseCase
 import org.gdsc.domain.usecase.user.PostProfileImageUseCase
@@ -27,6 +30,9 @@ class MyPageViewModel @Inject constructor(
     private val checkDuplicatedNicknameUseCase: CheckDuplicatedNicknameUseCase,
     private val postProfileImageUseCase: PostProfileImageUseCase,
     private val postDefaultProfileImageUseCase: PostDefaultProfileImageUseCase,
+    private val postUserLogoutUseCase: PostUserLogoutUseCase,
+    private val getRefreshTokenUseCase: GetRefreshTokenUseCase,
+    private val clearTokenInfoUseCase: ClearTokenInfoUseCase,
 ): ViewModel() {
 
     private var _sortTypeState = MutableStateFlow(SortType.INIT)
@@ -98,4 +104,36 @@ class MyPageViewModel @Inject constructor(
             afterSuccessSignUp()
         }
     }
+
+    fun logout(onCallback: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val refreshToken = getRefreshTokenUseCase.invoke()
+
+            val response = async { postUserLogoutUseCase(
+                refreshToken
+            ) }
+
+            Log.d("testLog", "code : ${response.await()}")
+
+            when(response.await()) {
+                "LOGOUT_SUCCESS" -> {
+                    clearTokenInfoUseCase.invoke()
+                    onCallback.invoke()
+                }
+                "REISSUE_FAIL" -> {
+                    Log.e("MyPageViewModel", "RefreshToken이 유효하지 않습니다.")
+                }
+                "UNAUTHORIZED" -> {
+                    Log.e("MyPageViewModel", "인증이 필요합니다.")
+                }
+
+                else -> {
+                    Log.e("MyPageViewModel", "알 수 없는 오류가 발생했습니다.")
+                }
+            }
+
+            onCallback()
+        }
+    }
+
 }
