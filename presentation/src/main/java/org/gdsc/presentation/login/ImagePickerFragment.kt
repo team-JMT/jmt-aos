@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -16,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.model.MediaItem
 import org.gdsc.presentation.BaseActivity
@@ -25,16 +25,14 @@ import org.gdsc.presentation.adapter.GalleryImageClickListener
 import org.gdsc.presentation.adapter.SingleImagePickerAdapter
 import org.gdsc.presentation.databinding.FragmentImagePickerBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
 
 @AndroidEntryPoint
 class ImagePickerFragment : Fragment(), GalleryImageClickListener {
-    private lateinit var callback: OnBackPressedCallback
 
     private lateinit var popupMenu:PopupMenu
-
-    //private val directions = ImagePickerFragmentDirections.actionImagepickerFragmentToSignUpCompleteFragment()
 
     private var _binding: FragmentImagePickerBinding? = null
     private val binding get() = _binding!!
@@ -57,7 +55,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         val albumNameList = (listOf("전체") + albumFolderList).toTypedArray()
 
         popupMenu = PopupMenu(requireContext(), view)
-        (requireActivity() as LoginActivity).menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
+        requireActivity().menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
 
         for(i in albumNameList.indices) {
             // 갤러리 아이템 리스트 초기화
@@ -72,37 +70,18 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
             return@setOnMenuItemClickListener true
         }
     }
-    private fun setupMenu() {
-        (requireActivity() as BaseActivity).addMenuProvider(object: MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.tolbar_menu, menu)
-            }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // 뒤로가기 버튼
-                when(menuItem.itemId) {
-                    android.R.id.home -> {
-                        callback.handleOnBackPressed()
-                        return true
-                    }
-                }
-                return true
-            }
-        })
-    }
-
-    private fun setupView() {
+    private fun setView() {
         binding.multiImageInfoLayout.isVisible = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupActionBar()
-        setupMenu()
-        setupAdapter()
-        setupView()
-
+        setActionBar()
+        setAdapter()
+        setView()
+        setBaseToolbarVisible()
 
         // 앨범 선택용 버튼 (팝업 메뉴)
         binding.galleryButton.setOnClickListener { view ->
@@ -123,7 +102,7 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         findNavController().navigateUp()
     }
 
-    private fun setupAdapter() {
+    private fun setAdapter() {
 
         imageAdapter = SingleImagePickerAdapter(imagePickerViewModel)
         imageAdapter.setListener(this)
@@ -152,28 +131,18 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
         imagePickerViewModel.fetchMediaList()
 
     }
-    private fun setupActionBar() {
-        (requireActivity() as BaseActivity).setSupportActionBar(binding.toolbar)
-        val actionBar = (requireActivity() as BaseActivity).supportActionBar
-        actionBar?.setDisplayShowTitleEnabled(false)
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-        actionBar?.setHomeAsUpIndicator(R.drawable.finish)
-    }
-
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        attachBackPressedCallback()
-    }
-
-    // 뒤로가기 버튼 눌렀을 때 SignUpCompleteFragment로 이동
-    private fun attachBackPressedCallback() {
-        callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                findNavController().navigateUp()
-            }
+    private fun setActionBar() {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        requireNotNull((requireActivity() as AppCompatActivity).supportActionBar).apply {
+            setDisplayShowTitleEnabled(false)
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.back_arrow)
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun setBaseToolbarVisible() {
+        if(requireActivity() is MainActivity)
+            (requireActivity() as MainActivity).changeToolbarVisible(false)
     }
 
     override fun onResume() {
@@ -187,7 +156,6 @@ class ImagePickerFragment : Fragment(), GalleryImageClickListener {
     override fun onDetach() {
         super.onDetach()
         imagePickerViewModel.resetGallery()
-        callback.remove()
 
     }
 }

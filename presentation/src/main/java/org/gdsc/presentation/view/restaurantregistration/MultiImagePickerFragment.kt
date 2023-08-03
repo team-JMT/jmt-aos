@@ -1,6 +1,7 @@
 package org.gdsc.presentation.view.restaurantregistration
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
@@ -32,7 +34,6 @@ import org.gdsc.presentation.viewmodel.ImagePickerViewModel
 
 @AndroidEntryPoint
 class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
-    private lateinit var callback: OnBackPressedCallback
 
     private lateinit var popupMenu: PopupMenu
 
@@ -46,6 +47,11 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
     private var albumFolderList: List<String> = listOf()
 
     private val imageList = mutableListOf<MediaItem>()
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+
+        setBaseToolbarVisible()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,24 +81,6 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
             return@setOnMenuItemClickListener true
         }
     }
-    private fun setMenu() {
-        (requireActivity() as MainActivity).addMenuProvider(object: MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.tolbar_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // 뒤로가기 버튼
-                when(menuItem.itemId) {
-                    android.R.id.home -> {
-                        callback.handleOnBackPressed()
-                        return true
-                    }
-                }
-                return true
-            }
-        })
-    }
 
     private fun setView() {
         binding.multiImageInfoLayout.isVisible = true
@@ -112,11 +100,9 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setMenu()
         setAdapter()
         setView()
 
-        setBaseToolbarVisible()
         setActionBar()
 
         // 앨범 선택용 버튼 (팝업 메뉴)
@@ -166,38 +152,17 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     }
     private fun setActionBar() {
-
-        val toolbarView = binding.toolbar
-
-        (requireActivity() as MainActivity).setSupportActionBar(toolbarView)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
         requireNotNull((requireActivity() as MainActivity).supportActionBar).apply {
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.back_arrow)
-        }
-
-        // for status bar size margin
-        (toolbarView.layoutParams as ViewGroup.MarginLayoutParams).apply {
-            setMargins(0, getStatusBarHeight(), 0, 0)
         }
     }
 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        attachBackPressedCallback()
-    }
-
-    // 뒤로가기 버튼 눌렀을 때 SignUpCompleteFragment로 이동
-    private fun attachBackPressedCallback() {
-        callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-
-                findNavController().navigateUp()
-
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onResume() {
@@ -211,7 +176,6 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
     override fun onDetach() {
         super.onDetach()
         imagePickerViewModel.resetGallery()
-        callback.remove()
 
     }
 
