@@ -53,7 +53,18 @@ class AccountManagementFragment: Fragment() {
         }
 
         binding.tvLogOut.setOnClickListener {
-
+            JmtAlert(requireContext())
+                .title("로그아웃 할까요?")
+                .content("비로그인 상태로 돌아가요.\n" +
+                        "로그아웃을 진행할까요?")
+                .multiButton {
+                    leftButton("로그아웃하기", JmtAlert.FILL_OUTLINE) {
+                        viewModel.logout {
+                            startActivity(Intent(requireContext(), LoginActivity::class.java))
+                        }
+                    }
+                    rightButton("유지하기", JmtAlert.FILL_FILL)
+                }.show()
         }
     }
 
