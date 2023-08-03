@@ -95,6 +95,10 @@
         <action
             android:id="@+id/action_settingsFragment_to_imagePickerFragment"
             app:destination="@id/ImagePickerFragment"/>
+
+        <action
+            android:id="@+id/action_settingsFragment_to_accountManagementFragment"
+            app:destination="@+id/AccountManagementFragment"/>
     </fragment>
 
     <fragment
@@ -110,6 +114,14 @@
         android:name="org.gdsc.presentation.login.ImagePickerFragment"
         label="fragment_image_picker"
         tools:layout="@layout/fragment_image_picker" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/AccountManagementFragment"
+        android:name="org.gdsc.presentation.view.mypage.AccountManagementFragment"
+        android:label="fragment_account_management"
+        tools:layout="@layout/fragment_account_management">
+
     </fragment>
 
 </navigation>
