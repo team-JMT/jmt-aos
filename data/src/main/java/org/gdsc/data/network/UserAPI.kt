@@ -5,8 +5,11 @@ import org.gdsc.data.model.Response
 import org.gdsc.domain.model.request.NicknameRequest
 import org.gdsc.domain.model.response.NicknameResponse
 import org.gdsc.domain.model.UserInfo
+import org.gdsc.domain.model.request.LogoutRequest
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -29,5 +32,13 @@ interface UserAPI {
 
     @GET("api/v1/user/info")
     suspend fun getUserInfo(): Response<UserInfo>
+
+    @HTTP(method="DELETE", path="api/v1/auth/user", hasBody = true)
+    suspend fun postUserLogOut(
+        @Body request: LogoutRequest
+    ): Response<String>
+
+    @DELETE("api/v1/user")
+    suspend fun postUserSignOut(): Response<String>
 
 }
