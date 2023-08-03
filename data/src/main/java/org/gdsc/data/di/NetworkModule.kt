@@ -48,7 +48,7 @@ class NetworkModule {
     }
 
     companion object {
-        private const val BASE_URL = "http://13.209.81.126:8080/"
+        private const val BASE_URL = "https://api.jmt-matzip.dev/"
         private val baseClientBuilder: OkHttpClient.Builder
             get() = run {
                 val clientBuilder = OkHttpClient.Builder()

@@ -23,4 +23,11 @@
         <item name="android:textAppearance">@style/title_small_medium</item>
     </style>
 
+    <style name="JmtOutLineButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/jmt_button_outline_background</item>
+        <item name="android:textColor">@color/main500</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">@style/title_small_medium</item>
+    </style>
+
 </resources>
