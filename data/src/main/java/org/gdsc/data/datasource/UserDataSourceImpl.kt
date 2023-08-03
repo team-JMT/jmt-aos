@@ -60,3 +60,8 @@ class UserDataSourceImpl @Inject constructor(
     override suspend fun postUserLogout(refreshToken: String): String {
         return userAPI.postUserLogOut(LogoutRequest(refreshToken)).code
     }
+
+    override suspend fun postUserSignout(): String {
+        return userAPI.postUserSignOut().code
+    }
+}

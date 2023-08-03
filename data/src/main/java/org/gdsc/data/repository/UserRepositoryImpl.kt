@@ -34,4 +34,9 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun postUserLogout(refreshToken: String): String {
         return userDataSource.postUserLogout(refreshToken)
     }
+
+    override suspend fun postUserSignout(): String {
+        return userDataSource.postUserSignout()
+    }
+
 }
