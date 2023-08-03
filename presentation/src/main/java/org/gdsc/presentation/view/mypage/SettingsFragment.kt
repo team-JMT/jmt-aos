@@ -100,6 +100,11 @@ class SettingsFragment: Fragment() {
             val navigate = SettingsFragmentDirections.actionSettingsFragmentToEditUserNameFragment()
             findNavController().navigate(navigate)
         }
+
+        binding.tvAccountManagement.setOnClickListener {
+            val navigate = SettingsFragmentDirections.actionSettingsFragmentToAccountManagementFragment()
+            findNavController().navigate(navigate)
+        }
     }
 
     private fun initUserInfo() {
