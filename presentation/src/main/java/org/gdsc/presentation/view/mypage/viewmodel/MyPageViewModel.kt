@@ -1,5 +1,6 @@
 package org.gdsc.presentation.view.mypage.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import org.gdsc.domain.usecase.PostNicknameUseCase
 import org.gdsc.domain.usecase.user.GetUserInfoUseCase
 import org.gdsc.domain.usecase.user.PostDefaultProfileImageUseCase
 import org.gdsc.domain.usecase.user.PostProfileImageUseCase
+import org.gdsc.presentation.model.ResultState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -85,10 +87,18 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-    fun updateProfileImage(file: MultipartBody.Part, afterSuccessSignUp: () -> Unit) {
+    fun updateProfileImage(file: MultipartBody.Part, callback: (ResultState<String>) -> Unit) {
         viewModelScope.launch {
-            postProfileImageUseCase(file)
-            afterSuccessSignUp()
+            postProfileImageUseCase(file).let {
+                when(it.code) {
+                    "PROFILE_IMAGE_UPDATE_SUCCESS" -> callback(ResultState.onSuccess(it.data))
+
+                    "INTERNAL_SERVER_ERROR" -> callback(ResultState.onError(it.code, it.message))
+
+                    else -> callback(ResultState.onError(it.code, it.message))
+                }
+            }
+
         }
     }
 

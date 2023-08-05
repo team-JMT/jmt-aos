@@ -21,6 +21,7 @@ import org.gdsc.domain.Empty
 import org.gdsc.domain.model.UserInfo
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentSettingsBinding
+import org.gdsc.presentation.model.ResultState
 import org.gdsc.presentation.utils.findPath
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.MainActivity
@@ -62,12 +63,33 @@ class SettingsFragment: Fragment() {
                     val body =
                         MultipartBody.Part.createFormData("profileImg", file.name, requestFile)
 
-                    viewModel.updateProfileImage(body) {
-                        viewModel.updateProfileImageState(it)
-                    }
-                }?: run {
-                    viewModel.updateDefaultProfileImage {
-                        viewModel.updateProfileImageState(String.Empty)
+                    viewModel.updateProfileImage(body) { ResultState ->
+                        when(ResultState) {
+                            is ResultState.OnSuccess -> {
+                                viewModel.updateProfileImageState(ResultState.response)
+                                JmtSnackbar.make(
+                                    binding.root,
+                                    "프로필 사진 변경이 완료되었어요.",
+//                                    getString(R.string.profile_image_change_success),
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .setIcon(R.drawable.check_icon)
+                                    .setTextColor(requireContext().getColor(R.color.grey800))
+                                    .show()
+                            }
+                            is ResultState.OnRemoteError -> {
+                                JmtSnackbar.make(
+                                    binding.root,
+                                    "프로필 사진 변경을 변경하지 못했어요.",
+//                                    getString(R.string.profile_image_change_fail),
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .setIcon(R.drawable.cancel_icon)
+                                    .setTextColor(requireContext().getColor(R.color.grey800))
+                                    .show()
+                            }
+                            else -> {}
+                        }
                     }
                 }
             }
@@ -85,14 +107,20 @@ class SettingsFragment: Fragment() {
                             binding.root,
                             getString(R.string.enable_nick_name_change),
                             Toast.LENGTH_SHORT
-                        ).show()
+                        )
+                            .setIcon(R.drawable.check_icon)
+                            .setTextColor(requireContext().getColor(R.color.grey800))
+                            .show()
                     }
                     "fail" -> {
                         JmtSnackbar.make(
                             binding.root,
                             getString(R.string.unable_nick_name_change),
                             Toast.LENGTH_SHORT
-                        ).show()
+                        )
+                            .setIcon(R.drawable.cancel_icon)
+                            .setTextColor(requireContext().getColor(R.color.grey800))
+                            .show()
                     }
                 }
             }

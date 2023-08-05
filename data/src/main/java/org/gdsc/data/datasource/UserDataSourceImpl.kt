@@ -2,6 +2,7 @@ package org.gdsc.data.datasource
 
 import okhttp3.MultipartBody
 import org.gdsc.data.network.UserAPI
+import org.gdsc.domain.model.Response
 import org.gdsc.domain.model.request.NicknameRequest
 import org.gdsc.domain.model.response.NicknameResponse
 import org.gdsc.domain.model.UserInfo
@@ -15,8 +16,8 @@ class UserDataSourceImpl @Inject constructor(
         return userAPI.postNickname(nicknameRequest).data
     }
 
-    override suspend fun postProfileImg(file: MultipartBody.Part): String {
-        return userAPI.postProfileImg(file).data
+    override suspend fun postProfileImg(file: MultipartBody.Part): Response<String> {
+        return userAPI.postProfileImg(file)
     }
 
     override suspend fun postDefaultProfileImg(): String {
