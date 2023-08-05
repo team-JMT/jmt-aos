@@ -37,7 +37,7 @@
             android:layout_height="62dp"
             android:layout_marginHorizontal="20dp"
             android:layout_gravity="bottom"
-            style="@style/JmtButton" />
+            style="@style/JmtButtonMain" />
 
     </LinearLayout>
 

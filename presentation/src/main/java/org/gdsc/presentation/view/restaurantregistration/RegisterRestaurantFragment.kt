@@ -24,6 +24,7 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.gdsc.domain.Empty
+import org.gdsc.presentation.BaseFragment
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRegisterRestaurantBinding
 import org.gdsc.presentation.utils.addAfterTextChangedListener
@@ -40,7 +41,7 @@ import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterResta
 import java.io.File
 
 @AndroidEntryPoint
-class RegisterRestaurantFragment : Fragment() {
+class RegisterRestaurantFragment : BaseFragment() {
 
     private var _binding: FragmentRegisterRestaurantBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -59,22 +60,11 @@ class RegisterRestaurantFragment : Fragment() {
 
     private val adapter by lazy { RegisterRestaurantAdapter() }
 
-    private val onSuccess: () -> Unit = {
-
+    override fun grantedPermissions() {
         val directions = RegisterRestaurantFragmentDirections
             .actionRegisterRestaurantFragmentToMultiImagePickerFragment()
 
         findNavController().navigate(directions)
-    }
-
-    private val requestPermissionsLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { isGranted ->
-        if(isGranted.all{ it.value }) {
-            onSuccess.invoke()
-        }else{
-            this.showMediaPermissionsDialog()
-        }
     }
 
 
@@ -109,9 +99,7 @@ class RegisterRestaurantFragment : Fragment() {
             val images = bundle.getStringArray("imagesUri")
             viewModel.setFoodImagesListState(images ?: arrayOf<String>())
 
-            Log.d("testLog", "onSuccess")
             if (images.isNullOrEmpty()) return@setFragmentResultListener
-            Log.d("testLog", "images: ${images.size}")
 
             with(viewModel) {
                 if (isImageButtonAnimating.value.not()) {
@@ -266,7 +254,7 @@ class RegisterRestaurantFragment : Fragment() {
         binding.selectImagesButton.setOnClickListener {
             this.checkMediaPermissions(
                 requestPermissionsLauncher
-            ) { onSuccess.invoke() }
+            ) { grantedPermissions() }
 
             viewModel.setIsImageButtonExtended(true)
         }

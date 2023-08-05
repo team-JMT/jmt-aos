@@ -20,7 +20,7 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.postProfileImg(file)
     }
 
-    override suspend fun postDefaultProfileImg(): String {
+    override suspend fun postDefaultProfileImg(): Response<String> {
         return userDataSource.postDefaultProfileImg()
     }
 

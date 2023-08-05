@@ -8,5 +8,9 @@
     <dimen name="element_spacing">24dp</dimen>
     <dimen name="half_element_spacing">12dp</dimen>
 
+    <dimen name="bottom_sheet_top_padding">32dp</dimen>
+    <dimen name="bottom_sheet_bottom_padding">36dp</dimen>
     <dimen name="alert_width">335dp</dimen>
+
+    <dimen name="content_radius">24dp</dimen>
 </resources>

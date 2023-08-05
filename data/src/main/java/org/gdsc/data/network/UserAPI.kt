@@ -25,7 +25,7 @@ interface UserAPI {
     suspend fun postProfileImg(@Part profileImageFile: MultipartBody.Part): org.gdsc.domain.model.Response<String>
 
     @POST("api/v1/user/defaultProfileImg")
-    suspend fun postDefaultProfileImg(): Response<String>
+    suspend fun postDefaultProfileImg(): org.gdsc.domain.model.Response<String>
 
     @GET("api/v1/user/{nickname}")
     suspend fun checkDuplicatedNickname(@Path(value = "nickname") targetNickname: String): Response<Boolean>
