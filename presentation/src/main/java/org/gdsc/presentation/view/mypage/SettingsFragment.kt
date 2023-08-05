@@ -19,10 +19,12 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.gdsc.domain.Empty
 import org.gdsc.domain.model.UserInfo
+import org.gdsc.presentation.BaseFragment
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.ContentSheetChoiceImageBinding
 import org.gdsc.presentation.databinding.FragmentSettingsBinding
 import org.gdsc.presentation.model.ResultState
+import org.gdsc.presentation.utils.checkMediaPermissions
 import org.gdsc.presentation.utils.findPath
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.MainActivity
@@ -32,13 +34,20 @@ import org.gdsc.presentation.view.mypage.viewmodel.MyPageViewModel
 import java.io.File
 
 @AndroidEntryPoint
-class SettingsFragment: Fragment() {
+class SettingsFragment: BaseFragment() {
 
     private var _binding: FragmentSettingsBinding? = null
 
     private val binding get() = _binding!!
 
     private val viewModel: MyPageViewModel by viewModels()
+
+    override fun grantedPermissions() {
+        setImagePickerFragmentResultListener()
+
+        val navigate = SettingsFragmentDirections.actionSettingsFragmentToImagePickerFragment()
+        findNavController().navigate(navigate)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,10 +72,9 @@ class SettingsFragment: Fragment() {
                 ) { dialog ->
                     with(dialog) {
                         albumBtn.setOnClickListener {
-                            setImagePickerFragmentResultListener()
-
-                            val navigate = SettingsFragmentDirections.actionSettingsFragmentToImagePickerFragment()
-                            findNavController().navigate(navigate)
+                            this@SettingsFragment.checkMediaPermissions(
+                                requestPermissionsLauncher
+                            ) { grantedPermissions() }
 
                             dismiss()
                         }
