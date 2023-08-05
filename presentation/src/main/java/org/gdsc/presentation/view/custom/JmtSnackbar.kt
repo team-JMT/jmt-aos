@@ -7,6 +7,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar.Duration
 import com.google.android.material.snackbar.Snackbar
 import org.gdsc.domain.Empty
 import org.gdsc.presentation.databinding.JmtSnackbarBinding
+import org.gdsc.presentation.utils.toDp
 
 class JmtSnackbar private constructor(
     private val view: View,
@@ -63,6 +64,14 @@ class JmtSnackbar private constructor(
     fun setBackgroundAlpha(alpha: Float): JmtSnackbar {
         binding.snackbarContainer.background.alpha = (alpha * 255).toInt()
         binding.snackbarContainer.elevation = 0f
+        return this
+    }
+
+    fun setIcon(resId:Int): JmtSnackbar {
+        val image = ContextCompat.getDrawable(context, resId)?.apply {
+            setBounds(0, 0, 25.toDp, 25.toDp)
+        }
+        binding.snackbarText.setCompoundDrawables(image, null, null, null)
         return this
     }
 
