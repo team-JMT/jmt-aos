@@ -16,18 +16,26 @@
 
     </style>
 
-    <style name="JmtButton" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/jmt_button_background</item>
+    <style name="JmtButtonMain" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/jmt_button_background_main</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:gravity">center</item>
         <item name="android:textAppearance">@style/title_small_medium</item>
     </style>
 
-    <style name="JmtOutLineButton" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/jmt_button_outline_background</item>
+    <style name="JmtOutLineButtonMain" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/jmt_button_outline_background_main</item>
         <item name="android:textColor">@color/main500</item>
         <item name="android:gravity">center</item>
         <item name="android:textAppearance">@style/title_small_medium</item>
     </style>
+
+    <style name="JmtOutLineButtonGrey" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/food_category_item_background</item>
+        <item name="android:textColor">@color/grey900</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">@style/text_large_medium</item>
+    </style>
+
 
 </resources>
