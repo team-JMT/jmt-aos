@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_bottom_sheet_top_round"
+    android:paddingTop="@dimen/bottom_sheet_top_padding">
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/album_btn"
+        style="@style/JmtOutLineButtonGrey"
+        android:text="앨범에서 사진 가져오기"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_gravity="bottom"
+        android:stateListAnimator="@null"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/default_image_btn"
+        style="@style/JmtOutLineButtonGrey"
+        android:text="기본 프로필로 변경"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_gravity="bottom"
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="@dimen/bottom_sheet_bottom_padding"
+        android:layout_marginTop="@dimen/half_element_spacing"
+        app:layout_constraintTop_toBottomOf="@+id/album_btn"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
