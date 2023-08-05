@@ -28,6 +28,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.gdsc.presentation.BaseFragment
 import org.gdsc.presentation.databinding.FragmentSignUpCompleteBinding
 import org.gdsc.presentation.utils.checkMediaPermissions
 import org.gdsc.presentation.utils.findPath
@@ -36,7 +37,7 @@ import org.gdsc.presentation.view.MainActivity
 import java.io.File
 
 
-class SignUpCompleteFragment : Fragment() {
+class SignUpCompleteFragment : BaseFragment() {
 
     private var _binding: FragmentSignUpCompleteBinding? = null
     private val binding
@@ -44,19 +45,9 @@ class SignUpCompleteFragment : Fragment() {
 
     private val viewModel: LoginViewModel by activityViewModels()
 
-    private val onSuccess: () -> Unit = {
+    override fun grantedPermissions() {
         val action = SignUpCompleteFragmentDirections.actionSignUpCompleteFragmentToImagepickerFragment()
         findNavController().navigate(action)
-    }
-
-    private val requestPermissionsLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { isGranted ->
-        if(isGranted.all{ it.value }) {
-            onSuccess.invoke()
-        }else{
-            this.showMediaPermissionsDialog()
-        }
     }
 
     override fun onCreateView(
@@ -83,7 +74,7 @@ class SignUpCompleteFragment : Fragment() {
         binding.profileImageAddButton.setOnClickListener {
             this.checkMediaPermissions(
                 requestPermissionsLauncher
-            ) { onSuccess.invoke() }
+            ) { grantedPermissions() }
         }
 
         binding.nextBtn.setOnClickListener {
