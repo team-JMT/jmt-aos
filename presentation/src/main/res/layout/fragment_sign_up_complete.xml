@@ -83,7 +83,7 @@
         android:id="@+id/next_btn"
         android:layout_width="0dp"
         android:layout_height="62dp"
-        style="@style/JmtButton"
+        style="@style/JmtButtonMain"
         android:text="@string/next"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

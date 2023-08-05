@@ -79,7 +79,7 @@
             android:layout_marginBottom="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="선택하기 0/10"
-            style="@style/JmtButton"/>
+            style="@style/JmtButtonMain"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

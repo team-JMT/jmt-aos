@@ -19,24 +19,35 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.gdsc.domain.Empty
 import org.gdsc.domain.model.UserInfo
+import org.gdsc.presentation.BaseFragment
 import org.gdsc.presentation.R
+import org.gdsc.presentation.databinding.ContentSheetChoiceImageBinding
 import org.gdsc.presentation.databinding.FragmentSettingsBinding
 import org.gdsc.presentation.model.ResultState
+import org.gdsc.presentation.utils.checkMediaPermissions
 import org.gdsc.presentation.utils.findPath
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.MainActivity
+import org.gdsc.presentation.view.custom.BottomSheetDialog
 import org.gdsc.presentation.view.custom.JmtSnackbar
 import org.gdsc.presentation.view.mypage.viewmodel.MyPageViewModel
 import java.io.File
 
 @AndroidEntryPoint
-class SettingsFragment: Fragment() {
+class SettingsFragment: BaseFragment() {
 
     private var _binding: FragmentSettingsBinding? = null
 
     private val binding get() = _binding!!
 
     private val viewModel: MyPageViewModel by viewModels()
+
+    override fun grantedPermissions() {
+        setImagePickerFragmentResultListener()
+
+        val navigate = SettingsFragmentDirections.actionSettingsFragmentToImagePickerFragment()
+        findNavController().navigate(navigate)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,75 +66,30 @@ class SettingsFragment: Fragment() {
         observeState()
 
         binding.profileImageButton.setOnClickListener {
-            setFragmentResultListener("pickImage") { _, bundle ->
-                val result = bundle.getString("imageUri")
-                result?.let {
-                    val file = File(it.toUri().findPath(requireContext()))
-                    val requestFile = RequestBody.create(MediaType.parse("image/png"), file)
-                    val body =
-                        MultipartBody.Part.createFormData("profileImg", file.name, requestFile)
+            BottomSheetDialog(requireContext())
+                .bindBuilder(
+                    ContentSheetChoiceImageBinding.inflate(LayoutInflater.from(requireContext()))
+                ) { dialog ->
+                    with(dialog) {
+                        albumBtn.setOnClickListener {
+                            this@SettingsFragment.checkMediaPermissions(
+                                requestPermissionsLauncher
+                            ) { grantedPermissions() }
 
-                    viewModel.updateProfileImage(body) { ResultState ->
-                        when(ResultState) {
-                            is ResultState.OnSuccess -> {
-                                viewModel.updateProfileImageState(ResultState.response)
-                                JmtSnackbar.make(
-                                    binding.root,
-                                    "프로필 사진 변경이 완료되었어요.",
-//                                    getString(R.string.profile_image_change_success),
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .setIcon(R.drawable.check_icon)
-                                    .setTextColor(requireContext().getColor(R.color.grey800))
-                                    .show()
-                            }
-                            is ResultState.OnRemoteError -> {
-                                JmtSnackbar.make(
-                                    binding.root,
-                                    "프로필 사진 변경을 변경하지 못했어요.",
-//                                    getString(R.string.profile_image_change_fail),
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .setIcon(R.drawable.cancel_icon)
-                                    .setTextColor(requireContext().getColor(R.color.grey800))
-                                    .show()
-                            }
-                            else -> {}
+                            dismiss()
                         }
+                        defaultImageBtn.setOnClickListener {
+                            updateDefaultProfileImage()
+                            dismiss()
+                        }
+
+                        show()
                     }
                 }
-            }
-
-            val navigate = SettingsFragmentDirections.actionSettingsFragmentToImagePickerFragment()
-            findNavController().navigate(navigate)
         }
 
         binding.btnChangeUserName.setOnClickListener {
-            setFragmentResultListener("requestKey") { _, bundle ->
-                val result = bundle.getString("bundleKey")
-                when(result) {
-                    "success" -> {
-                        JmtSnackbar.make(
-                            binding.root,
-                            getString(R.string.enable_nick_name_change),
-                            Toast.LENGTH_SHORT
-                        )
-                            .setIcon(R.drawable.check_icon)
-                            .setTextColor(requireContext().getColor(R.color.grey800))
-                            .show()
-                    }
-                    "fail" -> {
-                        JmtSnackbar.make(
-                            binding.root,
-                            getString(R.string.unable_nick_name_change),
-                            Toast.LENGTH_SHORT
-                        )
-                            .setIcon(R.drawable.cancel_icon)
-                            .setTextColor(requireContext().getColor(R.color.grey800))
-                            .show()
-                    }
-                }
-            }
+            setChangeNameFragmentResultListener()
 
             val navigate = SettingsFragmentDirections.actionSettingsFragmentToEditUserNameFragment()
             findNavController().navigate(navigate)
@@ -162,11 +128,87 @@ class SettingsFragment: Fragment() {
 
     }
 
+    private fun setImagePickerFragmentResultListener() {
+        setFragmentResultListener("pickImage") { _, bundle ->
+            val result = bundle.getString("imageUri")
+            result?.let {
+                val file = File(it.toUri().findPath(requireContext()))
+                val requestFile = RequestBody.create(MediaType.parse("image/png"), file)
+                val body =
+                    MultipartBody.Part.createFormData("profileImg", file.name, requestFile)
+
+                viewModel.updateProfileImage(body) { result ->
+                    when(result) {
+                        is ResultState.OnSuccess -> {
+                            viewModel.updateProfileImageState(result.response)
+                            showSuccessSnackbar(R.string.enable_profile_image_change)
+                        }
+                        is ResultState.OnRemoteError -> {
+                            showFailSnackbar(R.string.unable_profile_image_change)
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateDefaultProfileImage() {
+        viewModel.updateDefaultProfileImage { result ->
+            when(result) {
+                is ResultState.OnSuccess -> {
+                    viewModel.updateProfileImageState(result.response)
+                    showSuccessSnackbar(R.string.enable_profile_image_change)
+                }
+                is ResultState.OnRemoteError -> {
+                    showFailSnackbar(R.string.unable_profile_image_change)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun setChangeNameFragmentResultListener() {
+        setFragmentResultListener("requestKey") { _, bundle ->
+            val result = bundle.getString("bundleKey")
+            when(result) {
+                "success" -> {
+                    showSuccessSnackbar(R.string.enable_nick_name_change)
+                }
+                "fail" -> {
+                    showFailSnackbar(R.string.unable_nick_name_change)
+                }
+            }
+        }
+    }
+
     private fun initProfileImage(profileImg: String) {
         Glide.with(this)
             .load(profileImg)
             .placeholder(R.drawable.base_profile_image)
             .into(binding.profileImage)
+    }
+
+    private fun showSuccessSnackbar(resId: Int) {
+        JmtSnackbar.make(
+            binding.root,
+            requireContext().getString(resId),
+            Toast.LENGTH_SHORT
+        )
+            .setIcon(R.drawable.check_icon)
+            .setTextColor(requireContext().getColor(R.color.grey800))
+            .show()
+    }
+
+    private fun showFailSnackbar(resId: Int) {
+        JmtSnackbar.make(
+            binding.root,
+            requireContext().getString(resId),
+            Toast.LENGTH_SHORT
+        )
+            .setIcon(R.drawable.cancel_icon)
+            .setTextColor(requireContext().getColor(R.color.grey800))
+            .show()
     }
 
     override fun onDestroyView() {
