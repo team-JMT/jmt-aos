@@ -21,8 +21,8 @@ class UserDataSourceImpl @Inject constructor(
         return userAPI.postProfileImg(file)
     }
 
-    override suspend fun postDefaultProfileImg(): String {
-        return userAPI.postDefaultProfileImg().data
+    override suspend fun postDefaultProfileImg(): Response<String> {
+        return userAPI.postDefaultProfileImg()
     }
 
     // TODO: Need to be Detailed

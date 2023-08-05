@@ -12,7 +12,7 @@ interface UserDataSource {
 
     suspend fun postProfileImg(file: MultipartBody.Part): Response<String>
 
-    suspend fun postDefaultProfileImg(): String
+    suspend fun postDefaultProfileImg(): Response<String>
 
     suspend fun checkDuplicatedNickname(nickname: String): Boolean
 

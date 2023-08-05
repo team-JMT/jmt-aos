@@ -31,6 +31,9 @@
     <string name="title_user_name_edit">사용자 이름 수정</string>
     <string name="enable_nick_name_change">닉네임 변경이 완료되었어요.</string>
     <string name="unable_nick_name_change">닉네임을 변경하지 못했어요.</string>
+    <string name="enable_profile_image_change">프로필 사진 변경이 완료되었어요.</string>
+    <string name="unable_profile_image_change">프로필 사진을 변경하지 못했어요.</string>
+
 
 
     <string name="searching_menu">둘러보기</string>

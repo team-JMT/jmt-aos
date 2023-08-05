@@ -111,10 +111,18 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-    fun updateDefaultProfileImage(afterSuccessSignUp: () -> Unit) {
+    fun updateDefaultProfileImage(callback: (ResultState<String>) -> Unit) {
         viewModelScope.launch {
-            postDefaultProfileImageUseCase()
-            afterSuccessSignUp()
+            postDefaultProfileImageUseCase().let {
+
+                when(it.code) {
+                    "PROFILE_IMAGE_UPDATE_SUCCESS" -> callback(ResultState.onSuccess(it.data))
+
+                    "INTERNAL_SERVER_ERROR" -> callback(ResultState.onError(it.code, it.message))
+
+                    else -> callback(ResultState.onError(it.code, it.message))
+                }
+            }
         }
     }
 
@@ -125,8 +133,6 @@ class MyPageViewModel @Inject constructor(
             val response = async { postUserLogoutUseCase(
                 refreshToken
             ) }
-
-            Log.d("testLog", "code : ${response.await()}")
 
             when(response.await()) {
                 "LOGOUT_SUCCESS" -> {
