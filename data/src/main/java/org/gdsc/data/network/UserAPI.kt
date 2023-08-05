@@ -22,7 +22,7 @@ interface UserAPI {
 
     @Multipart
     @POST("api/v1/user/profileImg")
-    suspend fun postProfileImg(@Part profileImageFile: MultipartBody.Part): Response<String>
+    suspend fun postProfileImg(@Part profileImageFile: MultipartBody.Part): org.gdsc.domain.model.Response<String>
 
     @POST("api/v1/user/defaultProfileImg")
     suspend fun postDefaultProfileImg(): Response<String>
