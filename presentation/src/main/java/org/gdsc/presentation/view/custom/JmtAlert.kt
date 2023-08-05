@@ -113,9 +113,9 @@ class JmtAlert(private val context: Context) {
                     height = 48.toDp
                 }
                 this.background = when(_fillType) {
-                    FILL_FILL -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background)
-                    FILL_OUTLINE -> ContextCompat.getDrawable(context, R.drawable.jmt_button_outline_background)
-                    else -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background)
+                    FILL_FILL -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
+                    FILL_OUTLINE -> ContextCompat.getDrawable(context, R.drawable.jmt_button_outline_background_main)
+                    else -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
                 }
                 this.setTextColor(when(_fillType) {
                     FILL_FILL -> ContextCompat.getColor(context, R.color.white)
@@ -137,9 +137,9 @@ class JmtAlert(private val context: Context) {
                     height = 48.toDp
                 }
                 this.background = when(_fillType) {
-                    FILL_FILL -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background)
-                    FILL_OUTLINE -> ContextCompat.getDrawable(context, R.drawable.jmt_button_outline_background)
-                    else -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background)
+                    FILL_FILL -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
+                    FILL_OUTLINE -> ContextCompat.getDrawable(context, R.drawable.jmt_button_outline_background_main)
+                    else -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
                 }
                 this.setTextColor(when(_fillType) {
                     FILL_FILL -> ContextCompat.getColor(context, R.color.white)
