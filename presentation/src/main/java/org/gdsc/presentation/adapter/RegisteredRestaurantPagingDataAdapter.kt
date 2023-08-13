@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.presentation.R
+import org.gdsc.presentation.base.Const
 import org.gdsc.presentation.databinding.ItemRegisteredRestaurantBinding
+import org.gdsc.presentation.utils.CalculatorUtils
 
 class RegisteredRestaurantPagingDataAdapter : PagingDataAdapter<RegisteredRestaurant, RestaurantViewHolder>(diffCallback) {
 
@@ -47,11 +49,10 @@ class RestaurantViewHolder(private val binding: ItemRegisteredRestaurantBinding)
                 restaurantCategory.text = it.category
                 userName.text = it.userNickName
 
-                restaurantDistance.text =
-                    if(it.differenceInDistance.length >= 4)
-                        "내 위치에서 ${it.differenceInDistance.toInt()/1000}km"
-                    else
-                        "내 위치에서 ${it.differenceInDistance}m"
+                restaurantDistance.text = binding.root.context.getString(
+                    R.string.distance_from_current_location,
+                    CalculatorUtils.getDistanceWithLength(it.differenceInDistance.toInt())
+                )
 
                 Glide.with(root)
                     .load(it.userProfileImageUrl)
