@@ -1,17 +1,24 @@
 package org.gdsc.data.datasource
 
-import android.util.Log
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.gdsc.data.database.RestaurantDatabase
+import org.gdsc.data.database.RestaurantMediator
 import org.gdsc.data.network.RestaurantAPI
 import org.gdsc.domain.RestaurantRegistrationState
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
+import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class RestaurantDataSourceImpl @Inject constructor(
-    private val restaurantAPI: RestaurantAPI
+    private val restaurantAPI: RestaurantAPI,
+    private val db: RestaurantDatabase,
 ) : RestaurantDataSource {
+
     override suspend fun getRestaurantLocationInfo(
         query: String,
         latitude: String,
@@ -62,4 +69,20 @@ class RestaurantDataSourceImpl @Inject constructor(
             pictures = restaurantRegistrationRequest.pictures
         ).data.recommendRestaurantId
     }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override suspend fun getRestaurants(userId: Int, restaurantSearchMapRequest: RestaurantSearchMapRequest) = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+            enablePlaceholders = false
+        ),
+        remoteMediator = RestaurantMediator(
+            userId = userId,
+            restaurantSearchMapRequest = restaurantSearchMapRequest,
+            db = db,
+            api = restaurantAPI,
+        )
+    ) {
+        db.restaurantDao().getRestaurants(userId)
+    }.flow
 }
