@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.Empty
-import org.gdsc.domain.model.UserInfo
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentMyPageBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted

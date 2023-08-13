@@ -3,21 +3,24 @@ package org.gdsc.presentation.view.mypage.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import org.gdsc.domain.Empty
 import org.gdsc.domain.SortType
+import org.gdsc.domain.model.Filter
+import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.RegisteredRestaurant
+import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.model.response.NicknameResponse
 import org.gdsc.domain.usecase.CheckDuplicatedNicknameUseCase
 import org.gdsc.domain.usecase.GetRegisteredRestaurantUseCase
@@ -29,11 +32,13 @@ import org.gdsc.domain.usecase.token.GetRefreshTokenUseCase
 import org.gdsc.domain.usecase.user.GetUserInfoUseCase
 import org.gdsc.domain.usecase.user.PostDefaultProfileImageUseCase
 import org.gdsc.domain.usecase.user.PostProfileImageUseCase
+import org.gdsc.presentation.JmtLocationManager
 import org.gdsc.presentation.model.ResultState
 import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
+    private val locationManager: JmtLocationManager,
     private val userInfoUseCase: GetUserInfoUseCase,
     private val postNicknameUseCase: PostNicknameUseCase,
     private val checkDuplicatedNicknameUseCase: CheckDuplicatedNicknameUseCase,
@@ -43,6 +48,7 @@ class MyPageViewModel @Inject constructor(
     private val getRefreshTokenUseCase: GetRefreshTokenUseCase,
     private val clearTokenInfoUseCase: ClearTokenInfoUseCase,
     private val postUserSignoutUseCase: PostUserSignoutUseCase,
+    private val getRegisteredRestaurantUseCase: GetRegisteredRestaurantUseCase,
 ): ViewModel() {
 
     private var _sortTypeState = MutableStateFlow(SortType.INIT)
@@ -183,8 +189,14 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-    private var _myRegisteredRestaurantState = MutableStateFlow(String.Empty)
-    val myRegisteredRestaurantState = _myRegisteredRestaurantState.asStateFlow()
+    suspend fun registeredPagingData(userId: Int): Flow<PagingData<RegisteredRestaurant>> {
+        val location = locationManager.getCurrentLocation() ?: return flowOf(PagingData.empty())
 
+        val locationData = Location(location.longitude.toString(), location.latitude.toString())
+        val filter = Filter("", true)
+        val restaurantSearchMapRequest = RestaurantSearchMapRequest(locationData, filter)
+
+        return getRegisteredRestaurantUseCase(userId, restaurantSearchMapRequest)
+    }
 
 }

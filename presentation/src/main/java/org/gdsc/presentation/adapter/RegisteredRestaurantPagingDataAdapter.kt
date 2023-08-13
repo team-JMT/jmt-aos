@@ -41,6 +41,28 @@ class RegisteredRestaurantPagingDataAdapter : PagingDataAdapter<RegisteredRestau
 
 class RestaurantViewHolder(private val binding: ItemRegisteredRestaurantBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: RegisteredRestaurant) {
+        with(binding) {
+            item.let {
+                restaurantName.text = it.name
+                restaurantCategory.text = it.category
+                userName.text = it.userNickName
 
+                restaurantDistance.text =
+                    if(it.differenceInDistance.length >= 4)
+                        "내 위치에서 ${it.differenceInDistance.toInt()/1000}km"
+                    else
+                        "내 위치에서 ${it.differenceInDistance}m"
+
+                Glide.with(root)
+                    .load(it.userProfileImageUrl)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(userProfileImage)
+
+                Glide.with(root)
+                    .load(it.restaurantImageUrl)
+                    .placeholder(R.drawable.ig_restaurant_placeholder)
+                    .into(restaurantImage)
+            }
+        }
     }
 }
