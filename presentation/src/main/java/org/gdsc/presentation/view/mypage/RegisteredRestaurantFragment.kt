@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.adapter.RegisteredRestaurantPagingDataAdapter
@@ -17,6 +18,8 @@ class RegisteredRestaurantFragment : Fragment() {
     private var _binding: FragmentRegisteredRestaurantBinding? = null
     private val binding get() = _binding!!
     private lateinit var myRestaurantAdapter: RegisteredRestaurantPagingDataAdapter
+
+    private val viewModel: MyPageViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

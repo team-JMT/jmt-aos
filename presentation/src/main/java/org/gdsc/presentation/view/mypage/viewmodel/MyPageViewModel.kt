@@ -9,13 +9,18 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import org.gdsc.domain.Empty
 import org.gdsc.domain.SortType
+import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.response.NicknameResponse
 import org.gdsc.domain.usecase.CheckDuplicatedNicknameUseCase
+import org.gdsc.domain.usecase.GetRegisteredRestaurantUseCase
 import org.gdsc.domain.usecase.PostNicknameUseCase
 import org.gdsc.domain.usecase.PostUserLogoutUseCase
 import org.gdsc.domain.usecase.PostUserSignoutUseCase
@@ -44,6 +49,9 @@ class MyPageViewModel @Inject constructor(
     val sortTypeState: StateFlow<SortType>
         get() = _sortTypeState
 
+    private var _idState = MutableStateFlow<Int?>(null)
+    val idState: StateFlow<Int?> = _idState.asStateFlow()
+
     private var _nicknameState = MutableStateFlow(String.Empty)
     val nicknameState = _nicknameState.asStateFlow()
 
@@ -57,6 +65,7 @@ class MyPageViewModel @Inject constructor(
         return withContext(viewModelScope.coroutineContext) {
             val response = userInfoUseCase.invoke()
 
+            _idState.value = response.id
             _nicknameState.value = response.nickname
             _profileImageState.value = response.profileImg
             _emailState.value = response.email
@@ -173,4 +182,9 @@ class MyPageViewModel @Inject constructor(
             }
         }
     }
+
+    private var _myRegisteredRestaurantState = MutableStateFlow(String.Empty)
+    val myRegisteredRestaurantState = _myRegisteredRestaurantState.asStateFlow()
+
+
 }
