@@ -7,6 +7,7 @@
     <dimen name="half_spacing">10dp</dimen>
     <dimen name="element_spacing">24dp</dimen>
     <dimen name="half_element_spacing">12dp</dimen>
+    <dimen name="layout_margin_spacing">16dp</dimen>
 
     <dimen name="bottom_sheet_top_padding">32dp</dimen>
     <dimen name="bottom_sheet_bottom_padding">36dp</dimen>

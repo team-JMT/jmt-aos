@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.adapter.RegisteredRestaurantPagingDataAdapter
 import org.gdsc.presentation.databinding.FragmentRegisteredRestaurantBinding
+import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.mypage.viewmodel.MyPageViewModel
 
 @AndroidEntryPoint
@@ -32,10 +34,30 @@ class RegisteredRestaurantFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         myRestaurantAdapter = RegisteredRestaurantPagingDataAdapter()
         binding.registeredRestaurantRecyclerView.layoutManager =
             LinearLayoutManager(requireContext())
         binding.registeredRestaurantRecyclerView.adapter = myRestaurantAdapter
+
+        repeatWhenUiStarted {
+            viewModel.idState.collect { id ->
+
+                id?.let { notNullId ->
+                    viewModel.registeredPagingData(notNullId).collect {
+
+                        myRestaurantAdapter.submitData(it)
+                    }
+                }
+            }
+        }
+
+        myRestaurantAdapter.addLoadStateListener { combinedLoadStates ->
+            if (combinedLoadStates.append.endOfPaginationReached) {
+                binding.notYetLayout.root.isVisible = myRestaurantAdapter.itemCount < 1
+            }
+        }
+
     }
 
     override fun onDestroyView() {
