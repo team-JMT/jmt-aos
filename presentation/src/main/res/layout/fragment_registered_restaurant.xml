@@ -15,6 +15,14 @@
             android:id="@+id/not_yet_layout"
             layout="@layout/not_yet_layout"/>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/registered_restaurant_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/layout_margin_spacing"
+            android:clipToPadding="false"/>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
