@@ -69,7 +69,7 @@
                 android:layout_height="120dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="23dp"
-                android:background="@drawable/border_background"
+                android:background="@drawable/bg_rounded_border_8_grey100"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/restaurant_category_card" />
 
