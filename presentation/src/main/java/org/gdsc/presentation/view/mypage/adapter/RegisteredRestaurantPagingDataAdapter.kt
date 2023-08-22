@@ -1,6 +1,5 @@
-package org.gdsc.presentation.adapter
+package org.gdsc.presentation.view.mypage.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -13,7 +12,9 @@ import org.gdsc.presentation.base.Const
 import org.gdsc.presentation.databinding.ItemRegisteredRestaurantBinding
 import org.gdsc.presentation.utils.CalculatorUtils
 
-class RegisteredRestaurantPagingDataAdapter : PagingDataAdapter<RegisteredRestaurant, RestaurantViewHolder>(diffCallback) {
+class RegisteredRestaurantPagingDataAdapter : PagingDataAdapter<RegisteredRestaurant, RestaurantViewHolder>(
+    diffCallback
+) {
 
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<RegisteredRestaurant>() {

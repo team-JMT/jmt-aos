@@ -1,5 +1,6 @@
 package org.gdsc.data.datasource
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -83,6 +84,8 @@ class RestaurantDataSourceImpl @Inject constructor(
             api = restaurantAPI,
         )
     ) {
-        db.restaurantDao().getRestaurants(userId)
+        with(restaurantSearchMapRequest.filter) {
+            db.restaurantDao().getRestaurants(userId, categoryFilter, isCanDrinkLiquor)
+        }
     }.flow
 }

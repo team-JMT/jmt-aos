@@ -9,9 +9,13 @@ import androidx.room.Query
 @Dao
 interface RestaurantDao {
 
-    //전체 Post 목록을 PagingSource로 가져온다.  {추후에 Date 데이터가 추가 되면 변경해야 한다.}
-    @Query("SELECT * FROM restaurant WHERE userId = :userId ORDER BY id DESC")
-    fun getRestaurants(userId: Int): PagingSource<Int, RegisteredRestaurant>
+    // Post 목록을 PagingSource로 가져온다.
+    // 필요 시에는 전체와 Filter 첨부된 쿼리로 나눠도 괜찮을 듯 함.
+    @Query("SELECT * FROM restaurant WHERE userId = :userId" +
+            " AND(:canDrinkLiquor IS NULL OR canDrinkLiquor = :canDrinkLiquor)" +
+            " AND (:category IS NULL OR category = :category)" +
+            " ORDER BY id DESC")
+    fun getRestaurants(userId: Int, category: String?, canDrinkLiquor: Boolean?): PagingSource<Int, RegisteredRestaurant>
 
     //가장 최근 Post를 하나 가져온다.
     @Query("SELECT * FROM restaurant ORDER BY id DESC LIMIT 1")
