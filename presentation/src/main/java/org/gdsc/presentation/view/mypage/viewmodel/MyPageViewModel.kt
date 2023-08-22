@@ -11,11 +11,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
+import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.Empty
+import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Filter
 import org.gdsc.domain.model.Location
@@ -51,10 +57,6 @@ class MyPageViewModel @Inject constructor(
     private val getRegisteredRestaurantUseCase: GetRegisteredRestaurantUseCase,
 ): ViewModel() {
 
-    private var _sortTypeState = MutableStateFlow(SortType.INIT)
-    val sortTypeState: StateFlow<SortType>
-        get() = _sortTypeState
-
     private var _idState = MutableStateFlow<Int?>(null)
     val idState: StateFlow<Int?> = _idState.asStateFlow()
 
@@ -66,6 +68,21 @@ class MyPageViewModel @Inject constructor(
 
     private var _emailState = MutableStateFlow(String.Empty)
     val emailState = _emailState.asStateFlow()
+
+
+
+    private var _sortTypeState = MutableStateFlow(SortType.INIT)
+    val sortTypeState: StateFlow<SortType>
+        get() = _sortTypeState
+
+    private var _foodCategoryState = MutableStateFlow(FoodCategory.INIT)
+    val foodCategoryState: StateFlow<FoodCategory>
+        get() = _foodCategoryState
+
+    private var _drinkPossibilityState = MutableStateFlow(DrinkPossibility.INIT)
+    val drinkPossibilityState: StateFlow<DrinkPossibility>
+        get() = _drinkPossibilityState
+
 
     suspend fun getUserInfo() {
         return withContext(viewModelScope.coroutineContext) {
@@ -93,7 +110,17 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
+    fun setSortType(sortType: SortType) {
+        _sortTypeState.value = sortType
+    }
 
+    fun setFoodCategory(foodCategory: FoodCategory) {
+        _foodCategoryState.value = foodCategory
+    }
+
+    fun setDrinkPossibility(drinkPossibility: DrinkPossibility) {
+        _drinkPossibilityState.value = drinkPossibility
+    }
 
     fun checkDuplicatedNickname(
         nickName: String,
@@ -188,15 +215,31 @@ class MyPageViewModel @Inject constructor(
             }
         }
     }
-
     suspend fun registeredPagingData(userId: Int): Flow<PagingData<RegisteredRestaurant>> {
         val location = locationManager.getCurrentLocation() ?: return flowOf(PagingData.empty())
-
         val locationData = Location(location.longitude.toString(), location.latitude.toString())
-        val filter = Filter("", true)
-        val restaurantSearchMapRequest = RestaurantSearchMapRequest(locationData, filter)
 
-        return getRegisteredRestaurantUseCase(userId, restaurantSearchMapRequest)
+        return run {
+            combine(
+                foodCategoryState,
+                drinkPossibilityState
+            ) { foodCategory, drinkPossibility ->
+                val filter = Filter(
+                    categoryFilter =
+                    if (foodCategory == FoodCategory.INIT || foodCategory == FoodCategory.ETC) null
+                    else foodCategory.text,
+                    isCanDrinkLiquor = when (drinkPossibility) {
+                        DrinkPossibility.POSSIBLE -> true
+                        DrinkPossibility.IMPOSSIBLE -> false
+                        else -> null
+                    }
+                )
+
+                val restaurantSearchMapRequest = RestaurantSearchMapRequest(locationData, filter)
+                getRegisteredRestaurantUseCase(userId, restaurantSearchMapRequest)
+
+            }.distinctUntilChanged()
+                .flatMapLatest { it }
+        }
     }
-
 }
