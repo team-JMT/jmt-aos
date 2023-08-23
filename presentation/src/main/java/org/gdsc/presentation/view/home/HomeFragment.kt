@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.webkit.WebViewClient
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.databinding.FragmentHomeBinding
+import org.gdsc.presentation.view.MainActivity
+import org.gdsc.presentation.view.WebAppInterface
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -28,11 +30,24 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val parentActivity = requireActivity() as MainActivity
+
         binding.webView.apply {
             loadUrl("https://jmt-matzip.dev")
             settings.javaScriptEnabled = true
             webViewClient = WebViewClient()
+
+            addJavascriptInterface(WebAppInterface(
+                requireContext(),
+                {
+                    parentActivity.slideUpBottomNavigationView()
+                },
+                {
+                    parentActivity.slideDownBottomNavigationView()
+                }
+            ), "Android")
         }
+
     }
 
     override fun onDestroyView() {
