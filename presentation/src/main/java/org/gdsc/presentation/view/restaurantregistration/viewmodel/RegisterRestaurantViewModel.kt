@@ -110,6 +110,10 @@ class RegisterRestaurantViewModel @Inject constructor(
         _recommendMenuListState.value = _recommendMenuListState.value + text
     }
 
+    fun removeRecommendMenu(text: String) {
+        _recommendMenuListState.value = _recommendMenuListState.value.filter { it != text }
+    }
+
     private fun setImageButtonAnimatingTime(animationTime: Long = 300L) {
         viewModelScope.launch {
             _isImageButtonAnimating.value = true
