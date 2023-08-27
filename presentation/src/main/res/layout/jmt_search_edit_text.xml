@@ -51,10 +51,10 @@
     <TextView
         android:id="@+id/cancel_text"
         android:text="@string/cancel"
+        android:textAppearance="@style/text_large_medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/grey600"
-        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

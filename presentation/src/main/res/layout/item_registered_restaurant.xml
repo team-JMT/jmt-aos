@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/restaurant_name"
-            style="@style/text_large_bold"
+            android:textAppearance="@style/text_large_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="bottom"
@@ -46,6 +46,7 @@
             android:orientation="horizontal">
             <TextView
                 android:id="@+id/restaurant_distance"
+                android:textAppearance="@style/text_medium_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tool:text="내 위치에서 320m"/>
@@ -58,6 +59,7 @@
 
             <TextView
                 android:id="@+id/restaurant_category"
+                android:textAppearance="@style/text_medium_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -88,7 +90,7 @@
 
             <TextView
                 android:id="@+id/user_name"
-                style="@style/text_small_medium"
+                android:textAppearance="@style/text_small_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
