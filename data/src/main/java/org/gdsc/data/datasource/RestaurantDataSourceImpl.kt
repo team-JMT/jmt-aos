@@ -133,7 +133,6 @@ class RestaurantDataSourceImpl @Inject constructor(
 
         }.flow
     }
-}
 
     override suspend fun putRestaurantInfo(putRestaurantInfoRequest: ModifyRestaurantInfoRequest): String {
         return restaurantAPI.putRestaurantInfo(putRestaurantInfoRequest).data
