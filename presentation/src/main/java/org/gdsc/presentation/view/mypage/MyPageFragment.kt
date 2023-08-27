@@ -106,7 +106,7 @@ class MyPageFragment : Fragment() {
         binding.appBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
             if (verticalOffset == -binding.collapsingToolbar.height) {
                 // TODO: User Nickname From ViewModel
-                setToolbarTitle("Treenamu")
+                setToolbarTitle(viewModel.nicknameState.value)
             } else {
                 setToolbarTitle()
             }
