@@ -8,8 +8,10 @@ import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
 import org.gdsc.domain.model.request.RestaurantSearchMapRequest
+import org.gdsc.domain.model.response.RestaurantInfoResponse
 
 interface RestaurantRepository {
 
@@ -17,6 +19,8 @@ interface RestaurantRepository {
         query: String, latitude: String,
         longitude: String, page: Int
     ): List<RestaurantLocationInfo>
+
+    suspend fun getRecommendRestaurantInfo(recommendRestaurantId: Int): RestaurantInfoResponse
 
     suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean
 
@@ -27,4 +31,7 @@ interface RestaurantRepository {
     suspend fun getRestaurants(
         userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
         ): Flow<PagingData<RegisteredRestaurant>>
+
+    suspend fun putRestaurantInfo(putRestaurantInfoRequest: ModifyRestaurantInfoRequest): String
+
 }
