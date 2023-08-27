@@ -66,7 +66,7 @@ class RegisteredRestaurantFragment : Fragment() {
 
     private fun observeState() {
 
-        lifecycleScope.launch {
+        repeatWhenUiStarted {
             viewModel.idState.collectLatest { id ->
 
                 id?.let { notNullId ->
@@ -77,19 +77,19 @@ class RegisteredRestaurantFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launch {
+        repeatWhenUiStarted {
             viewModel.sortTypeState.collectLatest {
                 binding.sortSpinner.setMenuTitle(it.text)
             }
         }
 
-        lifecycleScope.launch {
+        repeatWhenUiStarted {
             viewModel.foodCategoryState.collectLatest {
                 binding.foodCategorySpinner.setMenuTitle(it.text)
             }
         }
 
-        lifecycleScope.launch {
+        repeatWhenUiStarted  {
             viewModel.drinkPossibilityState.collectLatest {
                 binding.drinkPossibilitySpinner.setMenuTitle(it.text)
             }
