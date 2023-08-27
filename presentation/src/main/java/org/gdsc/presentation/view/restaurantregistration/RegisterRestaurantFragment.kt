@@ -6,6 +6,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -100,6 +101,31 @@ class RegisterRestaurantFragment : BaseFragment() {
                     binding.recommendMenuChipGroup.addView(
                         Chip(requireContext()).apply {
                             text = menu
+                            isCloseIconVisible = true
+
+                            closeIcon = ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.cancel_icon
+                            )
+                            closeIconTint = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.grey200
+                            )
+
+                            chipBackgroundColor = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.white
+                            )
+                            chipStrokeColor = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.grey200
+                            )
+                            chipStrokeWidth = 1f
+
+                            setOnCloseIconClickListener {
+                                binding.recommendMenuChipGroup.removeView(this)
+                                viewModel.removeRecommendMenu(text.toString())
+                            }
                         }
                     )
                 }
@@ -189,45 +215,47 @@ class RegisterRestaurantFragment : BaseFragment() {
 
                     setOnClickListener {
 
-                    if (navArgs.targetRestaurantId == -1) {
-                        val pictures = mutableListOf<MultipartBody.Part>()
+                        if (navArgs.targetRestaurantId == -1) {
+                            val pictures = mutableListOf<MultipartBody.Part>()
 
-                        list.forEach {
+                            list.forEach {
 
-                            val file = File(it.toUri().findPath(requireContext()))
+                                val file = File(it.toUri().findPath(requireContext()))
 
-                            val requestFile = RequestBody.create(MediaType.parse("image/png"), file)
-                            val body =
-                                MultipartBody.Part.createFormData(
-                                    "pictures",
-                                    file.name,
-                                    requestFile
-                                )
+                                val requestFile =
+                                    RequestBody.create(MediaType.parse("image/png"), file)
+                                val body =
+                                    MultipartBody.Part.createFormData(
+                                        "pictures",
+                                        file.name,
+                                        requestFile
+                                    )
 
-                            pictures.add(body)
+                                pictures.add(body)
 
-                        }
-
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            viewModel.registerRestaurant(
-                                pictures,
-                                navArgs.restaurantLocationInfo ?: throw Exception()
-                            ) { restaurantId ->
-
-                                val intent = Intent(requireContext(), WebViewActivity::class.java)
-                                // 주소는 변경 되어야 함, 현재는 Lucy LocalHost 테스트
-                                intent.putExtra(
-                                    "url",
-                                    "http://172.20.10.13:3000/detail/$restaurantId"
-                                )
-                                startActivity(intent)
                             }
-                        }
-                    } else {
-                        viewModel.modifyRestaurantInfo(navArgs.targetRestaurantId)
-                    }
 
-                }
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                viewModel.registerRestaurant(
+                                    pictures,
+                                    navArgs.restaurantLocationInfo ?: throw Exception()
+                                ) { restaurantId ->
+
+                                    val intent =
+                                        Intent(requireContext(), WebViewActivity::class.java)
+                                    // 주소는 변경 되어야 함, 현재는 Lucy LocalHost 테스트
+                                    intent.putExtra(
+                                        "url",
+                                        "http://172.20.10.13:3000/detail/$restaurantId"
+                                    )
+                                    startActivity(intent)
+                                }
+                            }
+                        } else {
+                            viewModel.modifyRestaurantInfo(navArgs.targetRestaurantId)
+                        }
+
+                    }
                 }
             }
         }
@@ -268,6 +296,30 @@ class RegisterRestaurantFragment : BaseFragment() {
                     binding.recommendMenuChipGroup.addView(
                         Chip(requireContext()).apply {
                             text = binding.recommendMenuEditText.text
+                            isCloseIconVisible = true
+                            closeIcon = ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.cancel_icon
+                            )
+                            closeIconTint = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.grey200
+                            )
+
+                            chipBackgroundColor = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.white
+                            )
+                            chipStrokeColor = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.grey200
+                            )
+                            chipStrokeWidth = 1f
+
+                            setOnCloseIconClickListener {
+                                binding.recommendMenuChipGroup.removeView(this)
+                                viewModel.removeRecommendMenu(text.toString())
+                            }
                         }
                     )
                     binding.recommendMenuEditText.editText.setText(String.Empty)
