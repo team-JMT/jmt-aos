@@ -11,6 +11,7 @@ import org.gdsc.data.database.RestaurantDatabase
 import org.gdsc.data.database.RestaurantMediator
 import org.gdsc.data.network.RestaurantAPI
 import org.gdsc.domain.DrinkPossibility
+import org.gdsc.domain.Empty
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.RestaurantRegistrationState
 import org.gdsc.domain.SortType
@@ -94,7 +95,10 @@ class RestaurantDataSourceImpl @Inject constructor(
         }
 
         val filter = Filter(
-            categoryFilter = categoryFilter,
+            categoryFilter = when (foodCategory) {
+                FoodCategory.INIT, FoodCategory.ETC -> String.Empty
+                else -> foodCategory.key
+            },
             isCanDrinkLiquor =  isCanDrinkLiquor,
         )
 
