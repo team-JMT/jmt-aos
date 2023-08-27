@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -51,7 +52,13 @@ class RegisteredRestaurantFragment : Fragment() {
 
         myRestaurantAdapter.addLoadStateListener { combinedLoadStates ->
             if (combinedLoadStates.append.endOfPaginationReached) {
-                binding.notYetLayout.root.isVisible = myRestaurantAdapter.itemCount < 1
+                binding.notYetLayout.root.isVisible = myRestaurantAdapter.itemCount == 0
+            } else {
+                binding.notYetLayout.root.isVisible = false
+            }
+
+            if(combinedLoadStates.refresh is LoadState.Error) {
+                binding.notYetLayout.root.isVisible = true
             }
         }
 
