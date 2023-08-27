@@ -47,7 +47,13 @@ class RestaurantRepositoryImpl @Inject constructor(
     override suspend fun getRestaurants(
         userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
     ): Flow<PagingData<RegisteredRestaurant>> {
-        return restaurantDataSource.getRestaurants(userId, locationData, sortType, foodCategory, drinkPossibility).map { pagingData ->
+        return restaurantDataSource.getRestaurants(
+            userId,
+            locationData,
+            sortType,
+            foodCategory,
+            drinkPossibility
+        ).map { pagingData ->
             val pagingTemp = pagingData.map { restaurant ->
                 val restaurantTemp = RegisteredRestaurant(
                     id = restaurant.id,
@@ -71,6 +77,7 @@ class RestaurantRepositoryImpl @Inject constructor(
             }
             pagingTemp
         }
+    }
 
     override suspend fun putRestaurantInfo(putRestaurantInfoRequest: ModifyRestaurantInfoRequest): String {
         return restaurantDataSource.putRestaurantInfo(putRestaurantInfoRequest)
