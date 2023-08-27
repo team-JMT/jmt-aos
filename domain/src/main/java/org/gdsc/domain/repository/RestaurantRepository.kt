@@ -2,6 +2,10 @@ package org.gdsc.domain.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import org.gdsc.domain.DrinkPossibility
+import org.gdsc.domain.FoodCategory
+import org.gdsc.domain.SortType
+import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
@@ -20,5 +24,7 @@ interface RestaurantRepository {
 
     suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String
 
-    suspend fun getRestaurants(userId: Int, restaurantSearchMapRequest: RestaurantSearchMapRequest): Flow<PagingData<RegisteredRestaurant>>
+    suspend fun getRestaurants(
+        userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
+        ): Flow<PagingData<RegisteredRestaurant>>
 }
