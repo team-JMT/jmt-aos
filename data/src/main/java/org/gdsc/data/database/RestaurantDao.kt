@@ -9,27 +9,52 @@ import androidx.room.Query
 @Dao
 interface RestaurantDao {
 
-    // Post 목록을 PagingSource로 가져온다.
-    // 필요 시에는 전체와 Filter 첨부된 쿼리로 나눠도 괜찮을 듯 함.
+    /**
+    * 특정 유저가 등록한 맛집 리스트 가져오기
+     */
     @Query("SELECT * FROM restaurant WHERE userId = :userId" +
             " AND(:canDrinkLiquor IS NULL OR canDrinkLiquor = :canDrinkLiquor)" +
-            " AND (:category IS NULL OR category = :category)" +
+            " AND (:category IS NULL OR category = :category) ")
+    fun getRegisteredRestaurants(userId: Int, category: String?, canDrinkLiquor: Boolean?): PagingSource<Int, RegisteredRestaurant>
+
+    /**
+     * 특정 유저가 등록한 맛집 리스트 가져오기 + 최신순
+     */
+    @Query("SELECT * FROM restaurant WHERE userId = :userId" +
+            " AND(:canDrinkLiquor IS NULL OR canDrinkLiquor = :canDrinkLiquor)" +
+            " AND (:category IS NULL OR category = :category) " +
             " ORDER BY id DESC")
-    fun getRestaurants(userId: Int, category: String?, canDrinkLiquor: Boolean?): PagingSource<Int, RegisteredRestaurant>
+    fun getRegisteredRestaurantsSortedRecent(userId: Int, category: String?, canDrinkLiquor: Boolean?): PagingSource<Int, RegisteredRestaurant>
 
-    //가장 최근 Post를 하나 가져온다.
-    @Query("SELECT * FROM restaurant ORDER BY id DESC LIMIT 1")
-    fun getLatestRestaurant(): RegisteredRestaurant?
+    /**
+     * 특정 유저가 등록한 맛집 리스트 가져오기 + 거리순
+     */
+    @Query("SELECT * FROM restaurant WHERE userId = :userId" +
+            " AND(:canDrinkLiquor IS NULL OR canDrinkLiquor = :canDrinkLiquor)" +
+            " AND (:category IS NULL OR category = :category) " +
+            " ORDER BY CAST(differenceInDistance AS INTEGER) ASC")
+    fun getRegisteredRestaurantsSortedDistance(userId: Int, category: String?, canDrinkLiquor: Boolean?): PagingSource<Int, RegisteredRestaurant>
 
-    //가장 오래 된 Post를 하나 가져온다.
-    @Query("SELECT * FROM restaurant ORDER BY id ASC LIMIT 1")
-    fun getEarliestRestaurant(): RegisteredRestaurant?
+    /**
+     * 특정 유저가 등록한 맛집 리스트 가져오기 + 좋아요순
+     */
+//    @Query("SELECT * FROM restaurant WHERE like = :like" +
+//            " AND(:canDrinkLiquor IS NULL OR canDrinkLiquor = :canDrinkLiquor)" +
+//            " AND (:category IS NULL OR category = :category) " +
+//            " ORDER BY id DESC")
+//    fun getRestaurantsSortedLike(like: Int, category: String?, canDrinkLiquor: Boolean?): PagingSource<Int, RegisteredRestaurant>
 
-    //Post 목록 삽입
+
+
+    /**
+     * 특정 유저가 등록한 맛집 리스트 Room에 저장
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(registeredRestaurant : List<RegisteredRestaurant>)
 
-    // Post 데이터 전체 삭제
+    /**
+     * 등록한 맛집 제거
+     */
     @Query("DELETE FROM restaurant")
     fun deleteAll()
 

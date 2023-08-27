@@ -5,6 +5,10 @@ import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.gdsc.data.datasource.RestaurantDataSource
+import org.gdsc.domain.DrinkPossibility
+import org.gdsc.domain.FoodCategory
+import org.gdsc.domain.SortType
+import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
@@ -34,8 +38,10 @@ class RestaurantRepositoryImpl @Inject constructor(
         return restaurantDataSource.postRestaurantInfo(restaurantRegistrationRequest)
     }
 
-    override suspend fun getRestaurants(userId: Int, restaurantSearchMapRequest: RestaurantSearchMapRequest): Flow<PagingData<RegisteredRestaurant>> {
-        return restaurantDataSource.getRestaurants(userId, restaurantSearchMapRequest).map { pagingData ->
+    override suspend fun getRestaurants(
+        userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
+    ): Flow<PagingData<RegisteredRestaurant>> {
+        return restaurantDataSource.getRestaurants(userId, locationData, sortType, foodCategory, drinkPossibility).map { pagingData ->
             val pagingTemp = pagingData.map { restaurant ->
                 val restaurantTemp = RegisteredRestaurant(
                     id = restaurant.id,

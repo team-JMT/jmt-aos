@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -215,29 +216,18 @@ class MyPageViewModel @Inject constructor(
             }
         }
     }
+    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun registeredPagingData(userId: Int): Flow<PagingData<RegisteredRestaurant>> {
         val location = locationManager.getCurrentLocation() ?: return flowOf(PagingData.empty())
         val locationData = Location(location.longitude.toString(), location.latitude.toString())
 
         return run {
-            combine(
+            return@run combine(
                 foodCategoryState,
-                drinkPossibilityState
-            ) { foodCategory, drinkPossibility ->
-                val filter = Filter(
-                    categoryFilter =
-                    if (foodCategory == FoodCategory.INIT || foodCategory == FoodCategory.ETC) null
-                    else foodCategory.text,
-                    isCanDrinkLiquor = when (drinkPossibility) {
-                        DrinkPossibility.POSSIBLE -> true
-                        DrinkPossibility.IMPOSSIBLE -> false
-                        else -> null
-                    }
-                )
-
-                val restaurantSearchMapRequest = RestaurantSearchMapRequest(locationData, filter)
-                getRegisteredRestaurantUseCase(userId, restaurantSearchMapRequest)
-
+                drinkPossibilityState,
+                sortTypeState
+            ) { foodCategory, drinkPossibility, sortType ->
+                getRegisteredRestaurantUseCase(userId, locationData, sortType, foodCategory, drinkPossibility)
             }.distinctUntilChanged()
                 .flatMapLatest { it }
         }
