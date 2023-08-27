@@ -44,6 +44,9 @@ class HomeFragment : Fragment() {
                 },
                 {
                     parentActivity.slideDownBottomNavigationView()
+                },
+                {
+                    parentActivity.navigateToEditRestaurantInfo(it)
                 }
             ), "Android")
         }

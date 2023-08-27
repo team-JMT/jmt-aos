@@ -25,6 +25,7 @@ import org.gdsc.presentation.databinding.ActivityMainBinding
 import org.gdsc.presentation.utils.slideDown
 import org.gdsc.presentation.utils.slideUp
 import org.gdsc.presentation.utils.toPx
+import org.gdsc.presentation.view.home.HomeFragmentDirections
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -180,6 +181,14 @@ class MainActivity : BaseActivity() {
 
     fun changeToolbarVisible(isVisible: Boolean) {
         binding.toolBar.isVisible = isVisible
+    }
+
+    fun navigateToEditRestaurantInfo(restaurantId: Int) {
+
+        val action = HomeFragmentDirections.actionHomeFragmentToRegisterRestaurantFragment(
+            targetRestaurantId = restaurantId
+        )
+        navController.navigate(action)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
