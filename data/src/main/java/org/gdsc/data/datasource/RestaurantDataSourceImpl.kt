@@ -1,11 +1,12 @@
 package org.gdsc.data.datasource
 
-import android.util.Log
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.gdsc.data.network.RestaurantAPI
 import org.gdsc.domain.RestaurantRegistrationState
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
+import org.gdsc.domain.model.response.RestaurantInfoResponse
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -20,6 +21,10 @@ class RestaurantDataSourceImpl @Inject constructor(
     ): List<RestaurantLocationInfo> {
         // TODO: 예외 처리
         return restaurantAPI.getRestaurantLocationInfo(query, latitude, longitude, page).data
+    }
+
+    override suspend fun getRecommendRestaurantInfo(recommendRestaurantId: Int): RestaurantInfoResponse {
+        return restaurantAPI.getRecommendRestaurantInfo(recommendRestaurantId).data
     }
 
     override suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean {
@@ -62,4 +67,10 @@ class RestaurantDataSourceImpl @Inject constructor(
             pictures = restaurantRegistrationRequest.pictures
         ).data.recommendRestaurantId
     }
+
+    override suspend fun putRestaurantInfo(putRestaurantInfoRequest: ModifyRestaurantInfoRequest): String {
+        return restaurantAPI.putRestaurantInfo(putRestaurantInfoRequest).data
+    }
+
+
 }

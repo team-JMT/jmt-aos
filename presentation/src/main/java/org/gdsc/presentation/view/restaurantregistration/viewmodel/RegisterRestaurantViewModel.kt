@@ -1,7 +1,5 @@
 package org.gdsc.presentation.view.restaurantregistration.viewmodel
 
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,15 +16,21 @@ import org.gdsc.domain.Empty
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.model.RestaurantDetailInfo
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
+import org.gdsc.domain.model.response.RestaurantInfoResponse
+import org.gdsc.domain.usecase.GetRestaurantInfoUseCase
 import org.gdsc.domain.usecase.PostRestaurantInfoUseCase
 import org.gdsc.domain.usecase.PostRestaurantLocationInfoUseCase
+import org.gdsc.domain.usecase.PutRestaurantInfoUseCase
 import org.gdsc.presentation.model.FoodCategoryItem
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterRestaurantViewModel @Inject constructor(
     private val postRestaurantLocationInfoUseCase: PostRestaurantLocationInfoUseCase,
-    private val postRestaurantInfoUseCase: PostRestaurantInfoUseCase
+    private val postRestaurantInfoUseCase: PostRestaurantInfoUseCase,
+    private val getRestaurantLocationInfoUseCase: GetRestaurantInfoUseCase,
+    private val putRestaurantInfoUseCase: PutRestaurantInfoUseCase
 ) : ViewModel() {
 
     private var _restaurantPlaceName = MutableStateFlow("")
@@ -52,7 +56,7 @@ class RegisterRestaurantViewModel @Inject constructor(
 
     private var _recommendMenuListState: MutableStateFlow<List<String>> =
         MutableStateFlow(emptyList())
-    private val recommendMenuListState = _recommendMenuListState.asStateFlow()
+    val recommendMenuListState = _recommendMenuListState.asStateFlow()
 
     val isRecommendMenuFullState: StateFlow<Boolean>
         get() = recommendMenuListState.map {
@@ -114,7 +118,7 @@ class RegisterRestaurantViewModel @Inject constructor(
         }
     }
 
-    fun setRestaurantDetailInfo(detailData : RestaurantDetailInfo) {
+    fun setRestaurantDetailInfo(detailData: RestaurantDetailInfo) {
         _foodCategoryState.value = FoodCategoryItem(FoodCategory.fromId(detailData.categoryId))
         _drinkPossibilityState.value = detailData.canDrinkLiquor
         _recommendDrinkTextState.value = detailData.goWellWithLiquor
@@ -140,7 +144,7 @@ class RegisterRestaurantViewModel @Inject constructor(
                 introduce = introductionTextState.value,
                 categoryId = foodCategoryState.value.categoryItem.id,
                 pictures = pictures,
-                canDrinkLiquor = _drinkPossibilityState.value,
+                canDrinkLiquor = drinkPossibilityState.value,
                 goWellWithLiquor = recommendDrinkTextState.value,
                 recommendMenu = recommendMenuListState.value.joinToString(" ") {
                     "#$it"
@@ -149,6 +153,41 @@ class RegisterRestaurantViewModel @Inject constructor(
             )
 
             actionAfterRegisterSuccess(restaurantId)
+        }
+    }
+
+    fun getRestaurantInfo(restaurantId: Int, setTheView: (RestaurantInfoResponse) -> Unit) {
+        viewModelScope.launch {
+            getRestaurantLocationInfoUseCase(restaurantId).let {
+                _foodCategoryState.value = FoodCategoryItem(FoodCategory.fromName(it.category))
+                _drinkPossibilityState.value = it.canDrinkLiquor
+                _recommendDrinkTextState.value = it.goWellWithLiquor
+                _recommendMenuListState.value = it.recommendMenu.split("#").drop(1).apply {
+                    println("  isRecommendMenuFullState 테스트 초기화 : ${this}")
+                }
+                _introductionTextState.value = it.introduce
+                _restaurantPlaceName.value = it.name
+                _restaurantLocationId.value = restaurantId.toString()
+                setTheView(it)
+            }
+
+        }
+    }
+
+    fun modifyRestaurantInfo(restaurantId: Int) {
+        viewModelScope.launch {
+            putRestaurantInfoUseCase.invoke(
+                ModifyRestaurantInfoRequest(
+                    canDrinkLiquor = drinkPossibilityState.value,
+                    goWellWithLiquor = recommendDrinkTextState.value,
+                    introduce = introductionTextState.value,
+                    recommendMenu = recommendMenuListState.value.joinToString(" ") {
+                        "#$it"
+                    },
+                    categoryId = foodCategoryState.value.categoryItem.id.toInt(),
+                    id = restaurantId,
+                    )
+            )
         }
     }
 
