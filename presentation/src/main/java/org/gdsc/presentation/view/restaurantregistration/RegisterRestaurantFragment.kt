@@ -2,13 +2,11 @@ package org.gdsc.presentation.view.restaurantregistration
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -32,7 +30,6 @@ import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.utils.animateShrinkWidth
 import org.gdsc.presentation.utils.checkMediaPermissions
 import org.gdsc.presentation.utils.findPath
-import org.gdsc.presentation.utils.showMediaPermissionsDialog
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.WebViewActivity
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
@@ -79,18 +76,63 @@ class RegisterRestaurantFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initInfo()
         observeStates()
         setFoodCategoryContainer()
         setDrinkPossibilityCheckbox()
         setIntroductionEditText()
-        setAddImageButton()
-        setImageList()
-        setRecommendDrinkEditText()
         setRecommendMenuEditText()
-        setToolbarTitle()
-
+        setRecommendDrinkEditText()
         setAdapter()
+
+        // register
+        if (navArgs.targetRestaurantId == -1) {
+            initInfo()
+            setToolbarTitle(navArgs.restaurantLocationInfo?.placeName ?: String.Empty)
+            setAddImageButton()
+            setImageList()
+
+            // modify
+        } else {
+            viewModel.getRestaurantInfo(navArgs.targetRestaurantId) {
+                setToolbarTitle(it.name)
+                binding.introductionEditText.setText(it.introduce)
+                binding.recommendDrinkEditText.editText.setText(it.goWellWithLiquor)
+                it.recommendMenu.split('#').drop(1).forEach { menu ->
+                    binding.recommendMenuChipGroup.addView(
+                        Chip(requireContext()).apply {
+                            text = menu
+                            isCloseIconVisible = true
+
+                            closeIcon = ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.cancel_icon
+                            )
+                            closeIconTint = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.grey200
+                            )
+
+                            chipBackgroundColor = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.white
+                            )
+                            chipStrokeColor = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.grey200
+                            )
+                            chipStrokeWidth = 1f
+
+                            setOnCloseIconClickListener {
+                                binding.recommendMenuChipGroup.removeView(this)
+                                viewModel.removeRecommendMenu(text.toString())
+                            }
+                        }
+                    )
+                }
+
+            }
+        }
+
 
     }
 
@@ -116,7 +158,7 @@ class RegisterRestaurantFragment : BaseFragment() {
 
     // nullable한 타입이 있다면 핸들링 처리 해주기
     private fun initInfo() {
-        navArgs.restaurantLocationInfo.let {
+        navArgs.restaurantLocationInfo?.let {
             viewModel.setRestaurantLocationIno(it)
         }
         navArgs.restaurantDetailInfo?.let {
@@ -161,35 +203,58 @@ class RegisterRestaurantFragment : BaseFragment() {
                 binding.selectImageCountText.text =
                     getString(
                         R.string.text_counter_max_ten,
-                        viewModel.isFoodImagesListState.value.size ?: 0
+                        viewModel.isFoodImagesListState.value.size
                     )
 
                 adapter.submitList(list)
 
-                binding.registerButton.setOnClickListener {
+                binding.registerButton.apply {
 
-                    val pictures = mutableListOf<MultipartBody.Part>()
+                    if (navArgs.targetRestaurantId == -1) this.text = "등록하기"
+                    else this.text = "수정하기"
 
-                    list.forEach {
+                    setOnClickListener {
 
-                        val file = File(it.toUri().findPath(requireContext()))
+                        if (navArgs.targetRestaurantId == -1) {
+                            val pictures = mutableListOf<MultipartBody.Part>()
 
-                        val requestFile = RequestBody.create(MediaType.parse("image/png"), file)
-                        val body =
-                            MultipartBody.Part.createFormData("pictures", file.name, requestFile)
+                            list.forEach {
 
-                        pictures.add(body)
+                                val file = File(it.toUri().findPath(requireContext()))
 
-                    }
+                                val requestFile =
+                                    RequestBody.create(MediaType.parse("image/png"), file)
+                                val body =
+                                    MultipartBody.Part.createFormData(
+                                        "pictures",
+                                        file.name,
+                                        requestFile
+                                    )
 
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        viewModel.registerRestaurant(pictures, navArgs.restaurantLocationInfo) { restaurantId ->
+                                pictures.add(body)
 
-                            val intent = Intent(requireContext(), WebViewActivity::class.java)
-                            // 주소는 변경 되어야 함, 현재는 Lucy LocalHost 테스트
-                            intent.putExtra("url", "http://172.20.10.13:3000/detail/$restaurantId")
-                            startActivity(intent)
+                            }
+
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                viewModel.registerRestaurant(
+                                    pictures,
+                                    navArgs.restaurantLocationInfo ?: throw Exception()
+                                ) { restaurantId ->
+
+                                    val intent =
+                                        Intent(requireContext(), WebViewActivity::class.java)
+                                    // 주소는 변경 되어야 함, 현재는 Lucy LocalHost 테스트
+                                    intent.putExtra(
+                                        "url",
+                                        "http://172.20.10.13:3000/detail/$restaurantId"
+                                    )
+                                    startActivity(intent)
+                                }
+                            }
+                        } else {
+                            viewModel.modifyRestaurantInfo(navArgs.targetRestaurantId)
                         }
+
                     }
                 }
             }
@@ -231,6 +296,30 @@ class RegisterRestaurantFragment : BaseFragment() {
                     binding.recommendMenuChipGroup.addView(
                         Chip(requireContext()).apply {
                             text = binding.recommendMenuEditText.text
+                            isCloseIconVisible = true
+                            closeIcon = ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.cancel_icon
+                            )
+                            closeIconTint = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.grey200
+                            )
+
+                            chipBackgroundColor = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.white
+                            )
+                            chipStrokeColor = ContextCompat.getColorStateList(
+                                requireContext(),
+                                R.color.grey200
+                            )
+                            chipStrokeWidth = 1f
+
+                            setOnCloseIconClickListener {
+                                binding.recommendMenuChipGroup.removeView(this)
+                                viewModel.removeRecommendMenu(text.toString())
+                            }
                         }
                     )
                     binding.recommendMenuEditText.editText.setText(String.Empty)
@@ -266,10 +355,8 @@ class RegisterRestaurantFragment : BaseFragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private fun setToolbarTitle() {
-        (requireActivity() as MainActivity).changeToolbarTitle(
-            navArgs.restaurantLocationInfo.placeName
-        )
+    private fun setToolbarTitle(restaurantName: String) {
+        (requireActivity() as MainActivity).changeToolbarTitle(restaurantName)
     }
 
     override fun onDestroyView() {
