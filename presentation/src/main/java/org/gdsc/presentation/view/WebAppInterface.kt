@@ -19,7 +19,7 @@ class WebAppInterface(
     }
 
     @JavascriptInterface
-    fun setVisibleNavigationAndToolBar(isVisible: Boolean) {
+    fun navigationEnable(isVisible: Boolean) {
         if (isVisible) slideUpBottomNavigationView()
         else slideDownBottomNavigationView()
     }
