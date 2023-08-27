@@ -74,8 +74,8 @@
 
     <TextView
         android:id="@+id/apple_login_btn"
+        android:textAppearance="@style/text_medium_medium"
         android:text="@string/continue_with_apple"
-        android:textSize="14sp"
         android:textColor="@color/grayscale600"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

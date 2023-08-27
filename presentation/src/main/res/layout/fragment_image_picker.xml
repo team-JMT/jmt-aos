@@ -55,6 +55,7 @@
 
         <TextView
             android:id="@+id/infoTitle"
+            android:textAppearance="@style/text_large_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/grey500"
