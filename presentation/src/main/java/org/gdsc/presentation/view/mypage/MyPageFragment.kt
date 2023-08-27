@@ -7,13 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.Empty
-import org.gdsc.domain.model.UserInfo
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentMyPageBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
@@ -30,7 +29,7 @@ class MyPageFragment : Fragment() {
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: MyPageViewModel by viewModels()
+    private val viewModel: MyPageViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

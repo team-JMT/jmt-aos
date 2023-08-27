@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/dialogTitle"
-        style="@style/title_small_bold"
+        android:textAppearance="@style/title_small_bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"/>

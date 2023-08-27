@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
@@ -25,6 +26,7 @@ import org.gdsc.presentation.databinding.ActivityMainBinding
 import org.gdsc.presentation.utils.slideDown
 import org.gdsc.presentation.utils.slideUp
 import org.gdsc.presentation.utils.toPx
+import org.gdsc.presentation.view.mypage.viewmodel.MyPageViewModel
 import org.gdsc.presentation.view.home.HomeFragmentDirections
 
 @AndroidEntryPoint
@@ -34,6 +36,8 @@ class MainActivity : BaseActivity() {
         requireNotNull(supportFragmentManager.findFragmentById(R.id.nav_host_fragment)).findNavController()
     }
     private lateinit var binding: ActivityMainBinding
+
+    private val myPageViewModel: MyPageViewModel by viewModels()
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()

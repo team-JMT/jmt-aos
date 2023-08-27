@@ -1,8 +1,16 @@
 package org.gdsc.data.datasource
 
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
+import org.gdsc.data.database.RegisteredRestaurant
+import org.gdsc.domain.DrinkPossibility
+import org.gdsc.domain.FoodCategory
+import org.gdsc.domain.SortType
+import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
+import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 
 interface RestaurantDataSource {
@@ -20,5 +28,10 @@ interface RestaurantDataSource {
 
     suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String
 
+    suspend fun getRestaurants(
+        userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
+        ): Flow<PagingData<RegisteredRestaurant>>
+
     suspend fun putRestaurantInfo(putRestaurantInfoRequest: ModifyRestaurantInfoRequest): String
+
 }
