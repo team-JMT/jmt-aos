@@ -2,8 +2,10 @@ package org.gdsc.data.network
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.gdsc.data.database.RegisteredRestaurantPaging
 import org.gdsc.data.model.Response
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 import org.gdsc.domain.model.response.RestaurantRegistrationResponse
@@ -49,8 +51,18 @@ interface RestaurantAPI {
         @Part pictures: List<MultipartBody.Part>,
     ): Response<RestaurantRegistrationResponse>
 
+    @POST("api/v1/restaurant/search/{userid}")
+    suspend fun getRegisteredRestaurants(
+        @Path("userid") userId: Int,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+        @Query("sort") sort: String? = null,
+        @Body restaurantSearchMapRequest: RestaurantSearchMapRequest,
+    ): Response<RegisteredRestaurantPaging>
+
     @PUT("api/v1/restaurant")
     suspend fun putRestaurantInfo(
         @Body putRestaurantInfoRequest: ModifyRestaurantInfoRequest,
     ): Response<String>
+
 }

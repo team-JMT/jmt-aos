@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:background="@null"
-            android:textAppearance="@style/title_small_medium"
+            android:textAppearance="@style/text_large_medium"
             android:textCursorDrawable="@null"
             android:maxLength="10"
             android:autofillHints="username"

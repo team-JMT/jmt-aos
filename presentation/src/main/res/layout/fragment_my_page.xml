@@ -57,11 +57,11 @@
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
-                    android:text="@string/follower"
+                    android:text="@string/registered_restaurant"
                     android:id="@+id/follower_text"
+                    android:textAppearance="@style/text_large_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/text_large_medium"
                     android:textColor="@color/grey500"
                     app:layout_constraintStart_toStartOf="@id/nick_name"
                     app:layout_constraintTop_toBottomOf="@id/nick_name"
@@ -78,30 +78,6 @@
                     app:layout_constraintStart_toEndOf="@id/follower_text"
                     app:layout_constraintTop_toTopOf="@id/follower_text"
                     app:layout_constraintBottom_toBottomOf="@id/follower_text"/>
-
-                <TextView
-                    android:text="@string/following"
-                    android:id="@+id/following_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/text_large_medium"
-                    android:textColor="@color/grey500"
-                    android:layout_marginStart="29dp"
-                    app:layout_constraintStart_toEndOf="@id/follower_count_text"
-                    app:layout_constraintTop_toTopOf="@id/follower_text"
-                    app:layout_constraintBottom_toBottomOf="@id/follower_text"/>
-
-                <TextView
-                    android:text="2"
-                    android:id="@+id/following_count_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/text_large_medium"
-                    android:textColor="@color/black"
-                    android:layout_marginStart="8dp"
-                    app:layout_constraintStart_toEndOf="@id/following_text"
-                    app:layout_constraintTop_toTopOf="@id/following_text"
-                    app:layout_constraintBottom_toBottomOf="@id/following_text"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -122,4 +98,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_small"
+        android:background="@color/grey100"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

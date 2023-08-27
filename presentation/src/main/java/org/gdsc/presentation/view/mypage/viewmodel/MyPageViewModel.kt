@@ -3,19 +3,34 @@ package org.gdsc.presentation.view.mypage.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
+import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.Empty
+import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
+import org.gdsc.domain.model.Filter
+import org.gdsc.domain.model.Location
+import org.gdsc.domain.model.RegisteredRestaurant
+import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.model.response.NicknameResponse
 import org.gdsc.domain.usecase.CheckDuplicatedNicknameUseCase
+import org.gdsc.domain.usecase.GetRegisteredRestaurantUseCase
 import org.gdsc.domain.usecase.PostNicknameUseCase
 import org.gdsc.domain.usecase.PostUserLogoutUseCase
 import org.gdsc.domain.usecase.PostUserSignoutUseCase
@@ -24,11 +39,13 @@ import org.gdsc.domain.usecase.token.GetRefreshTokenUseCase
 import org.gdsc.domain.usecase.user.GetUserInfoUseCase
 import org.gdsc.domain.usecase.user.PostDefaultProfileImageUseCase
 import org.gdsc.domain.usecase.user.PostProfileImageUseCase
+import org.gdsc.presentation.JmtLocationManager
 import org.gdsc.presentation.model.ResultState
 import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
+    private val locationManager: JmtLocationManager,
     private val userInfoUseCase: GetUserInfoUseCase,
     private val postNicknameUseCase: PostNicknameUseCase,
     private val checkDuplicatedNicknameUseCase: CheckDuplicatedNicknameUseCase,
@@ -38,11 +55,11 @@ class MyPageViewModel @Inject constructor(
     private val getRefreshTokenUseCase: GetRefreshTokenUseCase,
     private val clearTokenInfoUseCase: ClearTokenInfoUseCase,
     private val postUserSignoutUseCase: PostUserSignoutUseCase,
+    private val getRegisteredRestaurantUseCase: GetRegisteredRestaurantUseCase,
 ): ViewModel() {
 
-    private var _sortTypeState = MutableStateFlow(SortType.INIT)
-    val sortTypeState: StateFlow<SortType>
-        get() = _sortTypeState
+    private var _idState = MutableStateFlow<Int?>(null)
+    val idState: StateFlow<Int?> = _idState.asStateFlow()
 
     private var _nicknameState = MutableStateFlow(String.Empty)
     val nicknameState = _nicknameState.asStateFlow()
@@ -53,10 +70,26 @@ class MyPageViewModel @Inject constructor(
     private var _emailState = MutableStateFlow(String.Empty)
     val emailState = _emailState.asStateFlow()
 
+
+
+    private var _sortTypeState = MutableStateFlow(SortType.INIT)
+    val sortTypeState: StateFlow<SortType>
+        get() = _sortTypeState
+
+    private var _foodCategoryState = MutableStateFlow(FoodCategory.INIT)
+    val foodCategoryState: StateFlow<FoodCategory>
+        get() = _foodCategoryState
+
+    private var _drinkPossibilityState = MutableStateFlow(DrinkPossibility.INIT)
+    val drinkPossibilityState: StateFlow<DrinkPossibility>
+        get() = _drinkPossibilityState
+
+
     suspend fun getUserInfo() {
         return withContext(viewModelScope.coroutineContext) {
             val response = userInfoUseCase.invoke()
 
+            _idState.value = response.id
             _nicknameState.value = response.nickname
             _profileImageState.value = response.profileImg
             _emailState.value = response.email
@@ -78,7 +111,17 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
+    fun setSortType(sortType: SortType) {
+        _sortTypeState.value = sortType
+    }
 
+    fun setFoodCategory(foodCategory: FoodCategory) {
+        _foodCategoryState.value = foodCategory
+    }
+
+    fun setDrinkPossibility(drinkPossibility: DrinkPossibility) {
+        _drinkPossibilityState.value = drinkPossibility
+    }
 
     fun checkDuplicatedNickname(
         nickName: String,
@@ -171,6 +214,22 @@ class MyPageViewModel @Inject constructor(
                     Log.e("MyPageViewModel", "알 수 없는 오류가 발생했습니다.")
                 }
             }
+        }
+    }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun registeredPagingData(userId: Int): Flow<PagingData<RegisteredRestaurant>> {
+        val location = locationManager.getCurrentLocation() ?: return flowOf(PagingData.empty())
+        val locationData = Location(location.longitude.toString(), location.latitude.toString())
+
+        return run {
+            return@run combine(
+                foodCategoryState,
+                drinkPossibilityState,
+                sortTypeState
+            ) { foodCategory, drinkPossibility, sortType ->
+                getRegisteredRestaurantUseCase(userId, locationData, sortType, foodCategory, drinkPossibility)
+            }.distinctUntilChanged()
+                .flatMapLatest { it }
         }
     }
 }
