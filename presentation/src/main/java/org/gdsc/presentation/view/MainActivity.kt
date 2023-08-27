@@ -1,6 +1,7 @@
 package org.gdsc.presentation.view
 
 import android.Manifest
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.Animation
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -26,8 +28,9 @@ import org.gdsc.presentation.databinding.ActivityMainBinding
 import org.gdsc.presentation.utils.slideDown
 import org.gdsc.presentation.utils.slideUp
 import org.gdsc.presentation.utils.toPx
-import org.gdsc.presentation.view.mypage.viewmodel.MyPageViewModel
 import org.gdsc.presentation.view.home.HomeFragmentDirections
+import org.gdsc.presentation.view.mypage.viewmodel.MyPageViewModel
+
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -172,10 +175,22 @@ class MainActivity : BaseActivity() {
     }
 
     fun slideDownBottomNavigationView() {
-        binding.bottomNavigationView.slideDown()
+        val myAnimationListener: Animator.AnimatorListener =
+            object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {}
+                override fun onAnimationEnd(p0: Animator) {
+
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
+
+                override fun onAnimationCancel(p0: Animator) {}
+                override fun onAnimationRepeat(p0: Animator) {}
+            }
+        binding.bottomNavigationView.slideDown(endListener = myAnimationListener)
     }
 
     fun slideUpBottomNavigationView() {
+        binding.bottomNavigationView.visibility = View.VISIBLE
         binding.bottomNavigationView.slideUp()
     }
 

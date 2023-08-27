@@ -1,5 +1,6 @@
 package org.gdsc.presentation.utils
 
+import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.view.View
 import android.view.animation.AlphaAnimation
@@ -47,12 +48,12 @@ fun View.slideUp(duration: Long = 200) {
         }
 }
 
-fun View.slideDown(duration: Long = 200) {
+fun View.slideDown(duration: Long = 200, endListener: Animator.AnimatorListener) {
     val self = this
     ObjectAnimator
         .ofFloat(self, "translationY", self.height.toFloat())
         .apply {
             setDuration(duration)
             start()
-        }
+        }.addListener(endListener)
 }
