@@ -2,9 +2,11 @@ package org.gdsc.presentation.view.restaurantregistration.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FoodCategoryItemBinding
 import org.gdsc.presentation.model.FoodCategoryItem
 
@@ -24,6 +26,19 @@ class FoodCategoryRecyclerAdapter(
             binding.categoryName.text = item.categoryItem.text
             binding.root.isSelected =
                 selectedItem?.categoryItem?.text == item.categoryItem.text
+            binding.categoryImage.apply {
+                setImageDrawable(
+                    ContextCompat.getDrawable(
+                        binding.root.context,
+                        item.getIcon()
+                    )
+                )
+                imageTintList = ContextCompat.getColorStateList(
+                    binding.root.context,
+                    if (binding.root.isSelected) R.color.main600 else R.color.grey100
+                )
+            }
+
         }
     }
 
