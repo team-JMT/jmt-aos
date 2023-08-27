@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.JmtEditTextBinding
 import org.gdsc.presentation.utils.ValidationUtils
@@ -35,6 +36,7 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
                 }
                 getString(R.styleable.JmtEditText_jmtEditTextHint)?.let {
                     binding.nicknameEditText.hint = it
+                    binding.nicknameEditText.setHintTextColor(ContextCompat.getColor(context, R.color.grey300))
                 }
             } finally {
                 recycle()
