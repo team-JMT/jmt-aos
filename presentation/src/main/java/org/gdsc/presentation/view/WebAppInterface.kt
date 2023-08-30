@@ -19,7 +19,7 @@ class WebAppInterface(
     }
 
     @JavascriptInterface
-    fun navigationEnable(isVisible: Boolean) {
+    fun navigation(isVisible: Boolean) {
         if (isVisible) slideUpBottomNavigationView()
         else slideDownBottomNavigationView()
     }
@@ -27,6 +27,23 @@ class WebAppInterface(
     @JavascriptInterface
     fun editRestaurantInfo(restaurantId: Int) {
         navigateToRestaurantEdit(restaurantId)
+    }
+
+    // webView.canGoBack으로 뒤로가기 처리 완료해서 비워뒀습니다.
+    @JavascriptInterface
+    fun back(isEnableBack: Boolean) {
+    }
+
+    @JavascriptInterface
+    fun token() {
+    }
+
+    @JavascriptInterface
+    fun share() {
+    }
+
+    @JavascriptInterface
+    fun navigate(route: String) {
     }
 
 }
