@@ -35,6 +35,7 @@ class HomeFragment : Fragment() {
         binding.webView.apply {
             loadUrl("https://jmt-matzip.dev")
             settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
             webViewClient = WebViewClient()
 
             addJavascriptInterface(WebAppInterface(
