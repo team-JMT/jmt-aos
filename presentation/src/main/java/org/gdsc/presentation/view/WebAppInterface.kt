@@ -9,7 +9,8 @@ class WebAppInterface(
     private val mContext: Context,
     private val slideUpBottomNavigationView: () -> Unit = {},
     private val slideDownBottomNavigationView: () -> Unit = {},
-    private val navigateToRestaurantEdit: (Int) -> Unit = {}
+    private val navigateToRestaurantEdit: (Int) -> Unit = {},
+    private val setAccessToken: () -> Unit = {},
 ) {
 
     /** Show a toast from the web page  */
@@ -35,8 +36,7 @@ class WebAppInterface(
     }
 
     @JavascriptInterface
-    fun token() {
-    }
+    fun token() = setAccessToken()
 
     @JavascriptInterface
     fun share() {

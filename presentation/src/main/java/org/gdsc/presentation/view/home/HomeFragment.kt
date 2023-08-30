@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebViewClient
+import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.databinding.FragmentHomeBinding
+import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.WebAppInterface
 
@@ -18,6 +20,8 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    val viewModel: HomeViewModel by viewModels()
+    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,10 +52,16 @@ class HomeFragment : Fragment() {
                 },
                 {
                     parentActivity.navigateToEditRestaurantInfo(it)
+                },
+                {
+                    repeatWhenUiStarted {
+                        binding.webView.loadUrl(
+                            "javascript:setAccessToken(\"${viewModel.getAccessToken()}\")"
+                        )
+                    }
                 }
-            ), "Android")
+            ), "webviewBridge")
         }
-
     }
 
     override fun onDestroyView() {
