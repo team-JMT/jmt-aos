@@ -25,17 +25,17 @@ import org.gdsc.domain.Empty
 import org.gdsc.presentation.BaseFragment
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRegisterRestaurantBinding
+import org.gdsc.presentation.utils.BitmapUtils.getCompressedBitmapFromUri
+import org.gdsc.presentation.utils.BitmapUtils.saveBitmapToFile
 import org.gdsc.presentation.utils.addAfterTextChangedListener
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.utils.animateShrinkWidth
 import org.gdsc.presentation.utils.checkMediaPermissions
-import org.gdsc.presentation.utils.findPath
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.WebViewActivity
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
 import org.gdsc.presentation.view.restaurantregistration.adapter.RegisterRestaurantAdapter
 import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterRestaurantViewModel
-import java.io.File
 
 @AndroidEntryPoint
 class RegisterRestaurantFragment : BaseFragment() {
@@ -218,20 +218,28 @@ class RegisterRestaurantFragment : BaseFragment() {
                         if (navArgs.targetRestaurantId == -1) {
                             val pictures = mutableListOf<MultipartBody.Part>()
 
-                            list.forEach {
+                            list.forEachIndexed { index, sUri ->
 
-                                val file = File(it.toUri().findPath(requireContext()))
+                                sUri.toUri()
+                                    .getCompressedBitmapFromUri(context)
+                                    ?.saveBitmapToFile(context, "$index.jpg")?.let {  imageFile ->
 
-                                val requestFile =
-                                    RequestBody.create(MediaType.parse("image/png"), file)
-                                val body =
-                                    MultipartBody.Part.createFormData(
-                                        "pictures",
-                                        file.name,
-                                        requestFile
-                                    )
+                                    val requestFile =
+                                        RequestBody.create(
+                                            MediaType.parse("image/png"),
+                                            imageFile
+                                        )
 
-                                pictures.add(body)
+                                    val body =
+                                        MultipartBody.Part.createFormData(
+                                            "pictures",
+                                            imageFile.name,
+                                            requestFile
+                                        )
+
+                                    pictures.add(body)
+
+                                }
 
                             }
 
