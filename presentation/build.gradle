@@ -25,9 +25,9 @@ android {
     signingConfigs {
         release {
             storeFile file("../jmtKey")
-            storePassword "$System.env.KEYSTORE_PASSWORD"
-            keyAlias "$System.env.KEY_ALIAS"
-            keyPassword "$System.env.KEY_PASSWORD"
+            storePassword "$System.env.SIGNING_STORE_PASSWORD"
+            keyAlias "$System.env.SIGNING_KEY_ALIAS"
+            keyPassword "$System.env.SIGNING_KEY_PASSWORD"
         }
     }
     buildTypes {
