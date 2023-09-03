@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebViewClient
+import androidx.activity.addCallback
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.databinding.FragmentHomeBinding
@@ -35,6 +36,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val parentActivity = requireActivity() as MainActivity
+        setWebViewBackPress()
 
         binding.webView.apply {
             loadUrl("https://jmt-matzip.dev")
@@ -67,5 +69,15 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    private fun setWebViewBackPress() {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (binding.webView.canGoBack()) {
+                binding.webView.goBack()
+            } else {
+                requireActivity().finish()
+            }
+        }
     }
 }
