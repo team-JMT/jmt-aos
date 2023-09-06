@@ -25,6 +25,7 @@ object BitmapUtils {
             outputStream = FileOutputStream(file)
             this.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             outputStream.flush()
+            this.recycle()
             return file
         } catch (e: IOException) {
             e.printStackTrace()
