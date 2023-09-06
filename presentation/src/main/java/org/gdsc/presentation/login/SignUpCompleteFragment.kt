@@ -12,6 +12,10 @@ import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.flow.collect
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -20,6 +24,9 @@ import org.gdsc.presentation.databinding.FragmentSignUpCompleteBinding
 import org.gdsc.presentation.utils.BitmapUtils.getCompressedBitmapFromUri
 import org.gdsc.presentation.utils.BitmapUtils.saveBitmapToFile
 import org.gdsc.presentation.utils.checkMediaPermissions
+import org.gdsc.presentation.utils.findPath
+import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.utils.showMediaPermissionsDialog
 import org.gdsc.presentation.view.MainActivity
 
 
@@ -52,6 +59,14 @@ class SignUpCompleteFragment : BaseFragment() {
             val imageUri = bundle.getString("imageUri")
             imageUri?.let {
                 viewModel.updateProfileImageState(it)
+            }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.profileImageState.collect {
+                Glide.with(requireContext())
+                    .load(it)
+                    .into(binding.profileImage)
             }
         }
 
