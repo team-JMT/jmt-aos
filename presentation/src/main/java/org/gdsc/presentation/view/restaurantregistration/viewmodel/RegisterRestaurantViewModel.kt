@@ -166,9 +166,7 @@ class RegisterRestaurantViewModel @Inject constructor(
                 _foodCategoryState.value = FoodCategoryItem(FoodCategory.fromName(it.category))
                 _drinkPossibilityState.value = it.canDrinkLiquor
                 _recommendDrinkTextState.value = it.goWellWithLiquor
-                _recommendMenuListState.value = it.recommendMenu.split("#").drop(1).apply {
-                    println("  isRecommendMenuFullState 테스트 초기화 : ${this}")
-                }
+                _recommendMenuListState.value = it.recommendMenu.split("#").drop(1)
                 _introductionTextState.value = it.introduce
                 _restaurantPlaceName.value = it.name
                 _restaurantLocationId.value = restaurantId.toString()
