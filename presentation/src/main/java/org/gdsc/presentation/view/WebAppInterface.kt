@@ -6,7 +6,6 @@ import android.widget.Toast
 import org.gdsc.presentation.model.Route
 import org.json.JSONObject
 
-/** Instantiate the interface and set the context  */
 class WebAppInterface(
     private val mContext: Context,
     private val slideUpBottomNavigationView: () -> Unit = {},
@@ -14,8 +13,6 @@ class WebAppInterface(
     private val navigateToRestaurantEdit: (Int) -> Unit = {},
     private val setAccessToken: () -> Unit = {},
 ) {
-
-    /** Show a toast from the web page  */
 
     @JavascriptInterface
     fun navigation(data: String) {
@@ -28,15 +25,17 @@ class WebAppInterface(
     @JavascriptInterface
     fun token() = setAccessToken()
 
+    // 딥링크 생성 필요
     @JavascriptInterface
     fun share() {
     }
 
+    // 데이터 구조는 다시 상의 후에 결정해서, 객체화 시키면 좋을 것으로 보임
     @JavascriptInterface
     fun navigate(data: String) {
-        when(JSONObject(data).get("route") as String) {
+        when(JSONObject(data).getString("route")) {
             Route.EDIT_RESTAURANT.route-> {
-                val restaurantId = JSONObject(data).get("restaurantId") as Int
+                val restaurantId = JSONObject(data).getString("restaurantId").toInt()
                 navigateToRestaurantEdit(restaurantId)
             }
         }
