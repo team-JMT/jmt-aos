@@ -13,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.databinding.FragmentHomeBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.MainActivity
+import org.gdsc.presentation.view.WEB_BASE_URL
 import org.gdsc.presentation.view.WebAppInterface
 
 @AndroidEntryPoint
@@ -39,7 +40,7 @@ class HomeFragment : Fragment() {
         setWebViewBackPress()
 
         binding.webView.apply {
-            loadUrl("https://jmt-matzip.dev")
+            loadUrl(WEB_BASE_URL)
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             webViewClient = WebViewClient()
