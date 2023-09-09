@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -76,6 +77,20 @@ class RegisterRestaurantViewModel @Inject constructor(
     private var _isFoodImagesListState: MutableStateFlow<Array<String>> =
         MutableStateFlow(emptyArray())
     val isFoodImagesListState = _isFoodImagesListState.asStateFlow()
+
+    val canRegisterState: StateFlow<Boolean>
+        get() = combine(
+            foodCategoryState,
+            introductionTextState,
+            recommendMenuListState
+        ) { foodCategoryState, introductionState, recommendMenuListState ->
+            foodCategoryState != FoodCategoryItem.INIT && introductionState.isNotBlank() && recommendMenuListState.isNotEmpty()
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = false
+        )
+
 
     fun setFoodImagesListState(list: Array<String>) {
         _isFoodImagesListState.value = list
@@ -188,7 +203,7 @@ class RegisterRestaurantViewModel @Inject constructor(
                     },
                     categoryId = foodCategoryState.value.categoryItem.id.toInt(),
                     id = restaurantId,
-                    )
+                )
             )
         }
     }
