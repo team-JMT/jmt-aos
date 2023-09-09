@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -265,6 +266,12 @@ class RegisterRestaurantFragment : BaseFragment() {
 
                     }
                 }
+            }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.canRegisterState.collectLatest {
+                binding.registerButton.isEnabled = it
             }
         }
     }
