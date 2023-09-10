@@ -248,7 +248,7 @@ class RegisterRestaurantFragment : BaseFragment() {
                                     // 주소는 변경 되어야 함, 현재는 Lucy LocalHost 테스트
                                     intent.putExtra(
                                         "url",
-                                        "$WEB_BASE_URL$restaurantId"
+                                        "${WEB_BASE_URL}detail/$restaurantId"
                                     )
                                     startActivity(intent)
                                 }
