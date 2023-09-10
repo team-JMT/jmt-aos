@@ -7,7 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.gdsc.data.network.AuthInterceptor
-import org.gdsc.domain.repository.TokenManager
+import org.gdsc.domain.repository.TokenRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -33,7 +33,7 @@ class NetworkModule {
     @AuthClient
     @Provides
     @Singleton
-    fun provideAuthorizedApiClient(tokenManager: TokenManager): Retrofit {
+    fun provideAuthorizedApiClient(tokenRepository: TokenRepository): Retrofit {
 
         return Retrofit
             .Builder()
@@ -41,7 +41,7 @@ class NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .client(
                 baseClientBuilder
-                    .addInterceptor(AuthInterceptor(tokenManager))
+                    .addInterceptor(AuthInterceptor(tokenRepository))
                     .build()
             )
             .build()

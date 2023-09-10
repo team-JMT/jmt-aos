@@ -9,8 +9,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.gdsc.data.datasource.TokenManagerImpl
-import org.gdsc.domain.repository.TokenManager
+import org.gdsc.data.repository.TokenRepositoryImpl
+import org.gdsc.domain.repository.TokenRepository
 import javax.inject.Singleton
 
 @Module
@@ -23,8 +23,8 @@ class TokenModule {
 
     @Provides
     @Singleton
-    fun provideTokenManager(@ApplicationContext context: Context): TokenManager {
-        return TokenManagerImpl(context.dataStore)
+    fun provideTokenManager(@ApplicationContext context: Context): TokenRepository {
+        return TokenRepositoryImpl(context.dataStore)
     }
 
 }

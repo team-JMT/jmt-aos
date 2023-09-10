@@ -1,4 +1,4 @@
-package org.gdsc.data.datasource
+package org.gdsc.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.gdsc.domain.Empty
 import org.gdsc.domain.model.response.TokenResponse
-import org.gdsc.domain.repository.TokenManager
+import org.gdsc.domain.repository.TokenRepository
 import javax.inject.Inject
 
-class TokenManagerImpl @Inject constructor(
+class TokenRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
-): TokenManager {
+): TokenRepository {
 
 
     override suspend fun saveTokenInfo(tokenResponse: TokenResponse) {

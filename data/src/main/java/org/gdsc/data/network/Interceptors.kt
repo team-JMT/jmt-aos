@@ -4,7 +4,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
-import org.gdsc.domain.repository.TokenManager
+import org.gdsc.domain.repository.TokenRepository
 import java.io.IOException
 import javax.inject.Inject
 
@@ -24,11 +24,11 @@ interface CoroutineInterceptor : Interceptor {
 }
 
 class AuthInterceptor @Inject constructor(
-    private val tokenManager: TokenManager
+    private val tokenRepository: TokenRepository
 ) : CoroutineInterceptor {
 
     override suspend fun interceptSuspend(chain: Interceptor.Chain): Response {
-        val token = "Bearer ${tokenManager.getAccessToken()}"
+        val token = "Bearer ${tokenRepository.getAccessToken()}"
         val newRequest = chain.request().newBuilder()
             .addHeader("Authorization", token)
             .build()
