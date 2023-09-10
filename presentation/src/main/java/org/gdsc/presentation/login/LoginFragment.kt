@@ -3,11 +3,12 @@ package org.gdsc.presentation.login
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -16,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
 import org.gdsc.domain.model.response.UserLoginAction
 import org.gdsc.presentation.R
@@ -45,15 +47,24 @@ class LoginFragment : Fragment() {
         setLoginButton()
     }
 
-    // TODO: 가입 여부 확인 후 가입되어있으면 메인 화면으로 그렇지 않으면 가입 화면으로 이동
     private fun setLoginButton() {
         binding.googleLoginBtnTemplate.setOnClickListener {
+
             viewLifecycleOwner.lifecycleScope.launch {
-                startForResult.launch(
-                    IntentSenderRequest.Builder(loginManager.signInIntent(requireActivity()))
-                        .build()
-                )
+                try {
+                    startForResult.launch(
+                        IntentSenderRequest.Builder(loginManager.signInIntent(requireActivity()))
+                            .build()
+                    )
+                } catch (e: ApiException) {
+                    Log.e("Login","ApiException $e")
+                    showGoogleAccountRegistrationPrompt()
+                } catch (e: Exception) {
+                    Log.e("Login", "setLoginButton Exception $e")
+                }
             }
+//            showGoogleAccountRegistrationPrompt()
+
         }
 
         binding.googleLoginBtnText.text = context?.getString(R.string.continue_with_google)
@@ -62,7 +73,14 @@ class LoginFragment : Fragment() {
         binding.appleLoginBtn.setOnClickListener {
             Toast.makeText(requireContext(), "준비중입니다.", Toast.LENGTH_SHORT).show()
         }
+    }
 
+    private fun showGoogleAccountRegistrationPrompt() {
+        Toast.makeText(requireContext(), "구글 계정을 등록해주세요.", Toast.LENGTH_SHORT).show()
+
+        val intent = Intent(Settings.ACTION_ADD_ACCOUNT)
+        intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
+        startActivity(intent)
     }
 
     override fun onDestroyView() {
