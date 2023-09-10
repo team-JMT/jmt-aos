@@ -35,9 +35,11 @@ class WebAppInterface(
     // 데이터 구조는 다시 상의 후에 결정해서, 객체화 시키면 좋을 것으로 보임
     @JavascriptInterface
     fun navigate(data: String) {
-        when(JSONObject(data).getString("route")) {
+        val result = JSONObject(data)
+
+        when(result.getString("route")) {
             Route.EDIT_RESTAURANT.route-> {
-                val restaurantId = JSONObject(data).getString("restaurantId").toInt()
+                val restaurantId = result.getString("restaurantId").toInt()
                 navigateToRestaurantEdit(restaurantId)
             }
         }
