@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import org.gdsc.domain.Empty
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentMyPageBinding
@@ -105,8 +107,11 @@ class MyPageFragment : Fragment() {
     private fun setCollapsingToolbarOffChangedCallback() {
         binding.appBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
             if (verticalOffset == -binding.collapsingToolbar.height) {
-                // TODO: User Nickname From ViewModel
-                setToolbarTitle(viewModel.nicknameState.value)
+                repeatWhenUiStarted {
+                    viewModel.nicknameState.collectLatest {
+                        setToolbarTitle(it)
+                    }
+                }
             } else {
                 setToolbarTitle()
             }
