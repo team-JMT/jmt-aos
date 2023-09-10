@@ -3,30 +3,50 @@ package org.gdsc.presentation.view
 import android.content.Context
 import android.webkit.JavascriptInterface
 import android.widget.Toast
+import org.gdsc.presentation.model.Route
+import org.json.JSONObject
 
-/** Instantiate the interface and set the context  */
+const val WEB_BASE_URL = "https://jmt-matzip.dev/"
+
 class WebAppInterface(
     private val mContext: Context,
     private val slideUpBottomNavigationView: () -> Unit = {},
     private val slideDownBottomNavigationView: () -> Unit = {},
-    private val navigateToRestaurantEdit: (Int) -> Unit = {}
+    private val navigateToRestaurantEdit: (Int) -> Unit = {},
+    private val setAccessToken: () -> Unit = {},
 ) {
 
-    /** Show a toast from the web page  */
     @JavascriptInterface
-    fun showToast(toast: String) {
-        Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show()
-    }
+    fun navigation(data: String) {
+        val isVisible:Boolean = JSONObject(data).get("isVisible") as Boolean
 
-    @JavascriptInterface
-    fun navigationEnable(isVisible: Boolean) {
         if (isVisible) slideUpBottomNavigationView()
         else slideDownBottomNavigationView()
     }
 
     @JavascriptInterface
-    fun editRestaurantInfo(restaurantId: Int) {
-        navigateToRestaurantEdit(restaurantId)
+    fun token() = setAccessToken()
+
+    // 딥링크 생성 필요
+    @JavascriptInterface
+    fun share() {
     }
 
+    // 데이터 구조는 다시 상의 후에 결정해서, 객체화 시키면 좋을 것으로 보임
+    @JavascriptInterface
+    fun navigate(data: String) {
+        val result = JSONObject(data)
+
+        when(result.getString("route")) {
+            Route.EDIT_RESTAURANT.route-> {
+                val restaurantId = result.getString("restaurantId").toInt()
+                navigateToRestaurantEdit(restaurantId)
+            }
+        }
+    }
+
+    // webView.canGoBack으로 뒤로가기 처리 완료해서 비워뒀습니다.
+    @JavascriptInterface
+    fun back(isEnableBack: Boolean) {
+    }
 }
