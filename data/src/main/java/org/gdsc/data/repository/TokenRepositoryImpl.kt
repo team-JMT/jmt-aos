@@ -7,14 +7,16 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import org.gdsc.data.datasource.TokenDataSource
 import org.gdsc.domain.Empty
 import org.gdsc.domain.model.response.TokenResponse
 import org.gdsc.domain.repository.TokenRepository
 import javax.inject.Inject
 
 class TokenRepositoryImpl @Inject constructor(
-    private val dataStore: DataStore<Preferences>
-): TokenRepository {
+    private val dataStore: DataStore<Preferences>,
+    private val tokenDataSource: TokenDataSource
+) : TokenRepository {
 
 
     override suspend fun saveTokenInfo(tokenResponse: TokenResponse) {
@@ -57,6 +59,19 @@ class TokenRepositoryImpl @Inject constructor(
             preferences.remove(GRANT_TYPE)
             preferences.remove(REFRESH_TOKEN)
         }
+    }
+
+    // check success or not
+    override suspend fun requestRefreshToken(refreshToken: String): Boolean {
+
+        try {
+            val newTokenInfo = tokenDataSource.postRefreshToken(refreshToken).data
+            saveTokenInfo(newTokenInfo)
+        } catch (e: Exception) {
+            return false
+        }
+
+        return true
     }
 
     companion object {

@@ -1,10 +1,15 @@
 package org.gdsc.data.network
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
-import org.gdsc.domain.repository.TokenRepository
+import org.gdsc.domain.Empty
 import java.io.IOException
 import javax.inject.Inject
 
@@ -20,15 +25,21 @@ interface CoroutineInterceptor : Interceptor {
             }
         }
     }
+
     suspend fun interceptSuspend(chain: Interceptor.Chain): Response
 }
 
 class AuthInterceptor @Inject constructor(
-    private val tokenRepository: TokenRepository
+    private val dataStore: DataStore<Preferences>,
 ) : CoroutineInterceptor {
 
     override suspend fun interceptSuspend(chain: Interceptor.Chain): Response {
-        val token = "Bearer ${tokenRepository.getAccessToken()}"
+
+        val accessToken = dataStore.data.map { preferences ->
+            preferences[stringPreferencesKey("accessToken")]
+        }.first() ?: String.Empty
+
+        val token = "Bearer $accessToken"
         val newRequest = chain.request().newBuilder()
             .addHeader("Authorization", token)
             .build()
