@@ -1,13 +1,14 @@
 package org.gdsc.data.di
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.gdsc.data.network.AuthInterceptor
-import org.gdsc.domain.repository.TokenRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -33,7 +34,7 @@ class NetworkModule {
     @AuthClient
     @Provides
     @Singleton
-    fun provideAuthorizedApiClient(tokenRepository: TokenRepository): Retrofit {
+    fun provideAuthorizedApiClient(@ApplicationContext context: Context): Retrofit {
 
         return Retrofit
             .Builder()
@@ -41,7 +42,7 @@ class NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .client(
                 baseClientBuilder
-                    .addInterceptor(AuthInterceptor(tokenRepository))
+                    .addInterceptor(AuthInterceptor(context.tokenDataStore))
                     .build()
             )
             .build()

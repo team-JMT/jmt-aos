@@ -15,5 +15,7 @@ interface TokenRepository {
     suspend fun getRefreshToken(): String
 
     suspend fun clearTokenInfo()
+
+    suspend fun requestRefreshToken(refreshToken: String): Boolean
     
 }
