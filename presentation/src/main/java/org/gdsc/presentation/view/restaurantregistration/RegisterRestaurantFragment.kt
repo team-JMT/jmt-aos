@@ -33,6 +33,7 @@ import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.utils.animateShrinkWidth
 import org.gdsc.presentation.utils.checkMediaPermissions
 import org.gdsc.presentation.view.MainActivity
+import org.gdsc.presentation.view.WEB_BASE_URL
 import org.gdsc.presentation.view.WebViewActivity
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
 import org.gdsc.presentation.view.restaurantregistration.adapter.RegisterRestaurantAdapter
@@ -252,10 +253,11 @@ class RegisterRestaurantFragment : BaseFragment() {
 
                                     val intent =
                                         Intent(requireContext(), WebViewActivity::class.java)
+
                                     // 주소는 변경 되어야 함, 현재는 Lucy LocalHost 테스트
                                     intent.putExtra(
                                         "url",
-                                        "http://172.20.10.13:3000/detail/$restaurantId"
+                                        "${WEB_BASE_URL}detail/$restaurantId"
                                     )
                                     startActivity(intent)
                                 }
