@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -23,7 +22,6 @@ import kotlinx.coroutines.launch
 import org.gdsc.domain.model.response.UserLoginAction
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentLoginBinding
-import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.LoginManager
 import org.gdsc.presentation.view.MainActivity
 
@@ -78,9 +76,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun showGoogleAccountRegistrationPrompt() {
-        (context as Activity).runOnUiThread {
-            Toast.makeText(requireContext(), "구글 계정을 등록해주세요.", Toast.LENGTH_SHORT).show()
-        }
+        Toast.makeText(requireContext(), "구글 계정을 등록해주세요.", Toast.LENGTH_SHORT).show()
 
         val intent = Intent(Settings.ACTION_ADD_ACCOUNT)
         intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
