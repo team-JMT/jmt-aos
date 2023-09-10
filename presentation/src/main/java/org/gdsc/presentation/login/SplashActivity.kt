@@ -3,10 +3,10 @@ package org.gdsc.presentation.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.gdsc.domain.usecase.token.GetRefreshTokenUseCase
 import org.gdsc.domain.usecase.token.PostRefreshTokenUseCase
@@ -18,8 +18,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
-    val handle: Handler = Handler(Looper.getMainLooper())
-
     @Inject
     lateinit var verifyAccessTokenUseCase: VerifyAccessTokenUseCase
 
@@ -29,44 +27,48 @@ class SplashActivity : AppCompatActivity() {
     @Inject
     lateinit var getRefreshTokenUseCase: GetRefreshTokenUseCase
 
+    private val DELAY_TIME = 2000L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         setToFullPage()
 
-        handle.postDelayed({
+        lifecycleScope.launch(Dispatchers.Main) {
 
-            lifecycleScope.launch {
-                val isAccessTokenValid = verifyAccessTokenUseCase.invoke()
+            val validateTokenJob = validateToken()
 
-                // 정상이면 그냥 리프레쉬
-                if (isAccessTokenValid) {
-                    postRefreshTokenUseCase.invoke(getRefreshTokenUseCase.invoke())
-                    val intent = Intent(applicationContext, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
+            delay(DELAY_TIME)
 
-                // access Token이 만료되었다면
-                } else {
-                    // refresh 시도
-                    val isRefreshSuccess = postRefreshTokenUseCase.invoke(getRefreshTokenUseCase.invoke())
+            if(validateTokenJob)
+                moveToMain()
+            else
+                moveToLogin()
+        }
+    }
 
-                    // refresh 성공했다면
-                    if (isRefreshSuccess) {
-                        val intent = Intent(applicationContext, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    // refresh 실패했다면
-                    } else {
-                        val intent = Intent(applicationContext, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
+    private fun moveToMain() {
+        startActivity(Intent(applicationContext,MainActivity::class.java))
+        finish()
+    }
 
-                }
-            }
+    private fun moveToLogin() {
+        startActivity(Intent(applicationContext,LoginActivity::class.java))
+        finish()
+    }
 
-        }, 2000)
+    private suspend fun validateToken(): Boolean {
+        val isAccessTokenValid = verifyAccessTokenUseCase.invoke()
+
+
+        return if (isAccessTokenValid) { // 정상이면 그냥 리프레쉬
+            postRefreshTokenUseCase.invoke(getRefreshTokenUseCase.invoke())
+            true
+        } else {
+            // refresh 시도
+            val isRefreshSuccess = postRefreshTokenUseCase.invoke(getRefreshTokenUseCase.invoke())
+            isRefreshSuccess
+        }
     }
 
     private fun setToFullPage() {
