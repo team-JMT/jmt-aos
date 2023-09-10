@@ -2,7 +2,7 @@ package org.gdsc.domain.repository
 
 import org.gdsc.domain.model.response.TokenResponse
 
-interface TokenManager {
+interface TokenRepository {
 
     suspend fun saveTokenInfo(tokenResponse: TokenResponse)
 
@@ -15,5 +15,7 @@ interface TokenManager {
     suspend fun getRefreshToken(): String
 
     suspend fun clearTokenInfo()
+
+    suspend fun requestRefreshToken(refreshToken: String): Boolean
     
 }
