@@ -1,13 +1,13 @@
 package org.gdsc.domain.usecase.token
 
-import org.gdsc.domain.repository.TokenManager
+import org.gdsc.domain.repository.TokenRepository
 import javax.inject.Inject
 
 class GetAccessTokenExpiresInUseCase @Inject constructor(
-    private val tokenManager: TokenManager
+    private val tokenRepository: TokenRepository
 ) {
 
     suspend operator fun invoke(): Long {
-        return tokenManager.getAccessTokenExpiresIn()
+        return tokenRepository.getAccessTokenExpiresIn()
     }
 }
