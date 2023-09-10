@@ -36,11 +36,11 @@ class SplashActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.Main) {
 
-            val validateTokenJob = validateToken()
+            val accessible = validateToken()
 
             delay(DELAY_TIME)
 
-            if(validateTokenJob)
+            if(accessible)
                 moveToMain()
             else
                 moveToLogin()
