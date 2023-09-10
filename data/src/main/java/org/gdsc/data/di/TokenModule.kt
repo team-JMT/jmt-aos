@@ -9,22 +9,30 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.gdsc.data.datasource.TokenManagerImpl
-import org.gdsc.domain.repository.TokenManager
+import org.gdsc.data.datasource.TokenDataSource
+import org.gdsc.data.datasource.TokenDataSourceImpl
+import org.gdsc.data.network.TokenAPI
+import org.gdsc.data.repository.TokenRepositoryImpl
+import org.gdsc.domain.repository.TokenRepository
 import javax.inject.Singleton
+
+val TOKEN_INFO_STORAGE = "token_info_storage"
+val Context.tokenDataStore: DataStore<Preferences> by preferencesDataStore(name = TOKEN_INFO_STORAGE)
 
 @Module
 @InstallIn(SingletonComponent::class)
 class TokenModule {
 
-    private val TOKEN_INFO_STORAGE = "token_info_storage"
-
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = TOKEN_INFO_STORAGE)
+    @Provides
+    @Singleton
+    fun provideTokenDataSource(tokenAPI: TokenAPI): TokenDataSource {
+        return TokenDataSourceImpl(tokenAPI)
+    }
 
     @Provides
     @Singleton
-    fun provideTokenManager(@ApplicationContext context: Context): TokenManager {
-        return TokenManagerImpl(context.dataStore)
+    fun provideTokenRepository(@ApplicationContext context: Context, tokenDataSource: TokenDataSource): TokenRepository {
+        return TokenRepositoryImpl(context.tokenDataStore, tokenDataSource)
     }
 
 }

@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import org.gdsc.data.network.LoginAPI
 import org.gdsc.data.network.RestaurantAPI
+import org.gdsc.data.network.TokenAPI
 import org.gdsc.data.network.UserAPI
 import retrofit2.Retrofit
 import javax.inject.Singleton
@@ -30,6 +31,12 @@ class ApiModule {
     @Singleton
     fun provideUserApi(@AuthClient retrofit: Retrofit): UserAPI {
         return retrofit.create(UserAPI::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenApi(@AuthClient retrofit: Retrofit): TokenAPI {
+        return retrofit.create(TokenAPI::class.java)
     }
 
 }

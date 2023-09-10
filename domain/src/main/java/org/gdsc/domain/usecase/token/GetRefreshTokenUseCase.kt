@@ -1,13 +1,13 @@
 package org.gdsc.domain.usecase.token
 
-import org.gdsc.domain.repository.TokenManager
+import org.gdsc.domain.repository.TokenRepository
 import javax.inject.Inject
 
 class GetRefreshTokenUseCase @Inject constructor(
-    private val tokenManager: TokenManager
+    private val tokenRepository: TokenRepository
 ) {
 
     suspend operator fun invoke(): String {
-        return tokenManager.getRefreshToken()
+        return tokenRepository.getRefreshToken()
     }
 }
