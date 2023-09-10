@@ -6,7 +6,7 @@ import android.widget.Toast
 import org.gdsc.presentation.model.Route
 import org.json.JSONObject
 
-const val WEB_BASE_URL = "https://jmt-matzip.dev/detail/"
+const val WEB_BASE_URL = "https://jmt-matzip.dev/"
 
 class WebAppInterface(
     private val mContext: Context,
