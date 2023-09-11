@@ -8,8 +8,10 @@ import javax.inject.Inject
 class LoginRepositoryImpl @Inject constructor(private val loginDataSource: LoginDataSource) :
     LoginRepository {
 
-    override suspend fun postSignUpWithGoogleToken(token: String): TokenResponse {
-        return loginDataSource.postSignUpWithGoogleToken(token)
+    override suspend fun postSignUpWithGoogleToken(token: String): Result<TokenResponse> {
+        return kotlin.runCatching {
+            loginDataSource.postSignUpWithGoogleToken(token).getOrThrow().data
+        }
     }
 
     override suspend fun postAppleToken(email: String, clientId: String): TokenResponse {
