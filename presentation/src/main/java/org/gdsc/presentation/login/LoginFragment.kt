@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import org.gdsc.domain.model.response.UserLoginAction
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentLoginBinding
+import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.LoginManager
 import org.gdsc.presentation.view.MainActivity
 
@@ -45,6 +46,13 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setLoginButton()
+
+        repeatWhenUiStarted {
+            // TODO: specific handling
+            viewModel.eventFlow.collect {
+                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun setLoginButton() {
@@ -57,7 +65,7 @@ class LoginFragment : Fragment() {
                             .build()
                     )
                 } catch (e: ApiException) {
-                    Log.e("Login","ApiException $e")
+                    Log.e("Login", "ApiException $e")
                     showGoogleAccountRegistrationPrompt()
                 } catch (e: Exception) {
                     Log.e("Login", "setLoginButton Exception $e")
@@ -96,12 +104,13 @@ class LoginFragment : Fragment() {
                     val credential = loginManager.oneTapClient.getSignInCredentialFromIntent(intent)
                     credential.googleIdToken?.let {
                         viewModel.postSignUpWithGoogleToken(it) { tokenResponse ->
-                            when(tokenResponse.userLoginAction) {
+                            when (tokenResponse.userLoginAction) {
                                 UserLoginAction.SIGN_UP.value -> {
                                     val action =
                                         LoginFragmentDirections.actionLoginFragmentToSignUpNicknameFragment()
                                     findNavController().navigate(action)
                                 }
+
                                 UserLoginAction.LOG_IN.value -> {
                                     val intent = Intent(requireContext(), MainActivity::class.java)
                                     startActivity(intent)

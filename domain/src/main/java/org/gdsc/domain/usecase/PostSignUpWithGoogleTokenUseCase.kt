@@ -9,7 +9,7 @@ import javax.inject.Singleton
 class PostSignUpWithGoogleTokenUseCase @Inject constructor(
     private val loginRepository: LoginRepository
 ) {
-    suspend operator fun invoke(token: String): TokenResponse {
+    suspend operator fun invoke(token: String): Result<TokenResponse> {
         return loginRepository.postSignUpWithGoogleToken(token)
     }
 }
