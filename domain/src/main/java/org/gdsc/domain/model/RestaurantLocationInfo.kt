@@ -3,13 +3,13 @@ package org.gdsc.domain.model
 import com.google.gson.annotations.SerializedName
 
 data class RestaurantLocationInfo(
-    @SerializedName("address_name")
+    @SerializedName("addressName")
     val addressName: String,
-    @SerializedName("category_group_code")
+    @SerializedName("categoryGroupCode")
     val categoryGroupCode: String,
-    @SerializedName("category_group_name")
+    @SerializedName("categoryGroupName")
     val categoryGroupName: String,
-    @SerializedName("category_name")
+    @SerializedName("categoryName")
     val categoryName: String,
     @SerializedName("distance")
     val distance: String,
@@ -17,11 +17,11 @@ data class RestaurantLocationInfo(
     val id: String,
     @SerializedName("phone")
     val phone: String,
-    @SerializedName("place_name")
+    @SerializedName("placeName")
     val placeName: String,
-    @SerializedName("place_url")
+    @SerializedName("placeUrl")
     val placeUrl: String,
-    @SerializedName("road_address_name")
+    @SerializedName("roadAddressName")
     val roadAddressName: String,
     @SerializedName("x")
     val x: String,
