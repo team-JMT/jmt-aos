@@ -71,6 +71,7 @@ class RegisteredRestaurantFragment : Fragment() {
 
                 id?.let { notNullId ->
                     viewModel.registeredPagingData(notNullId).collectLatest {
+                        viewModel.updateRegisteredCount(it.totalElementsCount)
                         myRestaurantAdapter.submitData(it.data)
                     }
                 }
