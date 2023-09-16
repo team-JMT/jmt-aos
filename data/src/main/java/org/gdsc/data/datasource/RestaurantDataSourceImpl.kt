@@ -5,6 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.gdsc.data.database.RegisteredRestaurant
 import org.gdsc.data.database.RestaurantDatabase
@@ -17,6 +18,7 @@ import org.gdsc.domain.RestaurantRegistrationState
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Filter
 import org.gdsc.domain.model.Location
+import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
@@ -88,7 +90,7 @@ class RestaurantDataSourceImpl @Inject constructor(
     @OptIn(ExperimentalPagingApi::class)
     override suspend fun getRestaurants(
         userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
-    ): Flow<PagingData<RegisteredRestaurant>> {
+    ): Flow<PagingResult<RegisteredRestaurant>> {
         val categoryFilter = when (foodCategory) {
             FoodCategory.INIT, FoodCategory.ETC -> null
             else -> foodCategory.text
@@ -109,18 +111,19 @@ class RestaurantDataSourceImpl @Inject constructor(
         )
 
         val restaurantSearchMapRequest = RestaurantSearchMapRequest(locationData, filter)
+        val mediator = RestaurantMediator(
+            userId = userId,
+            restaurantSearchMapRequest = restaurantSearchMapRequest,
+            db = db,
+            api = restaurantAPI,
+        )
 
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
                 enablePlaceholders = false
             ),
-            remoteMediator = RestaurantMediator(
-                userId = userId,
-                restaurantSearchMapRequest = restaurantSearchMapRequest,
-                db = db,
-                api = restaurantAPI,
-            )
+            remoteMediator = mediator,
         ) {
             with(db.restaurantDao()) {
                 when (sortType) {
@@ -132,6 +135,10 @@ class RestaurantDataSourceImpl @Inject constructor(
             }
 
         }.flow
+            .map { data ->
+                val totalElementsCount = mediator.totalElementsCount
+                PagingResult(data, totalElementsCount)
+            }
     }
 
     override suspend fun putRestaurantInfo(putRestaurantInfoRequest: ModifyRestaurantInfoRequest): String {
