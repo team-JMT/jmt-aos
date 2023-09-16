@@ -6,6 +6,7 @@ import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
+import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.repository.RestaurantRepository
@@ -16,7 +17,7 @@ class GetRegisteredRestaurantUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
-    ): Flow<PagingData<RegisteredRestaurant>> {
+    ): Flow<PagingResult<RegisteredRestaurant>> {
 
         return restaurantRepository.getRestaurants(userId, locationData, sortType, foodCategory, drinkPossibility)
     }
