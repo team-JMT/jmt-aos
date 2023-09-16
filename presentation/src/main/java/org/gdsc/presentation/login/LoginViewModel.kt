@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import org.gdsc.domain.Empty
+import org.gdsc.domain.exception.JmtException
 import org.gdsc.domain.model.response.TokenResponse
 import org.gdsc.domain.usecase.CheckDuplicatedNicknameUseCase
 import org.gdsc.domain.usecase.PostNicknameUseCase
@@ -19,6 +20,8 @@ import org.gdsc.domain.usecase.PostSignUpWithGoogleTokenUseCase
 import org.gdsc.domain.usecase.token.SaveTokenUseCase
 import org.gdsc.domain.usecase.user.PostDefaultProfileImageUseCase
 import org.gdsc.domain.usecase.user.PostProfileImageUseCase
+import org.gdsc.presentation.utils.MutableEventFlow
+import org.gdsc.presentation.utils.asEventFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +39,9 @@ class LoginViewModel @Inject constructor(
 
     private var _profileImageState = MutableStateFlow(String.Empty)
     val profileImageState = _profileImageState.asStateFlow()
+
+    private var _eventFlow = MutableEventFlow<JmtException>()
+    val eventFlow = _eventFlow.asEventFlow()
 
     val isNicknameVerified: StateFlow<Boolean>
         get() = nicknameState.map { nickname ->
@@ -56,9 +62,13 @@ class LoginViewModel @Inject constructor(
 
     fun postSignUpWithGoogleToken(token: String, afterSuccessSignUp: (TokenResponse) -> Unit) {
         viewModelScope.launch {
-            val response = postSignUpWithGoogleTokenUseCase.invoke(token)
-            saveTokenUseCase.invoke(response)
-            afterSuccessSignUp(response)
+            val result = postSignUpWithGoogleTokenUseCase.invoke(token)
+            result.onSuccess { response ->
+                saveTokenUseCase.invoke(response)
+                afterSuccessSignUp(response)
+            }.onFailure {
+                _eventFlow.emit(it as JmtException)
+            }
         }
     }
 

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.gdsc.domain.usecase.token.GetRefreshTokenUseCase
@@ -34,7 +33,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         setToFullPage()
 
-        lifecycleScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch {
 
             val accessible = validateToken()
 
