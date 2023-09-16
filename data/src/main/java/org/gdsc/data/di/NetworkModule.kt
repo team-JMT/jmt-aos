@@ -1,6 +1,7 @@
 package org.gdsc.data.di
 
 import android.content.Context
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -8,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.gdsc.data.BuildConfig
 import org.gdsc.data.network.AuthInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -53,11 +55,21 @@ class NetworkModule {
         private val baseClientBuilder: OkHttpClient.Builder
             get() = run {
                 val clientBuilder = OkHttpClient.Builder()
-                val loggingInterceptor = HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
-                }
-                return clientBuilder.addInterceptor(loggingInterceptor)
-            }
 
+                clientBuilder.apply {
+                    if (BuildConfig.DEBUG) {
+                        addInterceptor(HttpLoggingInterceptor().apply {
+                            level = HttpLoggingInterceptor.Level.HEADERS
+                        })
+
+                        addInterceptor(HttpLoggingInterceptor().apply {
+                            level = HttpLoggingInterceptor.Level.BODY
+                        })
+
+                        addNetworkInterceptor(StethoInterceptor())
+                    }
+                }
+                return clientBuilder
+            }
     }
 }
