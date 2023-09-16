@@ -71,6 +71,9 @@ class MyPageViewModel @Inject constructor(
     private var _emailState = MutableStateFlow(String.Empty)
     val emailState = _emailState.asStateFlow()
 
+    private var _registeredCountState = MutableStateFlow(0)
+    val registeredCountState = _registeredCountState.asStateFlow()
+
 
 
     private var _sortTypeState = MutableStateFlow(SortType.INIT)
@@ -110,6 +113,10 @@ class MyPageViewModel @Inject constructor(
             val response = postNicknameUseCase.invoke(nickName)
             afterSuccessCallback(response)
         }
+    }
+
+    fun updateRegisteredCount(count: Int) {
+        _registeredCountState.value = count
     }
 
     fun setSortType(sortType: SortType) {
