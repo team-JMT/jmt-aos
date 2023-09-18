@@ -75,7 +75,6 @@ class LoginViewModel @Inject constructor(
     fun requestSignUpWithImage(file: MultipartBody.Part, afterSuccessSignUp: () -> Unit) {
         viewModelScope.launch {
             postProfileImageUseCase(file)
-            postNicknameUseCase(nicknameState.value)
             afterSuccessSignUp()
         }
     }
@@ -83,7 +82,6 @@ class LoginViewModel @Inject constructor(
     fun requestSignUpWithoutImage(afterSuccessSignUp: () -> Unit) {
         viewModelScope.launch {
             postDefaultProfileImageUseCase()
-            postNicknameUseCase(nicknameState.value)
             afterSuccessSignUp()
         }
     }
@@ -95,6 +93,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             checkDuplicatedNicknameUseCase(nicknameState.value).let { isNotDuplicated ->
                 if (isNotDuplicated) {
+                    postNicknameUseCase(nicknameState.value)
                     onNicknameIsNotDuplicated()
                 } else {
                     onNicknameIsDuplicated()
