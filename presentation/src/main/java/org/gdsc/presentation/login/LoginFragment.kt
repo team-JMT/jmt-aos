@@ -105,9 +105,16 @@ class LoginFragment : Fragment() {
                     credential.googleIdToken?.let {
                         viewModel.postSignUpWithGoogleToken(it) { tokenResponse ->
                             when (tokenResponse.userLoginAction) {
-                                UserLoginAction.SIGN_UP.value -> {
+                                UserLoginAction.SIGN_UP.value,
+                                UserLoginAction.NICKNAME_PROCESS.value -> {
                                     val action =
                                         LoginFragmentDirections.actionLoginFragmentToSignUpNicknameFragment()
+                                    findNavController().navigate(action)
+                                }
+
+                                UserLoginAction.PROFILE_IMAGE_PROCESS.value -> {
+                                    val action =
+                                        LoginFragmentDirections.actionLoginFragmentToSignUpCompleteFragment()
                                     findNavController().navigate(action)
                                 }
 
