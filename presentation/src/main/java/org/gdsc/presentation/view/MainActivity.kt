@@ -18,16 +18,20 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.gdsc.presentation.BaseActivity
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.ActivityMainBinding
 import org.gdsc.presentation.utils.slideDown
 import org.gdsc.presentation.utils.slideUp
 import org.gdsc.presentation.utils.toPx
+import org.gdsc.presentation.view.home.HomeFragment
 import org.gdsc.presentation.view.home.HomeFragmentDirections
 import org.gdsc.presentation.view.mypage.viewmodel.MyPageViewModel
 
@@ -39,6 +43,8 @@ class MainActivity : BaseActivity() {
         requireNotNull(supportFragmentManager.findFragmentById(R.id.nav_host_fragment)).findNavController()
     }
     private lateinit var binding: ActivityMainBinding
+
+    var detailLink : String? = null
 
     private val myPageViewModel: MyPageViewModel by viewModels()
 
@@ -104,6 +110,32 @@ class MainActivity : BaseActivity() {
         initBottomNavigationView()
         setToolbar()
 //        setToFullPage()
+        // ATTENTION: This was auto-generated to handle app links.
+        val appLinkIntent: Intent = intent
+        val appLinkAction: String? = appLinkIntent.action
+        val appLinkData: Uri? = appLinkIntent.data
+
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val appLinkAction = intent.action
+        val appLinkData: Uri? = intent.data
+        if (Intent.ACTION_VIEW == appLinkAction) {
+            Toast.makeText(this, "handleIntent", Toast.LENGTH_SHORT).show()
+            println("링크 인텐트 $appLinkAction")
+            println("링크 데이터 ${appLinkData}")
+            detailLink = appLinkData.toString()
+//            appLinkData?.lastPathSegment?.also { recipeId ->
+//                Uri.parse("content://com.recipe_app/recipe/")
+//                    .buildUpon()
+//                    .appendPath(recipeId)
+//                    .build().also { appData ->
+//                        showRecipe(appData)
+//                    }
+//            }
+        }
+
     }
 
     private fun initBottomNavigationView() {
@@ -135,7 +167,7 @@ class MainActivity : BaseActivity() {
                 slideDownBottomNavigationView()
 
             // toolbar visibility Control
-            when(destination.id) {
+            when (destination.id) {
                 R.id.home_fragment, R.id.confirm_restaurant_registration_fragment -> {
                     binding.toolBar.visibility = View.GONE
                 }
@@ -144,7 +176,8 @@ class MainActivity : BaseActivity() {
                     requireNotNull(supportActionBar).setDisplayHomeAsUpEnabled(false)
                     binding.toolBar.visibility = View.VISIBLE
                 }
-                else ->{
+
+                else -> {
                     requireNotNull(supportActionBar).setDisplayHomeAsUpEnabled(true)
                     binding.toolBar.visibility = View.VISIBLE
                 }

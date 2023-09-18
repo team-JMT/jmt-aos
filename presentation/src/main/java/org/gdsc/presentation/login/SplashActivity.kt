@@ -39,20 +39,22 @@ class SplashActivity : AppCompatActivity() {
 
             delay(DELAY_TIME)
 
-            if(accessible)
-                moveToMain()
-            else
-                moveToLogin()
+            moveToLogin()
+
+//            if(accessible)
+//                moveToMain()
+//            else
+//                moveToLogin()
         }
     }
 
     private fun moveToMain() {
-        startActivity(Intent(applicationContext,MainActivity::class.java))
+        startActivity(Intent(applicationContext, MainActivity::class.java))
         finish()
     }
 
     private fun moveToLogin() {
-        startActivity(Intent(applicationContext,LoginActivity::class.java))
+        startActivity(Intent(applicationContext, LoginActivity::class.java))
         finish()
     }
 

@@ -39,8 +39,20 @@ class HomeFragment : Fragment() {
         val parentActivity = requireActivity() as MainActivity
         setWebViewBackPress()
 
+
+
+
         binding.webView.apply {
+
             loadUrl(WEB_BASE_URL)
+
+            // TODO: 스택 처리
+            (requireActivity() as MainActivity).let {
+                it.detailLink?.let {link ->
+                    binding.webView.loadUrl(link)
+                }
+            }
+
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             webViewClient = WebViewClient()

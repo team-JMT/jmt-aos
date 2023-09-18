@@ -79,7 +79,14 @@ class LoginFragment : Fragment() {
 
         // TODO: Apple Login
         binding.appleLoginBtn.setOnClickListener {
-            Toast.makeText(requireContext(), "준비중입니다.", Toast.LENGTH_SHORT).show()
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "https://jmt-matzip.dev/detail/12/")
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
         }
     }
 
