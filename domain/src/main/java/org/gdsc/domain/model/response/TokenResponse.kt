@@ -10,5 +10,7 @@ data class TokenResponse(
 
 enum class UserLoginAction(val value: String) {
     SIGN_UP("SIGN_UP"),
-    LOG_IN("LOG_IN")
+    LOG_IN("LOG_IN"),
+    NICKNAME_PROCESS("NICKNAME_PROCESS"),
+    PROFILE_IMAGE_PROCESS("PROFILE_IMAGE_PROCESS"),
 }
