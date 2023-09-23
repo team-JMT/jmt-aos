@@ -14,7 +14,11 @@ class WebAppInterface(
     private val slideDownBottomNavigationView: () -> Unit = {},
     private val navigateToRestaurantEdit: (Int) -> Unit = {},
     private val setAccessToken: () -> Unit = {},
+    private val setUserPosition: () -> Unit = {},
 ) {
+
+    @JavascriptInterface
+    fun userPosition() = setUserPosition()
 
     @JavascriptInterface
     fun navigation(data: String) {
