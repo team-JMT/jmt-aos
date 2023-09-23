@@ -80,6 +80,10 @@
         <action
             android:id="@+id/action_registerRestaurantFragment_to_multiImagePickerFragment"
             app:destination="@id/multiImagePicker_fragment"/>
+        <action
+            android:id="@+id/action_registerRestaurant_fragment_to_specificWebViewFragment"
+            app:destination="@id/specificWebViewFragment"
+            app:popUpTo="@id/home_fragment"/>
 
     </fragment>
     <fragment
@@ -134,6 +138,14 @@
         android:label="fragment_account_management"
         tools:layout="@layout/fragment_account_management">
 
+    </fragment>
+    <fragment
+        android:id="@+id/specificWebViewFragment"
+        android:name="org.gdsc.presentation.view.webview.SpecificWebViewFragment"
+        android:label="SpecificWebViewFragment">
+        <argument
+            android:name="url"
+            app:argType="string" />
     </fragment>
 
 </navigation>
