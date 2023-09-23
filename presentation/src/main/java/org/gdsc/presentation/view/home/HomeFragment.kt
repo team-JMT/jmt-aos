@@ -62,6 +62,13 @@ class HomeFragment : Fragment() {
                             "javascript:setAccessToken(\"${viewModel.getAccessToken()}\")"
                         )
                     }
+                },
+                {
+                    repeatWhenUiStarted {
+                        binding.webView.loadUrl(
+                            "javascript:setUserPosition(${viewModel.setUserPosition()})"
+                        )
+                    }
                 }
             ), "webviewBridge")
         }
