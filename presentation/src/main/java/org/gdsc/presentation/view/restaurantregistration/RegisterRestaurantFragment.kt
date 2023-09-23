@@ -1,6 +1,5 @@
 package org.gdsc.presentation.view.restaurantregistration
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -34,7 +33,6 @@ import org.gdsc.presentation.utils.animateShrinkWidth
 import org.gdsc.presentation.utils.checkMediaPermissions
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.WEB_BASE_URL
-import org.gdsc.presentation.view.WebViewActivity
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
 import org.gdsc.presentation.view.restaurantregistration.adapter.RegisterRestaurantAdapter
 import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterRestaurantViewModel
@@ -224,24 +222,24 @@ class RegisterRestaurantFragment : BaseFragment() {
 
                                 sUri.toUri()
                                     .getCompressedBitmapFromUri(context)
-                                    ?.saveBitmapToFile(context, "$index.jpg")?.let {  imageFile ->
+                                    ?.saveBitmapToFile(context, "$index.jpg")?.let { imageFile ->
 
-                                    val requestFile =
-                                        RequestBody.create(
-                                            MediaType.parse("image/png"),
-                                            imageFile
-                                        )
+                                        val requestFile =
+                                            RequestBody.create(
+                                                MediaType.parse("image/png"),
+                                                imageFile
+                                            )
 
-                                    val body =
-                                        MultipartBody.Part.createFormData(
-                                            "pictures",
-                                            imageFile.name,
-                                            requestFile
-                                        )
+                                        val body =
+                                            MultipartBody.Part.createFormData(
+                                                "pictures",
+                                                imageFile.name,
+                                                requestFile
+                                            )
 
-                                    pictures.add(body)
+                                        pictures.add(body)
 
-                                }
+                                    }
 
                             }
 
@@ -251,15 +249,12 @@ class RegisterRestaurantFragment : BaseFragment() {
                                     navArgs.restaurantLocationInfo ?: throw Exception()
                                 ) { restaurantId ->
 
-                                    val intent =
-                                        Intent(requireContext(), WebViewActivity::class.java)
-
-                                    // 주소는 변경 되어야 함, 현재는 Lucy LocalHost 테스트
-                                    intent.putExtra(
-                                        "url",
-                                        "${WEB_BASE_URL}detail/$restaurantId"
+                                    findNavController().navigate(
+                                        RegisterRestaurantFragmentDirections
+                                            .actionRegisterRestaurantFragmentToSpecificWebViewFragment(
+                                                "${WEB_BASE_URL}detail/$restaurantId"
+                                            )
                                     )
-                                    startActivity(intent)
                                 }
                             }
                         } else {

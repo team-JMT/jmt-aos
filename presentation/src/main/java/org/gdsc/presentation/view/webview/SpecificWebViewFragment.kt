@@ -44,12 +44,6 @@ class SpecificWebViewFragment : Fragment() {
         binding.webView.apply {
             loadUrl(navArgs.url)
 
-            (requireActivity() as MainActivity).let {
-                it.detailLink?.let { link ->
-                    binding.webView.loadUrl(link)
-                }
-            }
-
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             webViewClient = WebViewClient()
