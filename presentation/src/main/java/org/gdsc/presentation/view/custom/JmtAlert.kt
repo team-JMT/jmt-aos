@@ -67,6 +67,7 @@ class JmtAlert(private val context: Context) {
         TextView(context).apply {
             gravity = Gravity.CENTER
             text = content
+            setLineSpacing(0f, 1.2f)
         }.let {
             binding.dialogContentLay.removeAllViewsInLayout()
             binding.dialogContentLay.isVisible = true
