@@ -83,6 +83,12 @@ class MyPageFragment : Fragment() {
                     .into(binding.profileImage)
             }
         }
+
+        repeatWhenUiStarted {
+            viewModel.registeredCountState.collect {
+                binding.registeredCountText.text = it.toString()
+            }
+        }
     }
 
     override fun onDestroyView() {
