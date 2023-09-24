@@ -195,6 +195,9 @@
             tools:visibility="visible"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_small"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/grey100"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
