@@ -67,7 +67,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/next_btn"
-            android:text="@string/next"
+            android:text="@string/change"
             android:layout_width="0dp"
             android:layout_height="62dp"
             style="@style/JmtButtonMain"
