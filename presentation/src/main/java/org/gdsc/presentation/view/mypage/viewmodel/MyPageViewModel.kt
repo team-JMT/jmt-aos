@@ -26,6 +26,7 @@ import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Filter
 import org.gdsc.domain.model.Location
+import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.model.response.NicknameResponse
@@ -70,6 +71,9 @@ class MyPageViewModel @Inject constructor(
     private var _emailState = MutableStateFlow(String.Empty)
     val emailState = _emailState.asStateFlow()
 
+    private var _registeredCountState = MutableStateFlow(0)
+    val registeredCountState = _registeredCountState.asStateFlow()
+
 
 
     private var _sortTypeState = MutableStateFlow(SortType.INIT)
@@ -109,6 +113,10 @@ class MyPageViewModel @Inject constructor(
             val response = postNicknameUseCase.invoke(nickName)
             afterSuccessCallback(response)
         }
+    }
+
+    fun updateRegisteredCount(count: Int) {
+        _registeredCountState.value = count
     }
 
     fun setSortType(sortType: SortType) {
@@ -217,8 +225,8 @@ class MyPageViewModel @Inject constructor(
         }
     }
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun registeredPagingData(userId: Int): Flow<PagingData<RegisteredRestaurant>> {
-        val location = locationManager.getCurrentLocation() ?: return flowOf(PagingData.empty())
+    suspend fun registeredPagingData(userId: Int): Flow<PagingResult<RegisteredRestaurant>> {
+        val location = locationManager.getCurrentLocation() ?: return flowOf(PagingResult(PagingData.empty(), 0))
         val locationData = Location(location.longitude.toString(), location.latitude.toString())
 
         return run {

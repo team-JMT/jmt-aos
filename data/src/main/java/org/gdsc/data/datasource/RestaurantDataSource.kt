@@ -7,6 +7,7 @@ import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
+import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
@@ -30,7 +31,7 @@ interface RestaurantDataSource {
 
     suspend fun getRestaurants(
         userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
-        ): Flow<PagingData<RegisteredRestaurant>>
+        ): Flow<PagingResult<RegisteredRestaurant>>
 
     suspend fun putRestaurantInfo(putRestaurantInfoRequest: ModifyRestaurantInfoRequest): String
 

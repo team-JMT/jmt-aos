@@ -9,6 +9,7 @@ import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
+import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
@@ -46,35 +47,37 @@ class RestaurantRepositoryImpl @Inject constructor(
 
     override suspend fun getRestaurants(
         userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
-    ): Flow<PagingData<RegisteredRestaurant>> {
+    ): Flow<PagingResult<RegisteredRestaurant>> {
         return restaurantDataSource.getRestaurants(
             userId,
             locationData,
             sortType,
             foodCategory,
             drinkPossibility
-        ).map { pagingData ->
-            val pagingTemp = pagingData.map { restaurant ->
-                val restaurantTemp = RegisteredRestaurant(
-                    id = restaurant.id,
-                    name = restaurant.name,
-                    placeUrl = restaurant.placeUrl,
-                    phone = restaurant.phone,
-                    address = restaurant.address,
-                    roadAddress = restaurant.roadAddress,
-                    x = restaurant.x,
-                    y = restaurant.y,
-                    restaurantImageUrl = restaurant.restaurantImageUrl,
-                    introduce = restaurant.introduce,
-                    category = restaurant.category,
-                    userId = userId,
-                    userNickName = restaurant.userNickName,
-                    userProfileImageUrl = restaurant.userProfileImageUrl,
-                    canDrinkLiquor = restaurant.canDrinkLiquor,
-                    differenceInDistance = restaurant.differenceInDistance,
-                )
-                restaurantTemp
-            }
+        ).map { result ->
+
+            val pagingTemp = PagingResult(
+                result.data.map { restaurant ->
+                    val restaurantTemp = RegisteredRestaurant(
+                        id = restaurant.id,
+                        name = restaurant.name,
+                        placeUrl = restaurant.placeUrl,
+                        phone = restaurant.phone,
+                        address = restaurant.address,
+                        roadAddress = restaurant.roadAddress,
+                        x = restaurant.x,
+                        y = restaurant.y,
+                        restaurantImageUrl = restaurant.restaurantImageUrl,
+                        introduce = restaurant.introduce,
+                        category = restaurant.category,
+                        userId = userId,
+                        userNickName = restaurant.userNickName,
+                        userProfileImageUrl = restaurant.userProfileImageUrl,
+                        canDrinkLiquor = restaurant.canDrinkLiquor,
+                        differenceInDistance = restaurant.differenceInDistance,
+                    )
+                    restaurantTemp
+                }, result.totalElementsCount)
             pagingTemp
         }
     }

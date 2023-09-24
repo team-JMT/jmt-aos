@@ -19,6 +19,7 @@ class RestaurantMediator(
 ): RemoteMediator<Int,RegisteredRestaurant>()  {
     private val userDao = db.restaurantDao()
     private var currentPageNumber = 0
+    var totalElementsCount = 0
 
     override suspend fun load(
         loadType: LoadType,
@@ -51,6 +52,7 @@ class RestaurantMediator(
 
             val repos = response.data
             currentPageNumber = repos.page.currentPage
+            totalElementsCount = repos.page.totalElements
             val endOfPaginationReached = repos.page.pageLast
             if(repos.restaurants.isNotEmpty()) {
                 db.withTransaction {

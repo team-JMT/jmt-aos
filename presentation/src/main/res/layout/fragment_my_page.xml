@@ -68,8 +68,8 @@
                     android:layout_marginTop="8dp"/>
 
                 <TextView
+                    android:id="@+id/registered_count_text"
                     android:text="23"
-                    android:id="@+id/follower_count_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/text_large_medium"
