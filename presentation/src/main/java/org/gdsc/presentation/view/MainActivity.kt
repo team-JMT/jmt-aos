@@ -69,7 +69,7 @@ class MainActivity : BaseActivity() {
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
 
             // bottomNavigationView Control
-            if (destination.id == R.id.home_fragment || destination.id == R.id.my_page_fragment)
+            if (destination.id == R.id.home_fragment || destination.id == R.id.my_page_fragment || destination.id == R.id.settings_fragment)
                 slideUpBottomNavigationView()
             else
                 slideDownBottomNavigationView()
