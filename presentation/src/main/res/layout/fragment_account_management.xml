@@ -21,7 +21,7 @@
     <View
         android:id="@+id/logOutDivider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_small"
+        android:layout_height="@dimen/divider_medium"
         android:background="@color/grey100"
         app:layout_constraintTop_toBottomOf="@+id/tv_log_out"/>
 
@@ -62,7 +62,7 @@
     <View
         android:id="@+id/accountManagementDivider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_small"
+        android:layout_height="@dimen/divider_medium"
         android:background="@color/grey100"
         app:layout_constraintTop_toBottomOf="@+id/sign_out_lay"/>
 

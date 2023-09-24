@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="divider_small">1dp</dimen>
+    <dimen name="divider_medium">2dp</dimen>
     <dimen name="divider_large">8dp</dimen>
 
     <dimen name="default_spacing">20dp</dimen>
