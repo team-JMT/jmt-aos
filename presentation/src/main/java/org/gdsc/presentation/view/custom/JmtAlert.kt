@@ -110,9 +110,11 @@ class JmtAlert(private val context: Context) {
         fun leftButton(text: String, _fillType: Int = FILL_FILL, autoDismiss: Boolean = true, onClick: (View) -> Unit = {}) {
             leftButton = AppCompatButton(context).apply {
                 this.text = text
+                this.textSize = 14f
                 this.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
-                    height = 48.toDp
+                    setPadding(10, 16, 10, 16)
                 }
+                this.stateListAnimator = null
                 this.background = when(_fillType) {
                     FILL_FILL -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
                     FILL_OUTLINE -> ContextCompat.getDrawable(context, R.drawable.jmt_button_outline_background_main)
@@ -133,10 +135,12 @@ class JmtAlert(private val context: Context) {
         fun rightButton(text: String, _fillType: Int = FILL_FILL, autoDismiss: Boolean = true, onClick: (View) -> Unit = {}) {
             rightButton = AppCompatButton(context).apply {
                 this.text = text
+                this.textSize = 14f
                 this.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
                     leftMargin = 12.toDp
-                    height = 48.toDp
+                    setPadding(10, 16, 10, 16)
                 }
+                this.stateListAnimator = null
                 this.background = when(_fillType) {
                     FILL_FILL -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
                     FILL_OUTLINE -> ContextCompat.getDrawable(context, R.drawable.jmt_button_outline_background_main)
