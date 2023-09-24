@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.gdsc.domain.usecase.token.GetRefreshTokenUseCase
@@ -37,6 +38,7 @@ class SplashActivity : AppCompatActivity() {
     lateinit var getRefreshTokenUseCase: GetRefreshTokenUseCase
 
     private val DELAY_TIME = 2000L
+    private var accessible = false
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -44,10 +46,24 @@ class SplashActivity : AppCompatActivity() {
 
         if (permissions.all { it.value }) {
             Toast.makeText(this, "위치 권한이 허용되었습니다!", Toast.LENGTH_SHORT).show()
+
+            if(accessible)
+                moveToMain()
+            else
+                moveToLogin()
         } else {
             showLocationPermissionDialog()
         }
 
+    }
+
+    private val openAppSettingsLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // 설정창에서 뒤로가기로 앱에 돌아오는 경우 CANCELED로 처리됨
+        if (result.resultCode == RESULT_OK || result.resultCode == RESULT_CANCELED) {
+            checkLocationRequest()
+        }
     }
 
     private fun checkLocationRequest() {
@@ -65,6 +81,11 @@ class SplashActivity : AppCompatActivity() {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             )
+        } else {
+            if(accessible)
+                moveToMain()
+            else
+                moveToLogin()
         }
     }
     private fun showLocationPermissionDialog() {
@@ -74,12 +95,11 @@ class SplashActivity : AppCompatActivity() {
             .multiButton {
                 leftButton("네") {
 
-                    startActivity(
-                        Intent(
-                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.fromParts("package", packageName, null)
-                        )
+                    val intent = Intent(
+                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        Uri.fromParts("package", packageName, null)
                     )
+                    openAppSettingsLauncher.launch(intent)
                 }
                 rightButton("아니오") {
                     Toast.makeText(this@SplashActivity, "위치 권한이 꼭 필요합니다.", Toast.LENGTH_SHORT).show()
@@ -96,15 +116,11 @@ class SplashActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.Main) {
 
-            val accessible = validateToken()
+            accessible = async { validateToken() }.await()
 
             delay(DELAY_TIME)
 
             checkLocationRequest()
-            if(accessible)
-                moveToMain()
-            else
-                moveToLogin()
         }
     }
 
