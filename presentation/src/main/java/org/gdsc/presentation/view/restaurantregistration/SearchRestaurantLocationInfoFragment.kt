@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -62,6 +63,9 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
 
         setSearchEditTextDebounceWatcher {
             if (binding.restaurantNameEditText.text.isNotEmpty()) {
+
+                setVisibleStatusContainer(false)
+
                 viewLifecycleOwner.lifecycleScope.launch {
                     val currentLocation = viewModel.getCurrentLocation()
 
@@ -70,19 +74,37 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
                         val response =
                             viewModel.getRestaurantLocationInfo(
                                 binding.restaurantNameEditText.text,
-                                currentLocation.latitude.toString(), currentLocation.longitude.toString(), 1
+                                currentLocation.latitude.toString(),
+                                currentLocation.longitude.toString(),
+                                1
                             )
 
-                        // TODO: Error Handling
-                        adapter.setTargetString(binding.restaurantNameEditText.text)
-                        adapter.submitList(response)
+                        if (response.isNotEmpty()) {
+                            // TODO: Error Handling
+                            adapter.setTargetString(binding.restaurantNameEditText.text)
+                            adapter.submitList(response)
+                        } else {
+                            setVisibleStatusContainer(true)
+                            setStatusImage(R.drawable.jmt_normal_character)
+                            setStatusContainerText(getString(R.string.no_searched_result))
+                            adapter.submitList(emptyList())
+                        }
+
+
                     } else {
-                        JmtSnackbar.make(binding.root, getString(R.string.get_location_error), Snackbar.LENGTH_SHORT)
+                        JmtSnackbar.make(
+                            binding.root,
+                            getString(R.string.get_location_error),
+                            Snackbar.LENGTH_SHORT
+                        )
                             .setTextColor(R.color.unable_nickname_color).show()
                     }
 
                 }
             } else {
+                setVisibleStatusContainer(true)
+                setStatusImage(R.drawable.jmt_wink_character)
+                setStatusContainerText(getString(R.string.search_for_recommendable_restaurant))
                 adapter.submitList(emptyList())
             }
 
@@ -112,5 +134,17 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
 
     private fun setToolbarTitle() {
         (requireActivity() as MainActivity).changeToolbarTitle("맛집등록")
+    }
+
+    private fun setVisibleStatusContainer(isVisible: Boolean) {
+        binding.statusContainer.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    private fun setStatusImage(@DrawableRes imageResId: Int) {
+        binding.statusImage.setImageResource(imageResId)
+    }
+
+    private fun setStatusContainerText(text: String) {
+        binding.statusText.text = text
     }
 }
