@@ -90,6 +90,7 @@
             app:tabTextColor="@color/grey300"
             app:tabIndicatorColor="@color/grey900"
             app:tabSelectedTextColor="@color/grey900"
+            app:tabBackground="@drawable/tab_underline"
             app:tabRippleColor="@null"
             app:tabTextAppearance="@style/text_medium_bold"/>
     </com.google.android.material.appbar.AppBarLayout>
