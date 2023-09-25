@@ -40,10 +40,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/more_icon"
-                    app:layout_constraintStart_toEndOf="@id/nick_name"
-                    app:layout_constraintTop_toTopOf="@id/nick_name"
+                    android:layout_marginStart="@dimen/layout_margin_spacing"
                     app:layout_constraintBottom_toBottomOf="@id/nick_name"
-                    />
+                    app:layout_constraintStart_toEndOf="@id/nick_name"
+                    app:layout_constraintTop_toTopOf="@id/nick_name" />
 
                 <TextView
                     android:id="@+id/nick_name"
