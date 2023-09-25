@@ -70,5 +70,7 @@
 
     <string name="service_not_yet">앗, 서비스 준비 중이에요!\n &#160;&#160;조금만 기다려주세요.</string>
     <string name="jmt_character_image">존마탱 캐릭터 이미지</string>
+    <string name="search_for_recommendable_restaurant">추천 해주고 싶은\n 맛집을 검색해주세요!</string>
+    <string name="no_searched_result">검색 결과가 없어요.\n올바른 식당명인지 확인해주세요.</string>
 
 </resources>
