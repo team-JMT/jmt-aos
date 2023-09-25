@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import com.naver.maps.map.BuildConfig
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -64,6 +65,7 @@ class SettingsFragment: BaseFragment() {
         initUserInfo()
         setToolbarTitle()
         observeState()
+        initVersion()
 
         binding.profileImageButton.setOnClickListener {
             BottomSheetDialog(requireContext())
@@ -99,6 +101,11 @@ class SettingsFragment: BaseFragment() {
             val navigate = SettingsFragmentDirections.actionSettingsFragmentToAccountManagementFragment()
             findNavController().navigate(navigate)
         }
+    }
+
+    // 업데이트는 플레이스토어에 출시 이후에 추가해주기
+    private fun initVersion() {
+        binding.tvVersionInfo.text = BuildConfig.VERSION_NAME + " v"
     }
 
     private fun initUserInfo() {
