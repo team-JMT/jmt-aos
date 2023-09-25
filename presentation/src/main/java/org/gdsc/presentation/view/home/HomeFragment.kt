@@ -59,14 +59,14 @@ class HomeFragment : Fragment() {
                 {
                     repeatWhenUiStarted {
                         binding.webView.loadUrl(
-                            "javascript:setAccessToken(\"${viewModel.getAccessToken()}\")"
+                            "javascript:setAccessToken('${viewModel.getAccessToken()}')"
                         )
                     }
                 },
                 {
                     repeatWhenUiStarted {
                         binding.webView.loadUrl(
-                            "javascript:setUserPosition(${viewModel.setUserPosition()})"
+                            "javascript:setUserPosition('${viewModel.setUserPosition()}')"
                         )
                     }
                 }
