@@ -14,6 +14,7 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.OverlayImage
 import org.gdsc.domain.Empty
 import org.gdsc.domain.toMeterFormat
 import org.gdsc.presentation.R
@@ -95,6 +96,7 @@ class ConfirmRestaurantRegistrationFragment : Fragment() {
                     navArgs.restaurantLocationInfo.x.toDouble()
                 )
                 map = naverMap
+                icon = OverlayImage.fromResource(R.drawable.jmt_marker)
             }
 
             val cameraUpdate = CameraUpdate.scrollTo(
