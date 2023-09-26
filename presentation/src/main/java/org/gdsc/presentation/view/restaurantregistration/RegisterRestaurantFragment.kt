@@ -115,17 +115,6 @@ class RegisterRestaurantFragment : BaseFragment() {
             viewModel.setFoodImagesListState(images ?: arrayOf<String>())
 
             if (images.isNullOrEmpty()) return@setFragmentResultListener
-
-            with(viewModel) {
-                if (isImageButtonAnimating.value.not()) {
-                    binding.selectImagesButton.run {
-                        if (isImageButtonExtended.value) {
-                            setIsImageButtonExtended(false)
-                            animateShrinkWidth()
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -180,6 +169,17 @@ class RegisterRestaurantFragment : BaseFragment() {
                     )
 
                 adapter.submitList(list)
+
+                with(viewModel) {
+                    if (list.isNotEmpty() && isImageButtonAnimating.value.not()) {
+                        binding.selectImagesButton.run {
+                            if (isImageButtonExtended.value) {
+                                setIsImageButtonExtended(false)
+                                animateShrinkWidth()
+                            }
+                        }
+                    }
+                }
 
                 binding.registerButton.apply {
 
