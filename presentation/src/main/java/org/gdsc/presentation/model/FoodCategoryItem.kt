@@ -18,6 +18,7 @@ data class FoodCategoryItem(
             FoodCategory.JAPANESE -> R.drawable.ic_japanese
             FoodCategory.CHINESE -> R.drawable.ic_chinese
             FoodCategory.WESTERN -> R.drawable.ic_western
+            FoodCategory.FUSION -> R.drawable.ic_fusion
             FoodCategory.CAFE -> R.drawable.ic_cafe
             FoodCategory.BAR -> R.drawable.ic_bar
             FoodCategory.ETC -> R.drawable.ic_etc
