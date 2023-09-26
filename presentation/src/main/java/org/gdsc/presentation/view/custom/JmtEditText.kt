@@ -33,6 +33,7 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
                     binding.verifyContainer.visibility = View.GONE
                 } else {
                     setNicknameEditTextWatcher()
+                    binding.nicknameEditText.maxLines = 10
                 }
                 getString(R.styleable.JmtEditText_jmtEditTextHint)?.let {
                     binding.nicknameEditText.hint = it
