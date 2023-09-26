@@ -1,5 +1,7 @@
 package org.gdsc.presentation.view.restaurantregistration
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -98,36 +100,7 @@ class RegisterRestaurantFragment : BaseFragment() {
                 binding.introductionEditText.setText(it.introduce)
                 binding.recommendDrinkEditText.editText.setText(it.goWellWithLiquor)
                 it.recommendMenu.split('#').drop(1).forEach { menu ->
-                    binding.recommendMenuChipGroup.addView(
-                        Chip(requireContext()).apply {
-                            text = menu
-                            isCloseIconVisible = true
-
-                            closeIcon = ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.cancel_icon
-                            )
-                            closeIconTint = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.grey200
-                            )
-
-                            chipBackgroundColor = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.white
-                            )
-                            chipStrokeColor = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.grey200
-                            )
-                            chipStrokeWidth = 1f
-
-                            setOnCloseIconClickListener {
-                                binding.recommendMenuChipGroup.removeView(this)
-                                viewModel.removeRecommendMenu(text.toString())
-                            }
-                        }
-                    )
+                    binding.recommendMenuChipGroup.addView(newChip(menu))
                 }
 
             }
@@ -306,34 +279,9 @@ class RegisterRestaurantFragment : BaseFragment() {
                 ) {
                     viewModel.addRecommendMenu(binding.recommendMenuEditText.text)
                     binding.recommendMenuChipGroup.addView(
-                        Chip(requireContext()).apply {
-                            text = binding.recommendMenuEditText.text
-                            isCloseIconVisible = true
-                            closeIcon = ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.cancel_icon
-                            )
-                            closeIconTint = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.grey200
-                            )
-
-                            chipBackgroundColor = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.white
-                            )
-                            chipStrokeColor = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.grey200
-                            )
-                            chipStrokeWidth = 1f
-
-                            setOnCloseIconClickListener {
-                                binding.recommendMenuChipGroup.removeView(this)
-                                viewModel.removeRecommendMenu(text.toString())
-                            }
-                        }
+                        newChip(binding.recommendMenuEditText.text)
                     )
+
                     binding.recommendMenuEditText.editText.setText(String.Empty)
                 }
                 false
@@ -369,6 +317,40 @@ class RegisterRestaurantFragment : BaseFragment() {
 
     private fun setToolbarTitle(restaurantName: String) {
         (requireActivity() as MainActivity).changeToolbarTitle(restaurantName)
+    }
+
+    private fun newChip(text: String): Chip {
+        return Chip(requireContext()).apply {
+            this.text = text
+            isCloseIconVisible = true
+            closeIcon = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.cancel_icon
+            )
+            closeIconTint = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.grey200
+            )
+
+            chipBackgroundColor = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.white
+            )
+            chipStrokeColor = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.grey200
+            )
+            chipStrokeWidth = 1f
+
+            rippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
+
+            setOnClickListener {
+                binding.recommendMenuChipGroup.removeView(this)
+                viewModel.removeRecommendMenu(text)
+            }
+
+        }
+
     }
 
     override fun onDestroyView() {
