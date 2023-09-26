@@ -32,11 +32,12 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/select_button"
-            android:text="@string/select"
+            android:text="@string/do_select"
             android:layout_width="match_parent"
             android:layout_height="62dp"
             android:layout_marginHorizontal="20dp"
             android:layout_gravity="bottom"
+            android:stateListAnimator="@null"
             style="@style/JmtButtonMain" />
 
     </LinearLayout>

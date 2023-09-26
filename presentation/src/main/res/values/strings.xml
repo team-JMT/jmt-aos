@@ -42,6 +42,7 @@
     <string name="search_icon_content_description">맛집 검색 아이콘</string>
     <string name="cancel">취소</string>
     <string name="select">선택</string>
+    <string name="do_select">선택하기</string>
     <string name="register">등록하기</string>
 
     <string name="distance_from_current_location">내 위치에서 %s</string>
