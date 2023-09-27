@@ -126,6 +126,7 @@ class JmtAlert(private val context: Context) {
         ) {
             leftButton = AppCompatButton(context).apply {
                 this.text = text
+                this.stateListAnimator = null
                 this.layoutParams =
                     LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
                         height = 48.toDp
