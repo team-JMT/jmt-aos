@@ -76,7 +76,7 @@ class MainActivity : BaseActivity() {
 
             // toolbar visibility Control
             when(destination.id) {
-                R.id.home_fragment, R.id.confirm_restaurant_registration_fragment -> {
+                R.id.home_fragment -> {
                     binding.toolBar.visibility = View.GONE
                 }
                 // TODO: Notification Icon
