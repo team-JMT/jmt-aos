@@ -149,7 +149,7 @@ class RegisterRestaurantFragment : BaseFragment() {
         repeatWhenUiStarted {
             viewModel.introductionTextState.collect { text ->
                 binding.introductionTextCounter.text =
-                    getString(R.string.text_counter_max_one_hundred, text.length)
+                    getString(R.string.text_counter_max_one_hundred, text.codePoints().count())
             }
         }
 
