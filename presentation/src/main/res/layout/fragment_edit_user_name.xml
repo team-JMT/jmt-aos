@@ -19,15 +19,12 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <EditText
+    <org.gdsc.presentation.view.custom.ClassicEditText
         android:id="@+id/username_edit_text"
-        style="@style/text_large_medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:lines="1"
-        android:backgroundTint="@color/grey400"
-        android:drawableRight="@drawable/ic_cancel"
+        style="@style/text_large_medium"
+        android:layout_marginHorizontal="@dimen/default_spacing"
         app:layout_constraintTop_toBottomOf="@+id/ask_nickname_text"/>
 
     <LinearLayout
@@ -41,10 +38,11 @@
 
         <ImageView
             android:id="@+id/verify_icon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             tools:src="@drawable/check_icon"
             android:contentDescription="@string/content_description_nickname_verify" />
+
         <Space
             android:layout_width="4dp"
             android:layout_height="wrap_content"/>
