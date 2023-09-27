@@ -36,6 +36,7 @@ import org.gdsc.presentation.utils.checkMediaPermissions
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.WEB_BASE_URL
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
+import org.gdsc.presentation.view.custom.JmtAlert
 import org.gdsc.presentation.view.restaurantregistration.adapter.RegisterRestaurantAdapter
 import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterRestaurantViewModel
 
@@ -92,6 +93,7 @@ class RegisterRestaurantFragment : BaseFragment() {
             setToolbarTitle(navArgs.restaurantLocationInfo?.placeName ?: String.Empty)
             setAddImageButton()
             setImageList()
+            binding.registerButton.text = "등록하기"
 
             // modify
         } else {
@@ -104,6 +106,7 @@ class RegisterRestaurantFragment : BaseFragment() {
                 }
 
             }
+            binding.registerButton.text = "수정하기"
         }
 
 
@@ -181,67 +184,37 @@ class RegisterRestaurantFragment : BaseFragment() {
                     }
                 }
 
-                binding.registerButton.apply {
-
-                    if (navArgs.targetRestaurantId == -1) this.text = "등록하기"
-                    else this.text = "수정하기"
-
-                    setOnClickListener {
-
-                        if (navArgs.targetRestaurantId == -1) {
-                            val pictures = mutableListOf<MultipartBody.Part>()
-
-                            list.forEachIndexed { index, sUri ->
-
-                                sUri.toUri()
-                                    .getCompressedBitmapFromUri(context)
-                                    ?.saveBitmapToFile(context, "$index.jpg")?.let { imageFile ->
-
-                                        val requestFile =
-                                            RequestBody.create(
-                                                MediaType.parse("image/png"),
-                                                imageFile
-                                            )
-
-                                        val body =
-                                            MultipartBody.Part.createFormData(
-                                                "pictures",
-                                                imageFile.name,
-                                                requestFile
-                                            )
-
-                                        pictures.add(body)
-
-                                    }
-
-                            }
-
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                viewModel.registerRestaurant(
-                                    pictures,
-                                    navArgs.restaurantLocationInfo ?: throw Exception()
-                                ) { restaurantId ->
-
-                                    findNavController().navigate(
-                                        RegisterRestaurantFragmentDirections
-                                            .actionRegisterRestaurantFragmentToSpecificWebViewFragment(
-                                                "${WEB_BASE_URL}detail/$restaurantId"
-                                            )
-                                    )
-                                }
-                            }
-                        } else {
-                            viewModel.modifyRestaurantInfo(navArgs.targetRestaurantId)
-                        }
-
-                    }
-                }
             }
         }
 
         repeatWhenUiStarted {
-            viewModel.canRegisterState.collectLatest {
-                binding.registerButton.isEnabled = it
+            viewModel.canRegisterState.collectLatest { canRegister ->
+                with(binding.registerButton) {
+
+                    if (canRegister) {
+                        setOnClickListener {
+                            register()
+                        }
+                        background = ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.jmt_button_background_main
+                        )
+                    } else {
+                        setOnClickListener {
+                            JmtAlert(requireContext())
+                                .title("필수 항목을 입력해주세요")
+                                .setCloseButton()
+                                .content("(필수)항목을 이력해야\n" +
+                                        "맛집 등록을 할 수 있어요")
+                                .isCancelable(false)
+                                .show()
+                        }
+                        background = ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.jmt_disabled_button_background_main
+                        )
+                    }
+                }
             }
         }
     }
@@ -351,6 +324,54 @@ class RegisterRestaurantFragment : BaseFragment() {
 
         }
 
+    }
+
+    private fun register() {
+        if (navArgs.targetRestaurantId == -1) {
+            val pictures = mutableListOf<MultipartBody.Part>()
+
+            viewModel.isFoodImagesListState.value.forEachIndexed { index, sUri ->
+
+                sUri.toUri()
+                    .getCompressedBitmapFromUri(requireContext())
+                    ?.saveBitmapToFile(requireContext(), "$index.jpg")?.let { imageFile ->
+
+                        val requestFile =
+                            RequestBody.create(
+                                MediaType.parse("image/png"),
+                                imageFile
+                            )
+
+                        val body =
+                            MultipartBody.Part.createFormData(
+                                "pictures",
+                                imageFile.name,
+                                requestFile
+                            )
+
+                        pictures.add(body)
+
+                    }
+
+            }
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.registerRestaurant(
+                    pictures,
+                    navArgs.restaurantLocationInfo ?: throw Exception()
+                ) { restaurantId ->
+
+                    findNavController().navigate(
+                        RegisterRestaurantFragmentDirections
+                            .actionRegisterRestaurantFragmentToSpecificWebViewFragment(
+                                "${WEB_BASE_URL}detail/$restaurantId"
+                            )
+                    )
+                }
+            }
+        } else {
+            viewModel.modifyRestaurantInfo(navArgs.targetRestaurantId)
+        }
     }
 
     override fun onDestroyView() {
