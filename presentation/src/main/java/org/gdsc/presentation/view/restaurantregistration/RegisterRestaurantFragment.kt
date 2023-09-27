@@ -1,5 +1,7 @@
 package org.gdsc.presentation.view.restaurantregistration
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -34,6 +36,7 @@ import org.gdsc.presentation.utils.checkMediaPermissions
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.WEB_BASE_URL
 import org.gdsc.presentation.view.custom.FoodCategoryBottomSheetDialog
+import org.gdsc.presentation.view.custom.JmtAlert
 import org.gdsc.presentation.view.restaurantregistration.adapter.RegisterRestaurantAdapter
 import org.gdsc.presentation.view.restaurantregistration.viewmodel.RegisterRestaurantViewModel
 
@@ -90,6 +93,7 @@ class RegisterRestaurantFragment : BaseFragment() {
             setToolbarTitle(navArgs.restaurantLocationInfo?.placeName ?: String.Empty)
             setAddImageButton()
             setImageList()
+            binding.registerButton.text = "등록하기"
 
             // modify
         } else {
@@ -98,39 +102,11 @@ class RegisterRestaurantFragment : BaseFragment() {
                 binding.introductionEditText.setText(it.introduce)
                 binding.recommendDrinkEditText.editText.setText(it.goWellWithLiquor)
                 it.recommendMenu.split('#').drop(1).forEach { menu ->
-                    binding.recommendMenuChipGroup.addView(
-                        Chip(requireContext()).apply {
-                            text = menu
-                            isCloseIconVisible = true
-
-                            closeIcon = ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.cancel_icon
-                            )
-                            closeIconTint = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.grey200
-                            )
-
-                            chipBackgroundColor = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.white
-                            )
-                            chipStrokeColor = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.grey200
-                            )
-                            chipStrokeWidth = 1f
-
-                            setOnCloseIconClickListener {
-                                binding.recommendMenuChipGroup.removeView(this)
-                                viewModel.removeRecommendMenu(text.toString())
-                            }
-                        }
-                    )
+                    binding.recommendMenuChipGroup.addView(newChip(menu))
                 }
 
             }
+            binding.registerButton.text = "수정하기"
         }
 
 
@@ -142,17 +118,6 @@ class RegisterRestaurantFragment : BaseFragment() {
             viewModel.setFoodImagesListState(images ?: arrayOf<String>())
 
             if (images.isNullOrEmpty()) return@setFragmentResultListener
-
-            with(viewModel) {
-                if (isImageButtonAnimating.value.not()) {
-                    binding.selectImagesButton.run {
-                        if (isImageButtonExtended.value) {
-                            setIsImageButtonExtended(false)
-                            animateShrinkWidth()
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -187,7 +152,7 @@ class RegisterRestaurantFragment : BaseFragment() {
         repeatWhenUiStarted {
             viewModel.introductionTextState.collect { text ->
                 binding.introductionTextCounter.text =
-                    getString(R.string.text_counter_max_one_hundred, text.length)
+                    getString(R.string.text_counter_max_one_hundred, text.codePoints().count())
             }
         }
 
@@ -208,67 +173,48 @@ class RegisterRestaurantFragment : BaseFragment() {
 
                 adapter.submitList(list)
 
-                binding.registerButton.apply {
-
-                    if (navArgs.targetRestaurantId == -1) this.text = "등록하기"
-                    else this.text = "수정하기"
-
-                    setOnClickListener {
-
-                        if (navArgs.targetRestaurantId == -1) {
-                            val pictures = mutableListOf<MultipartBody.Part>()
-
-                            list.forEachIndexed { index, sUri ->
-
-                                sUri.toUri()
-                                    .getCompressedBitmapFromUri(context)
-                                    ?.saveBitmapToFile(context, "$index.jpg")?.let { imageFile ->
-
-                                        val requestFile =
-                                            RequestBody.create(
-                                                MediaType.parse("image/png"),
-                                                imageFile
-                                            )
-
-                                        val body =
-                                            MultipartBody.Part.createFormData(
-                                                "pictures",
-                                                imageFile.name,
-                                                requestFile
-                                            )
-
-                                        pictures.add(body)
-
-                                    }
-
+                with(viewModel) {
+                    if (list.isNotEmpty() && isImageButtonAnimating.value.not()) {
+                        binding.selectImagesButton.run {
+                            if (isImageButtonExtended.value) {
+                                setIsImageButtonExtended(false)
+                                animateShrinkWidth()
                             }
-
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                viewModel.registerRestaurant(
-                                    pictures,
-                                    navArgs.restaurantLocationInfo ?: throw Exception()
-                                ) { restaurantId ->
-
-                                    findNavController().navigate(
-                                        RegisterRestaurantFragmentDirections
-                                            .actionRegisterRestaurantFragmentToSpecificWebViewFragment(
-                                                "${WEB_BASE_URL}detail/$restaurantId"
-                                            )
-                                    )
-                                }
-                            }
-                        } else {
-                            viewModel.modifyRestaurantInfo(navArgs.targetRestaurantId)
                         }
-
                     }
                 }
+
             }
         }
 
         repeatWhenUiStarted {
-            viewModel.canRegisterState.collectLatest {
-                binding.registerButton.isEnabled = it
+            viewModel.canRegisterState.collectLatest { canRegister ->
+                with(binding.registerButton) {
+
+                    if (canRegister) {
+                        setOnClickListener {
+                            register()
+                        }
+                        background = ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.jmt_button_background_main
+                        )
+                    } else {
+                        setOnClickListener {
+                            JmtAlert(requireContext())
+                                .title("필수 항목을 입력해주세요")
+                                .setCloseButton()
+                                .content("(필수)항목을 이력해야\n" +
+                                        "맛집 등록을 할 수 있어요")
+                                .isCancelable(false)
+                                .show()
+                        }
+                        background = ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.jmt_disabled_button_background_main
+                        )
+                    }
+                }
             }
         }
     }
@@ -306,34 +252,9 @@ class RegisterRestaurantFragment : BaseFragment() {
                 ) {
                     viewModel.addRecommendMenu(binding.recommendMenuEditText.text)
                     binding.recommendMenuChipGroup.addView(
-                        Chip(requireContext()).apply {
-                            text = binding.recommendMenuEditText.text
-                            isCloseIconVisible = true
-                            closeIcon = ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.cancel_icon
-                            )
-                            closeIconTint = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.grey200
-                            )
-
-                            chipBackgroundColor = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.white
-                            )
-                            chipStrokeColor = ContextCompat.getColorStateList(
-                                requireContext(),
-                                R.color.grey200
-                            )
-                            chipStrokeWidth = 1f
-
-                            setOnCloseIconClickListener {
-                                binding.recommendMenuChipGroup.removeView(this)
-                                viewModel.removeRecommendMenu(text.toString())
-                            }
-                        }
+                        newChip(binding.recommendMenuEditText.text)
                     )
+
                     binding.recommendMenuEditText.editText.setText(String.Empty)
                 }
                 false
@@ -369,6 +290,88 @@ class RegisterRestaurantFragment : BaseFragment() {
 
     private fun setToolbarTitle(restaurantName: String) {
         (requireActivity() as MainActivity).changeToolbarTitle(restaurantName)
+    }
+
+    private fun newChip(text: String): Chip {
+        return Chip(requireContext()).apply {
+            this.text = text
+            isCloseIconVisible = true
+            closeIcon = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.cancel_icon
+            )
+            closeIconTint = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.grey200
+            )
+
+            chipBackgroundColor = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.white
+            )
+            chipStrokeColor = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.grey200
+            )
+            chipStrokeWidth = 1f
+
+            rippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
+
+            setOnClickListener {
+                binding.recommendMenuChipGroup.removeView(this)
+                viewModel.removeRecommendMenu(text)
+            }
+
+        }
+
+    }
+
+    private fun register() {
+        if (navArgs.targetRestaurantId == -1) {
+            val pictures = mutableListOf<MultipartBody.Part>()
+
+            viewModel.isFoodImagesListState.value.forEachIndexed { index, sUri ->
+
+                sUri.toUri()
+                    .getCompressedBitmapFromUri(requireContext())
+                    ?.saveBitmapToFile(requireContext(), "$index.jpg")?.let { imageFile ->
+
+                        val requestFile =
+                            RequestBody.create(
+                                MediaType.parse("image/png"),
+                                imageFile
+                            )
+
+                        val body =
+                            MultipartBody.Part.createFormData(
+                                "pictures",
+                                imageFile.name,
+                                requestFile
+                            )
+
+                        pictures.add(body)
+
+                    }
+
+            }
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.registerRestaurant(
+                    pictures,
+                    navArgs.restaurantLocationInfo ?: throw Exception()
+                ) { restaurantId ->
+
+                    findNavController().navigate(
+                        RegisterRestaurantFragmentDirections
+                            .actionRegisterRestaurantFragmentToSpecificWebViewFragment(
+                                "${WEB_BASE_URL}detail/$restaurantId"
+                            )
+                    )
+                }
+            }
+        } else {
+            viewModel.modifyRestaurantInfo(navArgs.targetRestaurantId)
+        }
     }
 
     override fun onDestroyView() {

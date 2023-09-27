@@ -43,22 +43,31 @@ class JmtAlert(private val context: Context) {
         binding.dialogTitle.text = title
         return this
     }
+
     fun title(titleRes: Int): JmtAlert {
         return this.title(context.getString(titleRes))
     }
 
+    fun setCloseButton(isVisible: Boolean = true): JmtAlert {
+        with(binding.dialogCloseBtn) {
+            visibility = if (isVisible) View.VISIBLE else View.GONE
+            setOnClickListener { dismiss() }
+        }
+        return this
+    }
+
     fun isCancelable(cancelable: Boolean): JmtAlert {
         builder.setCancelable(
-            if(dismissWithCancel) false else cancelable
+            if (dismissWithCancel) false else cancelable
         )
         return this
     }
 
     fun dismissWithCancel(dismissWithCancel: Boolean): JmtAlert {
         this.dismissWithCancel = dismissWithCancel
-        if(dismissWithCancel) {
+        if (dismissWithCancel) {
             builder.setCancelable(false)
-            if(context is BaseActivity) builder.setOnCancelListener{ context.finish() }
+            if (context is BaseActivity) builder.setOnCancelListener { context.finish() }
         }
         return this
     }
@@ -92,10 +101,12 @@ class JmtAlert(private val context: Context) {
 
         return dialog
     }
+
     fun show(onDialogViewBinding: JmtAlert.(ComponentAlertBaseBinding) -> Unit): AlertDialog? {
         onDialogViewBinding(binding)
         return show()
     }
+
     fun dismiss() {
         if (dialog?.isShowing == true)
             dialog?.dismiss()
@@ -106,53 +117,92 @@ class JmtAlert(private val context: Context) {
         var leftButton: AppCompatButton? = null
         var rightButton: AppCompatButton? = null
 
-        fun leftButton(text: String, _fillType: Int = FILL_FILL, autoDismiss: Boolean = true, onClick: (View) -> Unit = {}) {
+        fun leftButton(
+            text: String,
+            _fillType: Int = FILL_FILL,
+            autoDismiss: Boolean = true,
+            onClick: (View) -> Unit = {}
+        ) {
             leftButton = AppCompatButton(context).apply {
                 this.text = text
-                this.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
-                    height = 48.toDp
+                this.layoutParams =
+                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                        height = 48.toDp
+                    }
+                this.background = when (_fillType) {
+                    FILL_FILL -> ContextCompat.getDrawable(
+                        context,
+                        R.drawable.jmt_button_background_main
+                    )
+
+                    FILL_OUTLINE -> ContextCompat.getDrawable(
+                        context,
+                        R.drawable.jmt_button_outline_background_main
+                    )
+
+                    else -> ContextCompat.getDrawable(
+                        context,
+                        R.drawable.jmt_button_background_main
+                    )
                 }
-                this.background = when(_fillType) {
-                    FILL_FILL -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
-                    FILL_OUTLINE -> ContextCompat.getDrawable(context, R.drawable.jmt_button_outline_background_main)
-                    else -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
-                }
-                this.setTextColor(when(_fillType) {
-                    FILL_FILL -> ContextCompat.getColor(context, R.color.white)
-                    FILL_OUTLINE -> ContextCompat.getColor(context, R.color.main500)
-                    else -> ContextCompat.getColor(context, R.color.white)
-                })
+                this.setTextColor(
+                    when (_fillType) {
+                        FILL_FILL -> ContextCompat.getColor(context, R.color.white)
+                        FILL_OUTLINE -> ContextCompat.getColor(context, R.color.main500)
+                        else -> ContextCompat.getColor(context, R.color.white)
+                    }
+                )
                 this.setOnClickListener {
                     onClick(it)
-                    if(autoDismiss) dismiss()
+                    if (autoDismiss) dismiss()
                 }
             }
         }
 
-        fun rightButton(text: String, _fillType: Int = FILL_FILL, autoDismiss: Boolean = true, onClick: (View) -> Unit = {}) {
+        fun rightButton(
+            text: String,
+            _fillType: Int = FILL_FILL,
+            autoDismiss: Boolean = true,
+            onClick: (View) -> Unit = {}
+        ) {
             rightButton = AppCompatButton(context).apply {
                 this.text = text
-                this.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
-                    leftMargin = 12.toDp
-                    height = 48.toDp
+                this.layoutParams =
+                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                        leftMargin = 12.toDp
+                        height = 48.toDp
+                    }
+                this.background = when (_fillType) {
+                    FILL_FILL -> ContextCompat.getDrawable(
+                        context,
+                        R.drawable.jmt_button_background_main
+                    )
+
+                    FILL_OUTLINE -> ContextCompat.getDrawable(
+                        context,
+                        R.drawable.jmt_button_outline_background_main
+                    )
+
+                    else -> ContextCompat.getDrawable(
+                        context,
+                        R.drawable.jmt_button_background_main
+                    )
                 }
-                this.background = when(_fillType) {
-                    FILL_FILL -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
-                    FILL_OUTLINE -> ContextCompat.getDrawable(context, R.drawable.jmt_button_outline_background_main)
-                    else -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
-                }
-                this.setTextColor(when(_fillType) {
-                    FILL_FILL -> ContextCompat.getColor(context, R.color.white)
-                    FILL_OUTLINE -> ContextCompat.getColor(context, R.color.main500)
-                    else -> ContextCompat.getColor(context, R.color.white)
-                })
+                this.setTextColor(
+                    when (_fillType) {
+                        FILL_FILL -> ContextCompat.getColor(context, R.color.white)
+                        FILL_OUTLINE -> ContextCompat.getColor(context, R.color.main500)
+                        else -> ContextCompat.getColor(context, R.color.white)
+                    }
+                )
                 this.setOnClickListener {
                     onClick(it)
-                    if(autoDismiss) dismiss()
+                    if (autoDismiss) dismiss()
                 }
             }
         }
     }
+
     fun multiButton(addButton: MultiButtonBuilder.() -> Unit): JmtAlert {
         var buttons = MultiButtonBuilder().apply(addButton)
         LinearLayout(context).apply {
@@ -162,7 +212,10 @@ class JmtAlert(private val context: Context) {
             if (buttons.leftButton != null) {
                 this.addView(buttons.leftButton)
             } else {
-                this.addView(Space(context).apply { layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f) })
+                this.addView(Space(context).apply {
+                    layoutParams =
+                        LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                })
             }
             buttons.rightButton?.let { rightButton ->
                 this.addView(rightButton)

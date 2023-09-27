@@ -5,22 +5,16 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.domain.model.MediaItem
 import org.gdsc.presentation.R
@@ -56,23 +50,24 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentImagePickerBinding.inflate(inflater, container, false)
 
         return binding.root
     }
+
     private fun setupPopUpMenu(view: View) {
         val albumNameList = (listOf(getString(R.string.album_all)) + albumFolderList).toTypedArray()
 
         popupMenu = PopupMenu(requireContext(), view)
         (requireActivity() as MainActivity).menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
 
-        for(i in albumNameList.indices) {
+        for (i in albumNameList.indices) {
             // 갤러리 아이템 리스트 초기화
             popupMenu.menu.add(0, i, i, albumNameList[i])
         }
 
-        popupMenu.setOnMenuItemClickListener {item ->
+        popupMenu.setOnMenuItemClickListener { item ->
             // 앨범 선택 버튼 텍스트 변경
 
             binding.galleryButton.text = item.title.toString()
@@ -85,13 +80,15 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
     private fun setView() {
         binding.multiImageInfoLayout.isVisible = true
 
-        binding.multiImageSaveBtn.text = getString(R.string.select_text_counter_max_ten, imageList.size)
+        binding.multiImageSaveBtn.text =
+            getString(R.string.select_text_counter_max_ten, imageList.size)
 
         binding.multiImageSaveBtn.setOnClickListener {
             setFragmentResult(
                 "pickImages", bundleOf(
-                    "imagesUri" to (imageList.map { it.uri }.toTypedArray()?: arrayOf())
-                ))
+                    "imagesUri" to (imageList.map { it.uri }.toTypedArray())
+                )
+            )
 
             findNavController().navigateUp()
         }
@@ -114,12 +111,15 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
 
     // SignUpCompleteFragment로 선택 이미지와 갤러리명 넘기기
     override fun onImageClick(mediaItem: MediaItem) {
-        if(imageList.contains(mediaItem)) {
+        if (imageList.contains(mediaItem)) {
             imageList.remove(mediaItem)
         } else {
             imageList.add(mediaItem)
         }
-        binding.multiImageSaveBtn.text = getString(R.string.select_text_counter_max_ten, imageList.size)
+        binding.multiImageSaveBtn.apply {
+            text = getString(R.string.select_text_counter_max_ten, imageList.size)
+            isEnabled = imageList.size > 0
+        }
     }
 
     private fun setAdapter() {
@@ -151,6 +151,7 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         imagePickerViewModel.fetchMediaList()
 
     }
+
     private fun setActionBar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
         requireNotNull((requireActivity() as MainActivity).supportActionBar).apply {
@@ -173,6 +174,7 @@ class MultiImagePickerFragment : Fragment(), GalleryImageClickListener {
         _binding = null
         super.onDestroyView()
     }
+
     override fun onDetach() {
         super.onDetach()
         imagePickerViewModel.resetGallery()
