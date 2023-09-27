@@ -77,8 +77,35 @@
             android:nestedScrollingEnabled="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-        <include
-            android:id="@+id/not_yet_layout"
-            layout="@layout/not_yet_layout"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/empty_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/jmt_character"
+                    android:layout_marginBottom="32dp"
+                    app:layout_constraintBottom_toTopOf="@+id/not_yet_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:contentDescription="@string/jmt_character_image"/>
+
+                <TextView
+                    android:id="@+id/not_yet_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/result_empty"
+                    android:textAppearance="@style/text_large_bold"
+                    android:textColor="@color/grey300"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 </org.gdsc.presentation.view.custom.NestedScrollCoordinatorLayout>

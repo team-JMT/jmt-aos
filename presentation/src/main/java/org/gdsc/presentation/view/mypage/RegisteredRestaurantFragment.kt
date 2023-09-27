@@ -52,13 +52,13 @@ class RegisteredRestaurantFragment : Fragment() {
 
         myRestaurantAdapter.addLoadStateListener { combinedLoadStates ->
             if (combinedLoadStates.append.endOfPaginationReached) {
-                binding.notYetLayout.root.isVisible = myRestaurantAdapter.itemCount == 0
+                binding.emptyLayout.isVisible = myRestaurantAdapter.itemCount == 0
             } else {
-                binding.notYetLayout.root.isVisible = false
+                binding.emptyLayout.isVisible = false
             }
 
             if(combinedLoadStates.refresh is LoadState.Error) {
-                binding.notYetLayout.root.isVisible = true
+                binding.emptyLayout.isVisible = true
             }
         }
 
