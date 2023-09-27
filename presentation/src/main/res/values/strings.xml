@@ -43,6 +43,7 @@
     <string name="search_icon_content_description">맛집 검색 아이콘</string>
     <string name="cancel">취소</string>
     <string name="select">선택</string>
+    <string name="do_select">선택하기</string>
     <string name="register">등록하기</string>
 
     <string name="distance_from_current_location">내 위치에서 %s</string>
@@ -71,5 +72,7 @@
 
     <string name="service_not_yet">앗, 서비스 준비 중이에요!\n &#160;&#160;조금만 기다려주세요.</string>
     <string name="jmt_character_image">존마탱 캐릭터 이미지</string>
+    <string name="search_for_recommendable_restaurant">추천 해주고 싶은\n 맛집을 검색해주세요!</string>
+    <string name="no_searched_result">검색 결과가 없어요.\n올바른 식당명인지 확인해주세요.</string>
 
 </resources>

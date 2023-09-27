@@ -20,7 +20,6 @@
             android:background="@null"
             android:textAppearance="@style/text_large_medium"
             android:textCursorDrawable="@null"
-            android:maxLength="10"
             android:autofillHints="username"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -21,6 +21,15 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:gravity">center</item>
         <item name="android:textAppearance">@style/title_small_medium</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="JmtDisabledButtonMain" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/jmt_disabled_button_background_main</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">@style/title_small_medium</item>
+        <item name="android:stateListAnimator">@null</item>
     </style>
 
     <style name="JmtOutLineButtonMain" parent="Widget.AppCompat.Button">
