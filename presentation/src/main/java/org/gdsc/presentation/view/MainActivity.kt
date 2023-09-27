@@ -76,7 +76,7 @@ class MainActivity : BaseActivity() {
 
             // toolbar visibility Control
             when(destination.id) {
-                R.id.home_fragment, R.id.confirm_restaurant_registration_fragment -> {
+                R.id.home_fragment -> {
                     binding.toolBar.visibility = View.GONE
                 }
                 // TODO: Notification Icon
@@ -119,19 +119,22 @@ class MainActivity : BaseActivity() {
             object : Animator.AnimatorListener {
                 override fun onAnimationStart(p0: Animator) {}
                 override fun onAnimationEnd(p0: Animator) {
-
                     binding.bottomNavigationView.visibility = View.GONE
                 }
 
                 override fun onAnimationCancel(p0: Animator) {}
                 override fun onAnimationRepeat(p0: Animator) {}
             }
-        binding.bottomNavigationView.slideDown(endListener = myAnimationListener)
+        runOnUiThread {
+            binding.bottomNavigationView.slideDown(endListener = myAnimationListener)
+        }
     }
 
     fun slideUpBottomNavigationView() {
-        binding.bottomNavigationView.visibility = View.VISIBLE
-        binding.bottomNavigationView.slideUp()
+        runOnUiThread {
+            binding.bottomNavigationView.visibility = View.VISIBLE
+            binding.bottomNavigationView.slideUp()
+        }
     }
 
     fun changeToolbarTitle(title: String) {

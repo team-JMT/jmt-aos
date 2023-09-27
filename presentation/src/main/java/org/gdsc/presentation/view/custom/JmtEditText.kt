@@ -33,10 +33,16 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
                     binding.verifyContainer.visibility = View.GONE
                 } else {
                     setNicknameEditTextWatcher()
+                    binding.nicknameEditText.maxLines = 10
                 }
                 getString(R.styleable.JmtEditText_jmtEditTextHint)?.let {
                     binding.nicknameEditText.hint = it
-                    binding.nicknameEditText.setHintTextColor(ContextCompat.getColor(context, R.color.grey300))
+                    binding.nicknameEditText.setHintTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.grey300
+                        )
+                    )
                 }
             } finally {
                 recycle()
@@ -70,7 +76,7 @@ class JmtEditText(context: Context, attrs: AttributeSet) : ConstraintLayout(cont
                 }
             }
 
-            if (inputText.length == 10) {
+            if (inputText.codePoints().count().toInt() == 10) {
                 Toast.makeText(context, "닉네임은 최대 10글자입니다.", Toast.LENGTH_SHORT).show()
             }
         }
