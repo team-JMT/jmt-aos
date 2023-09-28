@@ -69,11 +69,21 @@ class MainActivity : BaseActivity() {
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
 
             // bottomNavigationView Control
-            if (destination.id == R.id.home_fragment || destination.id == R.id.my_page_fragment || destination.id == R.id.settings_fragment)
-                slideUpBottomNavigationView()
-            else
-                slideDownBottomNavigationView()
-
+            when (destination.id) {
+                R.id.home_fragment ->  {
+                    slideUpBottomNavigationView()
+                    binding.navHostFragment.setPadding(0, 0, 0, 0)
+                }
+                R.id.my_page_fragment -> {
+                    slideUpBottomNavigationView()
+                    binding.navHostFragment.setPadding(0, 0, 0, binding.bottomNavigationView.measuredHeight)
+                }
+                else -> {
+                    slideDownBottomNavigationView()
+                    binding.navHostFragment.setPadding(0, 0, 0, 0)
+                }
+            }
+            
             // toolbar visibility Control
             when(destination.id) {
                 R.id.home_fragment -> {
