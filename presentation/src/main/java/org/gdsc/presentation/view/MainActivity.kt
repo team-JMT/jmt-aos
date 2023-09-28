@@ -83,7 +83,7 @@ class MainActivity : BaseActivity() {
                     binding.navHostFragment.setPadding(0, 0, 0, 0)
                 }
             }
-
+            
             // toolbar visibility Control
             when(destination.id) {
                 R.id.home_fragment -> {

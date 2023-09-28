@@ -76,6 +76,7 @@ class JmtAlert(private val context: Context) {
         TextView(context).apply {
             gravity = Gravity.CENTER
             text = content
+            setLineSpacing(0f, 1.2f)
         }.let {
             binding.dialogContentLay.removeAllViewsInLayout()
             binding.dialogContentLay.isVisible = true
@@ -125,6 +126,7 @@ class JmtAlert(private val context: Context) {
         ) {
             leftButton = AppCompatButton(context).apply {
                 this.text = text
+                this.stateListAnimator = null
                 this.layoutParams =
                     LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
                         height = 48.toDp
@@ -167,34 +169,20 @@ class JmtAlert(private val context: Context) {
         ) {
             rightButton = AppCompatButton(context).apply {
                 this.text = text
-                this.layoutParams =
-                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
-                        leftMargin = 12.toDp
-                        height = 48.toDp
-                    }
-                this.background = when (_fillType) {
-                    FILL_FILL -> ContextCompat.getDrawable(
-                        context,
-                        R.drawable.jmt_button_background_main
-                    )
-
-                    FILL_OUTLINE -> ContextCompat.getDrawable(
-                        context,
-                        R.drawable.jmt_button_outline_background_main
-                    )
-
-                    else -> ContextCompat.getDrawable(
-                        context,
-                        R.drawable.jmt_button_background_main
-                    )
+                this.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                    leftMargin = 12.toDp
+                    height = 48.toDp
                 }
-                this.setTextColor(
-                    when (_fillType) {
-                        FILL_FILL -> ContextCompat.getColor(context, R.color.white)
-                        FILL_OUTLINE -> ContextCompat.getColor(context, R.color.main500)
-                        else -> ContextCompat.getColor(context, R.color.white)
-                    }
-                )
+                this.background = when(_fillType) {
+                    FILL_FILL -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
+                    FILL_OUTLINE -> ContextCompat.getDrawable(context, R.drawable.jmt_button_outline_background_main)
+                    else -> ContextCompat.getDrawable(context, R.drawable.jmt_button_background_main)
+                }
+                this.setTextColor(when(_fillType) {
+                    FILL_FILL -> ContextCompat.getColor(context, R.color.white)
+                    FILL_OUTLINE -> ContextCompat.getColor(context, R.color.main500)
+                    else -> ContextCompat.getColor(context, R.color.white)
+                })
                 this.setOnClickListener {
                     onClick(it)
                     if (autoDismiss) dismiss()

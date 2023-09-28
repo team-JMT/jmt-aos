@@ -76,7 +76,7 @@ class MyPageViewModel @Inject constructor(
 
 
 
-    private var _sortTypeState = MutableStateFlow(SortType.INIT)
+    private var _sortTypeState = MutableStateFlow(SortType.DISTANCE)
     val sortTypeState: StateFlow<SortType>
         get() = _sortTypeState
 
