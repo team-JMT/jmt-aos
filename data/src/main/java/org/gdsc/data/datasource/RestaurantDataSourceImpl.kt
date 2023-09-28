@@ -127,7 +127,6 @@ class RestaurantDataSourceImpl @Inject constructor(
         ) {
             with(db.restaurantDao()) {
                 when (sortType) {
-                    SortType.INIT -> getRegisteredRestaurants(userId, categoryFilter, isCanDrinkLiquor)
                     SortType.DISTANCE -> getRegisteredRestaurantsSortedDistance(userId, categoryFilter, isCanDrinkLiquor)
                     SortType.RECENCY -> getRegisteredRestaurantsSortedRecent(userId, categoryFilter, isCanDrinkLiquor)
                     SortType.LIKED -> getRegisteredRestaurants(userId, categoryFilter, isCanDrinkLiquor)

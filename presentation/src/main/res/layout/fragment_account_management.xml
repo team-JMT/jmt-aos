@@ -21,7 +21,7 @@
     <View
         android:id="@+id/logOutDivider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_small"
+        android:layout_height="@dimen/divider_medium"
         android:background="@color/grey100"
         app:layout_constraintTop_toBottomOf="@+id/tv_log_out"/>
 
@@ -52,7 +52,6 @@
             android:layout_marginTop="2dp"
             android:text="계정을 영구적으로 삭제합니다."
             android:textColor="@color/grey300"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@+id/tv_sign_out"
             app:layout_constraintTop_toBottomOf="@+id/tv_sign_out"
             tools:visibility="visible"/>
@@ -62,7 +61,7 @@
     <View
         android:id="@+id/accountManagementDivider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_small"
+        android:layout_height="@dimen/divider_medium"
         android:background="@color/grey100"
         app:layout_constraintTop_toBottomOf="@+id/sign_out_lay"/>
 

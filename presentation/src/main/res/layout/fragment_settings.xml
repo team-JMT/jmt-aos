@@ -160,7 +160,7 @@
         app:layout_constraintTop_toBottomOf="@+id/privacyPolicyDivider">
 
         <TextView
-            android:id="@+id/tv_version_info"
+            android:id="@+id/tv_version_title"
             style="@style/text_large_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -178,23 +178,26 @@
             android:text="업데이트가 필요해요"
             android:textColor="@color/grey300"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@+id/tv_version_info"
-            app:layout_constraintTop_toBottomOf="@+id/tv_version_info"
+            app:layout_constraintStart_toStartOf="@+id/tv_version_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_version_title"
             tools:visibility="visible"/>
 
         <TextView
+            android:id="@+id/tv_version_info"
             style="@style/text_medium_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12.0.3 v"
             android:textColor="@color/unable_nickname_color"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@+id/tv_version_info"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_update_info"
+            app:layout_constraintTop_toTopOf="@+id/tv_version_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_version_title"
             tools:visibility="visible"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_small"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/grey100"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

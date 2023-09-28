@@ -9,7 +9,7 @@ enum class FoodCategory(val id: Long, val text: String, val key:String) {
     CAFE(6L, "카페", "CAFE"),
     BAR(7L, "주점", "BAR"),
     ETC(8L, "기타", "ETC"),
-    INIT(-1L, "(필수) 어떤 종류의 식당인가요?", "");
+    INIT(-1L, "종류", "");
 
     companion object {
         fun getAllText(): List<String> {
