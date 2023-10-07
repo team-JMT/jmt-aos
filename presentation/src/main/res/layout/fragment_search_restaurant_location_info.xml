@@ -37,7 +37,6 @@
             android:id="@+id/status_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/jmt_wink_character"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +46,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/search_for_recommendable_restaurant"
             android:textAlignment="center"
             android:textAppearance="@style/text_large_bold"
             android:textColor="@color/grey300"
