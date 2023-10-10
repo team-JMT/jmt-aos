@@ -17,6 +17,7 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.gdsc.presentation.BaseFragment
+import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentSignUpCompleteBinding
 import org.gdsc.presentation.utils.BitmapUtils.getCompressedBitmapFromUri
 import org.gdsc.presentation.utils.BitmapUtils.saveBitmapToFile
@@ -61,6 +62,7 @@ class SignUpCompleteFragment : BaseFragment() {
             viewModel.profileImageState.collect {
                 Glide.with(requireContext())
                     .load(it)
+                    .placeholder(R.drawable.base_profile_image)
                     .into(binding.profileImage)
             }
         }
