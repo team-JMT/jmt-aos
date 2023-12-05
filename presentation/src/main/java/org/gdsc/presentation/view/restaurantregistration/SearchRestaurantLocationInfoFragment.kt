@@ -111,6 +111,17 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (adapter.currentList.isEmpty()) {
+            setVisibleStatusContainer(true)
+            setStatusImage(R.drawable.jmt_wink_character)
+            setStatusContainerText(getString(R.string.search_for_recommendable_restaurant))
+        } else {
+            setVisibleStatusContainer(false)
+        }
+    }
+
     private fun setAdapter() {
         binding.restaurantInfoRecyclerView.adapter = adapter
         binding.restaurantInfoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
