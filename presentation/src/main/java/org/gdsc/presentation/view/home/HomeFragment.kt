@@ -1,20 +1,17 @@
 package org.gdsc.presentation.view.home
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebViewClient
-import androidx.activity.addCallback
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
+import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentHomeBinding
-import org.gdsc.presentation.utils.repeatWhenUiStarted
-import org.gdsc.presentation.view.MainActivity
-import org.gdsc.presentation.view.WEB_BASE_URL
-import org.gdsc.presentation.view.WebAppInterface
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -23,7 +20,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     val viewModel: HomeViewModel by viewModels()
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,46 +29,47 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val parentActivity = requireActivity() as MainActivity
-        setWebViewBackPress()
+        val standardBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
 
-        binding.webView.apply {
-            loadUrl(WEB_BASE_URL)
-            settings.javaScriptEnabled = true
-            settings.domStorageEnabled = true
-            webViewClient = WebViewClient()
+        standardBottomSheetBehavior.addBottomSheetCallback(
+            object : BottomSheetBehavior.BottomSheetCallback() {
 
-            addJavascriptInterface(WebAppInterface(
-                requireContext(),
-                {
-                    parentActivity.slideUpBottomNavigationView()
-                },
-                {
-                    parentActivity.slideDownBottomNavigationView()
-                },
-                {
-                    parentActivity.navigateToEditRestaurantInfo(it)
-                },
-                {
-                    repeatWhenUiStarted {
-                        binding.webView.loadUrl(
-                            "javascript:setAccessToken('${viewModel.getAccessToken()}')"
-                        )
-                    }
-                },
-                {
-                    repeatWhenUiStarted {
-                        binding.webView.loadUrl(
-                            "javascript:setUserPosition('${viewModel.setUserPosition()}')"
-                        )
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    when (newState) {
+                        BottomSheetBehavior.STATE_EXPANDED -> {
+                            binding.bottomSheet.background = ResourcesCompat.getDrawable(
+                                resources,
+                                R.color.white,
+                                null
+                            )
+                        }
+
+                        BottomSheetBehavior.STATE_COLLAPSED -> {
+                            binding.bottomSheet.background = ResourcesCompat.getDrawable(
+                                resources,
+                                R.drawable.bg_bottom_sheet_top_round,
+                                null
+                            )
+                        }
                     }
                 }
-            ), "webviewBridge")
-        }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+                }
+            }
+        )
+
+        val adapter = TestAdapter(
+            (1..1000).map { "데이터 $it" }
+        )
+
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext())
     }
 
     override fun onDestroyView() {
@@ -79,13 +77,4 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
     }
 
-    private fun setWebViewBackPress() {
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            if (binding.webView.canGoBack()) {
-                binding.webView.goBack()
-            } else {
-                requireActivity().finish()
-            }
-        }
-    }
 }
