@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlin.math.abs
 
 fun EditText.addAfterTextChangedListener(block: (String) -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
@@ -33,6 +34,17 @@ fun EditText.addAfterTextChangedListener(block: (String) -> Unit) {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         }
     })
+}
+
+private var lastClickTime: Long = 0L
+fun View.onDelayedClick(defaultTime: Int = 400, block: () -> Unit) {
+    this.setOnClickListener {
+        val timeStamp =System.currentTimeMillis()
+        if (abs(timeStamp - lastClickTime) > defaultTime) {
+            lastClickTime = timeStamp
+            block()
+        }
+    }
 }
 
 fun View.fadeIn() {

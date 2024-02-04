@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import org.gdsc.domain.model.response.UserLoginAction
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentLoginBinding
+import org.gdsc.presentation.utils.onDelayedClick
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.LoginManager
 import org.gdsc.presentation.view.MainActivity
@@ -56,7 +57,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun setLoginButton() {
-        binding.googleLoginBtnTemplate.setOnClickListener {
+        binding.googleLoginBtnTemplate.onDelayedClick {
 
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
