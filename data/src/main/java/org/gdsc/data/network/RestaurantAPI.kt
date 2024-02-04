@@ -65,4 +65,12 @@ interface RestaurantAPI {
         @Body putRestaurantInfoRequest: ModifyRestaurantInfoRequest,
     ): Response<String>
 
+    @POST("/api/v1/restaurant/search/map")
+    suspend fun getRestaurantLocationInfoByMap(
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
+        @Query("sort") sort: Array<String>? = null,
+        @Body restaurantSearchMapRequest: RestaurantSearchMapRequest,
+    ): Response<RegisteredRestaurantPaging>
+
 }

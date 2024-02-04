@@ -1,15 +1,23 @@
 package org.gdsc.data.datasource
 
+import android.util.Log
+import androidx.lifecycle.asFlow
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.liveData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.gdsc.data.database.RegisteredRestaurant
+import org.gdsc.data.database.RestaurantByMapPagingSource
 import org.gdsc.data.database.RestaurantDatabase
 import org.gdsc.data.database.RestaurantMediator
+import org.gdsc.data.model.RegisteredRestaurantResponse
 import org.gdsc.data.network.RestaurantAPI
 import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.Empty
@@ -32,6 +40,7 @@ class RestaurantDataSourceImpl @Inject constructor(
     private val db: RestaurantDatabase,
 ) : RestaurantDataSource {
 
+    private val coroutineScope : CoroutineScope = CoroutineScope(Dispatchers.IO)
     override suspend fun getRestaurantLocationInfo(
         query: String,
         latitude: String,
@@ -110,7 +119,7 @@ class RestaurantDataSourceImpl @Inject constructor(
             isCanDrinkLiquor =  isCanDrinkLiquor,
         )
 
-        val restaurantSearchMapRequest = RestaurantSearchMapRequest(locationData, filter)
+        val restaurantSearchMapRequest = RestaurantSearchMapRequest(filter, locationData)
         val mediator = RestaurantMediator(
             userId = userId,
             restaurantSearchMapRequest = restaurantSearchMapRequest,
@@ -144,5 +153,38 @@ class RestaurantDataSourceImpl @Inject constructor(
         return restaurantAPI.putRestaurantInfo(putRestaurantInfoRequest).data
     }
 
+    override suspend fun getRestaurantsByMap(
+        userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
+    ): Flow<PagingData<RegisteredRestaurantResponse>> {
+        val restaurantSearchMapRequest = RestaurantSearchMapRequest(
+            userLocation = userLocation,
+            startLocation = startLocation,
+            endLocation = endLocation,
+            filter = Filter(
+//                categoryFilter = when (foodCategory) {
+//                    FoodCategory.INIT, FoodCategory.ETC -> String.Empty
+//                    null -> null
+//                    else -> foodCategory.key
+//                },
+//                isCanDrinkLiquor = when (drinkPossibility) {
+//                    DrinkPossibility.POSSIBLE -> true
+//                    DrinkPossibility.IMPOSSIBLE -> false
+//                    else -> null
+//                },
+                categoryFilter = "",
+                isCanDrinkLiquor = null
+            )
+        )
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = true
+            )) {
+            RestaurantByMapPagingSource(
+                restaurantAPI,
+                restaurantSearchMapRequest
+            )
+        }.flow.cachedIn(coroutineScope)
+    }
 
 }
