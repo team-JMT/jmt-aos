@@ -35,4 +35,8 @@ interface RestaurantRepository {
 
     suspend fun putRestaurantInfo(putRestaurantInfoRequest: ModifyRestaurantInfoRequest): String
 
+    suspend fun getRestaurantsByMap(
+        userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
+    ): Flow<PagingData<RegisteredRestaurant>>
+
 }

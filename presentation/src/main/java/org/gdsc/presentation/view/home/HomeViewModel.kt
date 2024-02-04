@@ -1,9 +1,28 @@
 package org.gdsc.presentation.view.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.google.gson.Gson
+import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import org.gdsc.domain.FoodCategory
+import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
+import org.gdsc.domain.model.PagingResult
+import org.gdsc.domain.model.RegisteredRestaurant
+import org.gdsc.domain.usecase.GetRestaurantsByMapUseCase
 import org.gdsc.domain.usecase.token.GetAccessTokenUseCase
 import org.gdsc.presentation.JmtLocationManager
 import javax.inject.Inject
@@ -11,20 +30,68 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val locationManager: JmtLocationManager,
-    private val getAccessTokenUseCase: GetAccessTokenUseCase,
+    private val getRestaurantsByMapUseCase: GetRestaurantsByMapUseCase
 ) : ViewModel() {
 
     suspend fun getCurrentLocation() = locationManager.getCurrentLocation()
 
-    suspend fun getAccessToken() = getAccessTokenUseCase.invoke()
+    private var _userLocationState = MutableStateFlow(Location("0", "0"))
+    val userLocationState: StateFlow<Location>
+        get() = _userLocationState
 
-    suspend fun setUserPosition(): String {
 
-        val currentLocation = getCurrentLocation() ?: return ""
-        val location = currentLocation.let {
-            Location(y = it.latitude.toString(), x = it.longitude.toString())
-        }
+    private var _startLocationState = MutableStateFlow(Location("0", "0"))
+    val startLocationState: StateFlow<Location>
+        get() = _startLocationState
 
-        return Gson().toJson(location)
+
+    private var _endLocationState = MutableStateFlow(Location("0", "0"))
+    val endLocationState: StateFlow<Location>
+        get() = _endLocationState
+
+    private var _sortTypeState = MutableStateFlow(SortType.DISTANCE)
+    val sortTypeState: StateFlow<SortType>
+        get() = _sortTypeState
+
+
+    private var _markerState = MutableStateFlow(listOf<LatLng>())
+    val markerState: StateFlow<List<LatLng>>
+        get() = _markerState
+
+    fun setMarkerState(value: List<LatLng>) {
+        _markerState.value = value
+    }
+
+    fun setUserLocation(userLocation: Location) {
+        _userLocationState.value = userLocation
+    }
+
+    fun setStartLocation(startLocation: Location) {
+        _startLocationState.value = startLocation
+    }
+
+    fun setEndLocation(endLocation: Location) {
+        _endLocationState.value = endLocation
+    }
+
+    fun setSortType(sortType: SortType) {
+        _sortTypeState.value = sortType
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun registeredPagingData(): Flow<PagingData<RegisteredRestaurant>> {
+        val location = locationManager.getCurrentLocation() ?: return flowOf(PagingData.empty())
+        val userLoc = Location(location.longitude.toString(), location.latitude.toString())
+
+        return run {
+            return@run combine(
+                startLocationState,
+                endLocationState,
+                sortTypeState
+            ) { startLoc, endLoc, sortType ->
+                getRestaurantsByMapUseCase(sortType, null, null, userLoc, startLoc, endLoc)
+            }.distinctUntilChanged()
+                .flatMapLatest { it }
+        }.cachedIn(viewModelScope)
     }
 }
