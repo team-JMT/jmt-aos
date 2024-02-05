@@ -2,14 +2,13 @@ package org.gdsc.presentation.view.home
 
 import android.graphics.PointF
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
-import androidx.paging.map
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -26,7 +25,6 @@ import kotlinx.coroutines.launch
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
 import org.gdsc.presentation.R
-import org.gdsc.presentation.adapter.RestaurantsWithMapAdatper
 import org.gdsc.presentation.databinding.FragmentHomeBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 
@@ -39,7 +37,7 @@ class HomeFragment : Fragment() {
     val viewModel: HomeViewModel by viewModels()
 
     private lateinit var mapView: MapView
-    private lateinit var adapter: RestaurantsWithMapAdatper
+    private lateinit var mapMarkerAdapter: MapMarkerWithRestaurantsAdatper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +48,12 @@ class HomeFragment : Fragment() {
         setMap(savedInstanceState)
         observeState()
 
-        adapter = RestaurantsWithMapAdatper()
+        mapMarkerAdapter = MapMarkerWithRestaurantsAdatper()
+
+        val adapter = ConcatAdapter(
+            mapMarkerAdapter
+        )
+
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -111,10 +114,10 @@ class HomeFragment : Fragment() {
                     val zoom = CameraUpdate.zoomTo(17.0)
                     naverMap.moveCamera(zoom)
                 }
-                adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+                mapMarkerAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
                     fun setMark() {
                         CoroutineScope(Dispatchers.Main).launch {
-                            adapter.snapshot().items.forEach { data ->
+                            mapMarkerAdapter.snapshot().items.forEach { data ->
                                 Marker().apply {
                                     position = LatLng(data.y, data.x)
                                     icon = OverlayImage.fromResource(R.drawable.jmt_marker)
@@ -159,7 +162,7 @@ class HomeFragment : Fragment() {
         // Paging 처리 된 식당 데이터를 받아서 Marker 표시
         repeatWhenUiStarted {
             viewModel.registeredPagingData().collect {
-                adapter.submitData(it)
+                mapMarkerAdapter.submitData(it)
             }
         }
 
