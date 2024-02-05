@@ -1,19 +1,19 @@
-package org.gdsc.presentation.adapter
+package org.gdsc.presentation.view.home
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.LoadState
-import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import org.gdsc.domain.model.RegisteredRestaurant
-import org.gdsc.domain.model.response.RestaurantRegistrationResponse
-import org.gdsc.presentation.databinding.ItemRestaurantWithMapBinding
+import org.gdsc.presentation.R
+import org.gdsc.presentation.databinding.ItemMapWithRestaurantBinding
 
-class RestaurantsWithMapAdatper
-    : PagingDataAdapter<RegisteredRestaurant, RestaurantsWithMapAdatper.RestaurantsWithMapViewHolder>(diffCallback) {
+class MapMarkerWithRestaurantsAdatper
+    : PagingDataAdapter<RegisteredRestaurant, MapMarkerWithRestaurantsAdatper.RestaurantsWithMapViewHolder>(
+    diffCallback
+) {
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<RegisteredRestaurant>() {
             override fun areItemsTheSame(
@@ -33,9 +33,28 @@ class RestaurantsWithMapAdatper
     }
 
     inner class RestaurantsWithMapViewHolder(
-        private val binding: ItemRestaurantWithMapBinding,
+        private val binding: ItemMapWithRestaurantBinding,
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: RegisteredRestaurant) {
+            binding.run {
+                Glide.with(itemView.context)
+                    .load(item.userProfileImageUrl)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(userProfileImage)
+
+                userName.text = item.userNickName
+
+                Glide.with(itemView.context)
+                    .load(item.restaurantImageUrl)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(restaurantImage)
+
+                restaurantCategory.text = item.category
+                drinkAvailability.text = if (item.canDrinkLiquor) "주류 가능" else "주류 불가능"
+
+                restaurantName.text = item.name
+                restaurantDesc.text = item.introduce
+            }
         }
     }
     override fun onBindViewHolder(holder: RestaurantsWithMapViewHolder, position: Int) {
@@ -49,7 +68,7 @@ class RestaurantsWithMapAdatper
         parent: ViewGroup,
         viewType: Int
     ): RestaurantsWithMapViewHolder {
-        val binding = ItemRestaurantWithMapBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemMapWithRestaurantBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return RestaurantsWithMapViewHolder(binding)
     }
 }
