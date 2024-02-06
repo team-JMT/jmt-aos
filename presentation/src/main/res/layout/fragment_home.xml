@@ -32,7 +32,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="40dp"
             android:paddingBottom="@dimen/bottom_navigation_height_with_item"
-            android:paddingHorizontal="20dp"
+            android:paddingHorizontal="@dimen/half_spacing"
             android:clipToPadding="false"
             app:layout_constraintVertical_bias="0"
             app:layout_constraintStart_toStartOf="parent"

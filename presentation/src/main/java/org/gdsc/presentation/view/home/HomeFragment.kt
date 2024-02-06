@@ -37,7 +37,11 @@ class HomeFragment : Fragment() {
     val viewModel: HomeViewModel by viewModels()
 
     private lateinit var mapView: MapView
-    private lateinit var mapMarkerAdapter: MapMarkerWithRestaurantsAdatper
+
+    // TODO : titleAdapter 문구 정리 필요
+    private val recommendPopularRestaurantTitleAdapter by lazy { RecommendPopularRestaurantTitleAdapter("그룹에서 인기가 많아요") }
+    private val recommendPopularRestaurantWrapperAdapter by lazy { RecommendPopularRestaurantWrapperAdapter(listOf())}
+    private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,9 +52,9 @@ class HomeFragment : Fragment() {
         setMap(savedInstanceState)
         observeState()
 
-        mapMarkerAdapter = MapMarkerWithRestaurantsAdatper()
-
         val adapter = ConcatAdapter(
+            recommendPopularRestaurantTitleAdapter,
+            recommendPopularRestaurantWrapperAdapter,
             mapMarkerAdapter
         )
 
