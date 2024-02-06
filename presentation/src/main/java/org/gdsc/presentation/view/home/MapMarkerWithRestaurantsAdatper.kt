@@ -32,7 +32,7 @@ class MapMarkerWithRestaurantsAdatper
         }
     }
 
-    inner class RestaurantsWithMapViewHolder(
+    class RestaurantsWithMapViewHolder(
         private val binding: ItemMapWithRestaurantBinding,
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: RegisteredRestaurant) {

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/bottom_sheet_top_padding"
+    android:paddingHorizontal="@dimen/half_spacing"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -200,8 +201,9 @@
             android:id="@+id/comment_user_profile_image"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:all_corner_radius="40dp"
+            app:all_corner_radius="12dp"
             android:scaleType="centerCrop"
+            android:src="@drawable/dummy_profile"
             android:contentDescription="@string/content_description_profile_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
