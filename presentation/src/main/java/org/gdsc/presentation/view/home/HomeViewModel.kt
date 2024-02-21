@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
@@ -53,6 +54,13 @@ class HomeViewModel @Inject constructor(
     val sortTypeState: StateFlow<SortType>
         get() = _sortTypeState
 
+    private var _foodCategoryState = MutableStateFlow(FoodCategory.INIT)
+    val foodCategoryState: StateFlow<FoodCategory>
+        get() = _foodCategoryState
+
+    private var _drinkPossibilityState = MutableStateFlow(DrinkPossibility.INIT)
+    val drinkPossibilityState: StateFlow<DrinkPossibility>
+        get() = _drinkPossibilityState
 
     private var _markerState = MutableStateFlow(listOf<LatLng>())
     val markerState: StateFlow<List<LatLng>>
@@ -78,6 +86,15 @@ class HomeViewModel @Inject constructor(
         _sortTypeState.value = sortType
     }
 
+    fun setFoodCategory(foodCategory: FoodCategory) {
+        _foodCategoryState.value = foodCategory
+    }
+
+    fun setDrinkPossibility(drinkPossibility: DrinkPossibility) {
+        _drinkPossibilityState.value = drinkPossibility
+    }
+
+
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun registeredPagingData(): Flow<PagingData<RegisteredRestaurant>> {
         val location = locationManager.getCurrentLocation() ?: return flowOf(PagingData.empty())
@@ -87,9 +104,11 @@ class HomeViewModel @Inject constructor(
             return@run combine(
                 startLocationState,
                 endLocationState,
-                sortTypeState
-            ) { startLoc, endLoc, sortType ->
-                getRestaurantsByMapUseCase(sortType, null, null, userLoc, startLoc, endLoc)
+                sortTypeState,
+                foodCategoryState,
+                drinkPossibilityState
+            ) { startLoc, endLoc, sortType, foodCategory, drinkPossibility ->
+                getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, userLoc, startLoc, endLoc)
             }.distinctUntilChanged()
                 .flatMapLatest { it }
         }.cachedIn(viewModelScope)
