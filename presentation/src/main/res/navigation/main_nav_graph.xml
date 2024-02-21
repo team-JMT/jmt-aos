@@ -15,6 +15,21 @@
             app:destination="@id/registerRestaurant_fragment" />
     </fragment>
     <fragment
+        android:id="@+id/all_search_fragment"
+        android:name="org.gdsc.presentation.view.home.HomeFragment"
+        android:label="home_fragment"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home_fragment_to_registerRestaurant_fragment"
+            app:destination="@id/registerRestaurant_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/my_group_fragment"
+        android:name="org.gdsc.presentation.view.group.MyGroupFragment"
+        android:label="my_group_fragment"
+        tools:layout="@layout/fragment_my_group" >
+    </fragment>
+    <fragment
         android:id="@+id/my_page_fragment"
         android:name="org.gdsc.presentation.view.mypage.MyPageFragment"
         android:label="fragment_my_page"
