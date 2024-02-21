@@ -28,6 +28,7 @@ import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
+import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.presentation.R
 import org.gdsc.presentation.base.BaseViewHolder
 import org.gdsc.presentation.base.ViewHolderBindListener
@@ -47,9 +48,11 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
     // TODO : titleAdapter 문구 정리 필요
     private val recommendPopularRestaurantTitleAdapter by lazy { RecommendPopularRestaurantTitleAdapter("그룹에서 인기가 많아요") }
-    private val recommendPopularRestaurantWrapperAdapter by lazy { RecommendPopularRestaurantWrapperAdapter(listOf())}
+    private val recommendPopularRestaurantWrapperAdapter by lazy { RecommendPopularRestaurantWrapperAdapter(recommendPopularRestaurantList)}
     private val restaurantFilterAdapter by lazy { RestaurantFilterAdapter(this) }
     private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
+
+    private val recommendPopularRestaurantList = listOf<RegisteredRestaurant>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,12 +63,19 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         setMap(savedInstanceState)
         observeState()
 
-        val adapter = ConcatAdapter(
-            recommendPopularRestaurantTitleAdapter,
-            recommendPopularRestaurantWrapperAdapter,
-            restaurantFilterAdapter,
-            mapMarkerAdapter
-        )
+        val adapter = if (recommendPopularRestaurantList.isNotEmpty()) {
+            ConcatAdapter(
+                recommendPopularRestaurantTitleAdapter,
+                recommendPopularRestaurantWrapperAdapter,
+                restaurantFilterAdapter,
+                mapMarkerAdapter
+            )
+        } else {
+            ConcatAdapter(
+                restaurantFilterAdapter,
+                mapMarkerAdapter
+            )
+        }
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
