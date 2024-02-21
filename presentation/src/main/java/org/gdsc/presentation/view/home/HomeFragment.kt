@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -21,15 +22,21 @@ import com.naver.maps.map.overlay.OverlayImage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.gdsc.domain.DrinkPossibility
+import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
 import org.gdsc.presentation.R
+import org.gdsc.presentation.base.BaseViewHolder
+import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.FragmentHomeBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.view.custom.JmtSpinner
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), ViewHolderBindListener {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -41,6 +48,7 @@ class HomeFragment : Fragment() {
     // TODO : titleAdapter 문구 정리 필요
     private val recommendPopularRestaurantTitleAdapter by lazy { RecommendPopularRestaurantTitleAdapter("그룹에서 인기가 많아요") }
     private val recommendPopularRestaurantWrapperAdapter by lazy { RecommendPopularRestaurantWrapperAdapter(listOf())}
+    private val restaurantFilterAdapter by lazy { RestaurantFilterAdapter(this) }
     private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
 
     override fun onCreateView(
@@ -55,6 +63,7 @@ class HomeFragment : Fragment() {
         val adapter = ConcatAdapter(
             recommendPopularRestaurantTitleAdapter,
             recommendPopularRestaurantWrapperAdapter,
+            restaurantFilterAdapter,
             mapMarkerAdapter
         )
 
@@ -98,6 +107,43 @@ class HomeFragment : Fragment() {
                 }
             }
         )
+    }
+
+    override fun onViewHolderBind(holder: BaseViewHolder<out ViewBinding>, _item: Any) {
+        if (holder is RestaurantFilterAdapter.RestaurantFilterViewHolder) {
+
+            val sortSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.sort_spinner)
+            val foodSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.food_category_spinner)
+            val drinkSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.drink_possibility_spinner)
+
+            sortSpinner.setMenu(SortType.getAllText()) {
+                viewModel.setSortType(SortType.values()[it.itemId])
+            }
+
+            foodSpinner.setMenu(FoodCategory.getAllText()) {
+                viewModel.setFoodCategory(FoodCategory.values()[it.itemId])
+            }
+
+            drinkSpinner.setMenu(DrinkPossibility.getAllText()) {
+                viewModel.setDrinkPossibility(DrinkPossibility.values()[it.itemId])
+            }
+
+            repeatWhenUiStarted {
+                viewModel.sortTypeState.collectLatest {
+                    sortSpinner.setMenuTitle(it.text)
+                }
+            }
+            repeatWhenUiStarted {
+                viewModel.foodCategoryState.collectLatest {
+                    foodSpinner.setMenuTitle(it.text)
+                }
+            }
+            repeatWhenUiStarted {
+                viewModel.drinkPossibilityState.collectLatest {
+                    drinkSpinner.setMenuTitle(it.text)
+                }
+            }
+        }
     }
 
     private fun setMap(savedInstanceState: Bundle?) {
