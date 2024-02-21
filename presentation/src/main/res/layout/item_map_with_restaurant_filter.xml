@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingVertical="@dimen/layout_margin_spacing">
+        android:paddingBottom="@dimen/element_spacing">
 
         <org.gdsc.presentation.view.custom.JmtSpinner
             android:id="@+id/sort_spinner"
