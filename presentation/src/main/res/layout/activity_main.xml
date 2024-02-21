@@ -37,11 +37,18 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
         android:layout_width="0dp"
+        app:itemTextAppearanceActive="@style/text_small_medium"
+        app:itemTextAppearanceInactive="@style/text_small_medium"
         android:layout_height="@dimen/bottom_navigation_height"
-        android:paddingBottom="25dp"
+        app:labelVisibilityMode="labeled"
+        app:itemIconSize="28dp"
+        android:paddingTop="4dp"
+        app:itemPaddingBottom="32dp"
+        android:paddingHorizontal="@dimen/half_spacing"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:itemPaddingTop="@dimen/divider_small"
         app:menu="@menu/main_bottom_nav_menu"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
