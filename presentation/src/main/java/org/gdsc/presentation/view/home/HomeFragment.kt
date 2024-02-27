@@ -100,6 +100,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
                         BottomSheetBehavior.STATE_EXPANDED -> {
+                            binding.bottomSheetHandle.isVisible = false
                             binding.mapOptionContainer.isVisible = false
                             binding.bottomSheet.background = ResourcesCompat.getDrawable(
                                 resources,
@@ -112,6 +113,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                         }
 
                         BottomSheetBehavior.STATE_DRAGGING -> {
+                            binding.bottomSheetHandle.isVisible = true
                             binding.mapOptionContainer.isVisible = true
                             binding.bottomSheet.background = ResourcesCompat.getDrawable(
                                 resources,

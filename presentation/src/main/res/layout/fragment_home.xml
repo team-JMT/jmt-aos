@@ -28,6 +28,7 @@
         android:background="@drawable/bg_bottom_sheet_top_round">
 
         <View
+            android:id="@+id/bottom_sheet_handle"
             android:layout_width="40dp"
             android:layout_height="3dp"
             android:layout_marginTop="5dp"
