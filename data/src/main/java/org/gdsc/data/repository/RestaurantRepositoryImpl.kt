@@ -86,4 +86,38 @@ class RestaurantRepositoryImpl @Inject constructor(
         return restaurantDataSource.putRestaurantInfo(putRestaurantInfoRequest)
 
     }
+
+    override suspend fun getRestaurantsByMap(
+        userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
+    ): Flow<PagingData<RegisteredRestaurant>> {
+        return restaurantDataSource.getRestaurantsByMap(
+            userLocation,
+            startLocation,
+            endLocation,
+            sortType,
+            foodCategory,
+            drinkPossibility
+        ).map { result ->
+            result.map { restaurant ->
+                RegisteredRestaurant(
+                    id = restaurant.id,
+                    name = restaurant.name,
+                    placeUrl = restaurant.placeUrl,
+                    phone = restaurant.phone,
+                    address = restaurant.address,
+                    roadAddress = restaurant.roadAddress,
+                    x = restaurant.x,
+                    y = restaurant.y,
+                    restaurantImageUrl = restaurant.restaurantImageUrl,
+                    introduce = restaurant.introduce,
+                    category = restaurant.category,
+                    userId = restaurant.id,
+                    userNickName = restaurant.userNickName,
+                    userProfileImageUrl = restaurant.userProfileImageUrl,
+                    canDrinkLiquor = restaurant.canDrinkLiquor,
+                    differenceInDistance = restaurant.differenceInDistance,
+                )
+            }
+        }
+    }
 }

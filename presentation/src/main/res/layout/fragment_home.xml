@@ -1,32 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:id="@+id/bottom_sheet_container"
+<LinearLayout android:id="@+id/bottom_sheet_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main500">
+    android:orientation="vertical"
+    tool:background="@color/main500">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bottom_sheet"
+        android:id="@+id/group_header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="?attr/bottomSheetStyle"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        app:behavior_peekHeight="300dp"
-        app:behavior_draggable="true"
-        android:background="@drawable/bg_bottom_sheet_top_round">
+        android:layout_height="65dp"
+        android:layout_weight="0"
+        android:paddingHorizontal="@dimen/default_spacing"
+        android:background="@color/white">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+        <ImageView
+            android:id="@+id/group_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_rounded_10"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            />
+            android:backgroundTint="@color/grey200"/>
+
+
+        <TextView
+            android:id="@+id/group_name"
+            style="@style/title_small_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            android:layout_marginStart="@dimen/divider_large"
+            app:layout_constraintStart_toEndOf="@+id/group_image"
+            app:layout_constraintEnd_toStartOf="@+id/group_arrow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="버거대지도"/>
+
+
+        <ImageView
+            android:id="@+id/group_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_arrow"
+            android:rotation="180"
+            android:backgroundTint="@color/grey800"
+            android:layout_marginStart="@dimen/divider_large"
+            app:layout_constraintStart_toEndOf="@+id/group_name"
+            app:layout_constraintEnd_toStartOf="@+id/ic_group_search"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageView
+            android:id="@+id/ic_group_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_thin_magnifying_glass"
+            android:backgroundTint="@color/grey700"
+            android:foregroundTint="@color/grey700"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <com.naver.maps.map.MapView
+            android:id="@+id/map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+        <LinearLayout
+            android:id="@+id/map_option_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp"
+            android:paddingHorizontal="@dimen/half_spacing"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_anchor="@id/bottom_sheet"
+            app:layout_anchorGravity="top|end"
+            android:layout_gravity="top"
+            android:gravity="end"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/map_refresh_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="100dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_map_refresh"/>
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/tv_map_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp"
+                android:elevation="10dp"
+                android:paddingVertical="@dimen/half_spacing"
+                android:paddingHorizontal="@dimen/half_element_spacing"
+                android:background="@drawable/bg_rounded_10">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_round_person_pin_circle"/>
+
+                <TextView
+                    android:id="@+id/testText"
+                    style="@style/text_medium_bold"
+                    android:layout_marginStart="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="동대문구 전농동"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom_sheet"
+            style="?attr/bottomSheetStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:behavior_peekHeight="@dimen/bottom_sheet_peek_height"
+            app:behavior_draggable="true"
+            app:behavior_halfExpandedRatio="0.45"
+            android:background="@drawable/bg_bottom_sheet_top_round">
+
+
+            <View
+                android:id="@+id/bottom_sheet_handle_space"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <View
+                android:id="@+id/bottom_sheet_handle"
+                android:layout_width="40dp"
+                android:layout_height="3dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_rounded_16"
+                android:backgroundTint="@color/grey200"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="@dimen/none"
+                android:layout_height="@dimen/none"
+                android:layout_marginTop="24dp"
+                android:paddingBottom="@dimen/bottom_navigation_height_with_item"
+                android:paddingHorizontal="@dimen/half_spacing"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="true"
+                app:layout_constraintVertical_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_handle_space"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</LinearLayout>

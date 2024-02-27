@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/unselected_my_page_menu_icon" android:state_selected="false" />
-    <item android:drawable="@drawable/my_page_menu_icon" android:state_selected="true" />
-</selector>

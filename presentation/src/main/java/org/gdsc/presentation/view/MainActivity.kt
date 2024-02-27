@@ -52,7 +52,16 @@ class MainActivity : BaseActivity() {
 
             setupWithNavController(navController)
 
-            itemIconTintList = null
+            itemIconTintList = ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_selected),
+                    intArrayOf()
+                ),
+                intArrayOf(
+                    getColor(R.color.grey800),
+                    getColor(R.color.grey200)
+                )
+            )
 
             itemTextColor = ColorStateList(
                 arrayOf(
@@ -60,7 +69,7 @@ class MainActivity : BaseActivity() {
                     intArrayOf()
                 ),
                 intArrayOf(
-                    getColor(R.color.main600),
+                    getColor(R.color.grey700),
                     getColor(R.color.grey200)
                 )
             )
@@ -74,7 +83,7 @@ class MainActivity : BaseActivity() {
                     slideUpBottomNavigationView()
                     binding.navHostFragment.setPadding(0, 0, 0, 0)
                 }
-                R.id.my_page_fragment -> {
+                R.id.my_page_fragment, R.id.my_group_fragment -> {
                     slideUpBottomNavigationView()
                     binding.navHostFragment.setPadding(0, 0, 0, binding.bottomNavigationView.measuredHeight)
                 }

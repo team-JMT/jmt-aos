@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/home_fragment"
+        android:title="@string/group_menu"
+        android:icon="@drawable/ic_mingcute_home_1_fill" />
+    <item android:id="@+id/all_search_fragment"
         android:title="@string/searching_menu"
-        android:icon="@drawable/search_menu" />
-    <item android:id="@+id/search_restaurant_location_info_fragment"
-        android:title="@string/food_spot_registration_menu"
-        android:icon="@drawable/registration_menu" />
+        android:icon="@drawable/ic_magnifying_glass" />
+    <item android:id="@+id/my_group_fragment"
+        android:title="@string/my_group_menu"
+        android:icon="@drawable/ic_users" />
     <item android:id="@+id/my_page_fragment"
-        android:title="@string/my_page_menu"
-        android:icon="@drawable/my_page_menu" />
+        android:title="@string/profile_menu"
+        android:icon="@drawable/ic_profile" />
 </menu>

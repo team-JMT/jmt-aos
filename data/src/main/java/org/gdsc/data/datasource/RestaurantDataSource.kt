@@ -3,6 +3,7 @@ package org.gdsc.data.datasource
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import org.gdsc.data.database.RegisteredRestaurant
+import org.gdsc.data.model.RegisteredRestaurantResponse
 import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
@@ -34,5 +35,9 @@ interface RestaurantDataSource {
         ): Flow<PagingResult<RegisteredRestaurant>>
 
     suspend fun putRestaurantInfo(putRestaurantInfoRequest: ModifyRestaurantInfoRequest): String
+
+    suspend fun getRestaurantsByMap(
+        userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
+    ): Flow<PagingData<RegisteredRestaurantResponse>>
 
 }
