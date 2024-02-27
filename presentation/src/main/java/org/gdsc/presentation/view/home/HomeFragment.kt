@@ -2,11 +2,12 @@ package org.gdsc.presentation.view.home
 
 import android.graphics.PointF
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.gdsc.domain.DrinkPossibility
@@ -34,7 +36,9 @@ import org.gdsc.presentation.base.BaseViewHolder
 import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.FragmentHomeBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.utils.toDp
 import org.gdsc.presentation.view.custom.JmtSpinner
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), ViewHolderBindListener {
@@ -85,38 +89,53 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-        val standardBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
-
-        standardBottomSheetBehavior.addBottomSheetCallback(
-            object : BottomSheetBehavior.BottomSheetCallback() {
+        
+        val standardBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet).apply {
+            addBottomSheetCallback( object : BottomSheetBehavior.BottomSheetCallback() {
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
                         BottomSheetBehavior.STATE_EXPANDED -> {
+                            binding.mapOptionContainer.isVisible = false
                             binding.bottomSheet.background = ResourcesCompat.getDrawable(
                                 resources,
                                 R.color.white,
                                 null
                             )
                         }
+                        BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                            binding.mapOptionContainer.isVisible = true
+                        }
 
-                        BottomSheetBehavior.STATE_COLLAPSED -> {
+                        BottomSheetBehavior.STATE_DRAGGING -> {
+                            binding.mapOptionContainer.isVisible = true
                             binding.bottomSheet.background = ResourcesCompat.getDrawable(
                                 resources,
                                 R.drawable.bg_bottom_sheet_top_round,
                                 null
                             )
                         }
+
+                        BottomSheetBehavior.STATE_COLLAPSED -> {
+                        }
                     }
                 }
 
+                // TODO : mapOptionContainer 초기 위치 조정 필요
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
+                    binding.mapOptionContainer.apply {
+                        val margin = 24.toDp
+                        top = binding.bottomSheet.top - measuredHeight - margin
+                        bottom = binding.bottomSheet.top - margin
+                    }
                 }
-            }
-        )
+            })
+        }
+        // TODO : 시작 애니메이션 확인 필요
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(1000)
+            standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        }
     }
 
     override fun onViewHolderBind(holder: BaseViewHolder<out ViewBinding>, _item: Any) {
@@ -198,14 +217,8 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 })
             }
 
+            binding.mapRefreshBtn.setOnClickListener {
 
-            /*
-            i(reason) - 움직임의 원인.
-            b(animated) - 애니메이션 효과가 적용돼 움직이고 있을 경우 true, 그렇지 않을 경우 false.
-             */
-            naverMap.addOnCameraChangeListener { _, _ ->
-
-                // 현재 위치(start, end)로 마커에 표시할 데이터 불러오기
                 val projection: Projection = naverMap.projection
 
                 val topLeft: LatLng = projection.fromScreenLocation(PointF(0F, 0F))
@@ -219,7 +232,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     }
 
     private fun observeState() {
-        // Paging 처리 된 식당 데이터를 받아서 Marker 표시
         repeatWhenUiStarted {
             viewModel.registeredPagingData().collect {
                 mapMarkerAdapter.submitData(it)
