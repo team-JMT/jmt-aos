@@ -2,6 +2,7 @@ package org.gdsc.presentation.view.home
 
 import android.graphics.PointF
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,6 +60,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     private lateinit var concatAdapter: ConcatAdapter
 
     private val recommendPopularRestaurantList = listOf<RegisteredRestaurant>()
+    private val standardBottomSheetBehavior by lazy { BottomSheetBehavior.from(binding.bottomSheet) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,15 +95,19 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        val standardBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet).apply {
-            addBottomSheetCallback( object : BottomSheetBehavior.BottomSheetCallback() {
+        standardBottomSheetBehavior.addBottomSheetCallback(
+            object : BottomSheetBehavior.BottomSheetCallback() {
+                fun setBottomSheetRelatedView(isVisible: Boolean) {
+                    binding.bottomSheetHandle.isVisible = isVisible
+                    binding.bottomSheetHandleSpace.isVisible = isVisible
+                    binding.mapOptionContainer.isVisible = isVisible
+                }
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
                         BottomSheetBehavior.STATE_EXPANDED -> {
-                            binding.bottomSheetHandle.isVisible = false
-                            binding.mapOptionContainer.isVisible = false
+                            binding.groupHeader.elevation = 10F
+                            setBottomSheetRelatedView(false)
                             binding.bottomSheet.background = ResourcesCompat.getDrawable(
                                 resources,
                                 R.color.white,
@@ -113,34 +119,24 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                         }
 
                         BottomSheetBehavior.STATE_DRAGGING -> {
-                            binding.bottomSheetHandle.isVisible = true
-                            binding.mapOptionContainer.isVisible = true
+                            binding.groupHeader.elevation = 0F
+                            setBottomSheetRelatedView(true)
                             binding.bottomSheet.background = ResourcesCompat.getDrawable(
                                 resources,
                                 R.drawable.bg_bottom_sheet_top_round,
                                 null
                             )
                         }
-
-                        BottomSheetBehavior.STATE_COLLAPSED -> {
-                        }
                     }
                 }
 
-                // TODO : mapOptionContainer 초기 위치 조정 필요
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    binding.mapOptionContainer.apply {
-                        val margin = 24.toDp
-                        top = binding.bottomSheet.top - measuredHeight - margin
-                        bottom = binding.bottomSheet.top - margin
-                    }
-                }
+                override fun onSlide(bottomSheet: View, slideOffset: Float) { }
             })
-        }
-        // TODO : 시작 애니메이션 확인 필요
+
         CoroutineScope(Dispatchers.Main).launch {
             delay(1000)
-            standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            if (standardBottomSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED)
+                standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
     }
 
@@ -204,6 +200,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     if (loadState.append.endOfPaginationReached) {
                         if (mapMarkerAdapter.itemCount < 1) {
                             concatAdapter.addAdapter(emptyAdapter)
+                            standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                         } else {
                             concatAdapter.removeAdapter(emptyAdapter)
                         }
