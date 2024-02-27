@@ -55,6 +55,8 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     private val recommendPopularRestaurantWrapperAdapter by lazy { RecommendPopularRestaurantWrapperAdapter(recommendPopularRestaurantList)}
     private val restaurantFilterAdapter by lazy { RestaurantFilterAdapter(this) }
     private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
+    private val emptyAdapter by lazy { EmptyAdapter() }
+    private lateinit var concatAdapter: ConcatAdapter
 
     private val recommendPopularRestaurantList = listOf<RegisteredRestaurant>()
 
@@ -67,7 +69,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         setMap(savedInstanceState)
         observeState()
 
-        val adapter = if (recommendPopularRestaurantList.isNotEmpty()) {
+        concatAdapter = if (recommendPopularRestaurantList.isNotEmpty()) {
             ConcatAdapter(
                 recommendPopularRestaurantTitleAdapter,
                 recommendPopularRestaurantWrapperAdapter,
@@ -80,11 +82,13 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 mapMarkerAdapter
             )
         }
-
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
+        setRecyclerView()
         return binding.root
+    }
+
+    fun setRecyclerView() {
+        binding.recyclerView.adapter = concatAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -192,6 +196,17 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     // 데이터 확인 후 변수화
                     val zoom = CameraUpdate.zoomTo(17.0)
                     naverMap.moveCamera(zoom)
+                }
+
+                mapMarkerAdapter.addLoadStateListener { loadState ->
+                    if (loadState.append.endOfPaginationReached) {
+                        if (mapMarkerAdapter.itemCount < 1) {
+                            concatAdapter.addAdapter(emptyAdapter)
+                        } else {
+                            concatAdapter.removeAdapter(emptyAdapter)
+                        }
+                        setRecyclerView()
+                    }
                 }
                 mapMarkerAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
                     fun setMark() {
