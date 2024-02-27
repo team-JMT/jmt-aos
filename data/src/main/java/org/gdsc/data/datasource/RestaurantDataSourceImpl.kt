@@ -81,19 +81,38 @@ class RestaurantDataSourceImpl @Inject constructor(
     }
 
     override suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String {
-        return restaurantAPI.postRestaurantInfo(
-            mapOf(
-                "name" to restaurantRegistrationRequest.name.toRequestBody(),
-                "introduce" to restaurantRegistrationRequest.introduce.toRequestBody(),
-                "categoryId" to restaurantRegistrationRequest.categoryId.toString().toRequestBody(),
-                "canDrinkLiquor" to restaurantRegistrationRequest.canDrinkLiquor.toString()
-                    .toRequestBody(),
-                "goWellWithLiquor" to restaurantRegistrationRequest.goWellWithLiquor.toRequestBody(),
-                "recommendMenu" to restaurantRegistrationRequest.recommendMenu.toRequestBody(),
-                "restaurantLocationId" to restaurantRegistrationRequest.restaurantLocationAggregateId.toRequestBody()
-            ),
-            pictures = restaurantRegistrationRequest.pictures
-        ).data.recommendRestaurantId
+        runCatching {
+            restaurantAPI.postRestaurantInfo(
+                mapOf(
+                    "name" to restaurantRegistrationRequest.name.toRequestBody(),
+                    "introduce" to restaurantRegistrationRequest.introduce.toRequestBody(),
+                    "categoryId" to restaurantRegistrationRequest.categoryId.toString().toRequestBody(),
+                    "canDrinkLiquor" to restaurantRegistrationRequest.canDrinkLiquor.toString()
+                        .toRequestBody(),
+                    "goWellWithLiquor" to restaurantRegistrationRequest.goWellWithLiquor.toRequestBody(),
+                    "recommendMenu" to restaurantRegistrationRequest.recommendMenu.toRequestBody(),
+                    "restaurantLocationId" to restaurantRegistrationRequest.restaurantLocationAggregateId.toRequestBody(),
+                    "groupId" to "10".toRequestBody()
+                ),
+                pictures = restaurantRegistrationRequest.pictures
+            )
+        }.onSuccess {
+            return it.data.recommendRestaurantId
+        }.onFailure { throwable ->
+            if (throwable is HttpException) {
+                Log.e("postRestaurantInfo", throwable.message() ?: "")
+                when (throwable.code()) {
+                    RestaurantRegistrationState.NO_EXIST.code -> {
+                        return ""
+                    }
+
+                    RestaurantRegistrationState.ALL_EXIST.code -> {
+                        return ""
+                    }
+                }
+            }
+        }
+        return ""
     }
 
     @OptIn(ExperimentalPagingApi::class)
@@ -161,18 +180,16 @@ class RestaurantDataSourceImpl @Inject constructor(
             startLocation = startLocation,
             endLocation = endLocation,
             filter = Filter(
-//                categoryFilter = when (foodCategory) {
-//                    FoodCategory.INIT, FoodCategory.ETC -> String.Empty
-//                    null -> null
-//                    else -> foodCategory.key
-//                },
-//                isCanDrinkLiquor = when (drinkPossibility) {
-//                    DrinkPossibility.POSSIBLE -> true
-//                    DrinkPossibility.IMPOSSIBLE -> false
-//                    else -> null
-//                },
-                categoryFilter = "",
-                isCanDrinkLiquor = null
+                categoryFilter = when (foodCategory) {
+                    FoodCategory.INIT, FoodCategory.ETC -> String.Empty
+                    null -> null
+                    else -> foodCategory.key
+                },
+                isCanDrinkLiquor = when (drinkPossibility) {
+                    DrinkPossibility.POSSIBLE -> true
+                    DrinkPossibility.IMPOSSIBLE -> false
+                    else -> null
+                },
             )
         )
         return Pager(
