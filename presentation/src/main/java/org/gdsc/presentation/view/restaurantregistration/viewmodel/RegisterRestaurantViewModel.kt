@@ -23,11 +23,13 @@ import org.gdsc.domain.usecase.GetRestaurantInfoUseCase
 import org.gdsc.domain.usecase.PostRestaurantInfoUseCase
 import org.gdsc.domain.usecase.PostRestaurantLocationInfoUseCase
 import org.gdsc.domain.usecase.PutRestaurantInfoUseCase
+import org.gdsc.presentation.JmtLocationManager
 import org.gdsc.presentation.model.FoodCategoryItem
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterRestaurantViewModel @Inject constructor(
+    private val jmtLocationManager: JmtLocationManager,
     private val postRestaurantLocationInfoUseCase: PostRestaurantLocationInfoUseCase,
     private val postRestaurantInfoUseCase: PostRestaurantInfoUseCase,
     private val getRestaurantLocationInfoUseCase: GetRestaurantInfoUseCase,
@@ -177,7 +179,13 @@ class RegisterRestaurantViewModel @Inject constructor(
 
     fun getRestaurantInfo(restaurantId: Int, setTheView: (RestaurantInfoResponse) -> Unit) {
         viewModelScope.launch {
-            getRestaurantLocationInfoUseCase(restaurantId).let {
+            val currentLocation = jmtLocationManager.getCurrentLocation()
+
+            getRestaurantLocationInfoUseCase(
+                restaurantId,
+                currentLocation?.longitude.toString(),
+                currentLocation?.latitude.toString()
+            ).let {
                 _foodCategoryState.value = FoodCategoryItem(FoodCategory.fromName(it.category))
                 _drinkPossibilityState.value = it.canDrinkLiquor
                 _recommendDrinkTextState.value = it.goWellWithLiquor

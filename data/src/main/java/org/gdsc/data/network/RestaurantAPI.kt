@@ -5,6 +5,7 @@ import okhttp3.RequestBody
 import org.gdsc.data.database.RegisteredRestaurantPaging
 import org.gdsc.data.model.Response
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
@@ -29,9 +30,10 @@ interface RestaurantAPI {
         @Query("page") page: Int,
     ): Response<List<RestaurantLocationInfo>>
 
-    @GET("api/v1/restaurant/{recommendRestaurantId}")
+    @POST("api/v1/restaurant/{recommendRestaurantId}")
     suspend fun getRecommendRestaurantInfo(
         @Path("recommendRestaurantId") recommendRestaurantId: Int,
+        @Body userLocation: UserLocation,
     ): Response<RestaurantInfoResponse>
 
     @GET("api/v1/restaurant/registration/{kakaoSubId}")
