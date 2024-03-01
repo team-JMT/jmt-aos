@@ -12,9 +12,9 @@ import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 import org.gdsc.domain.repository.RestaurantRepository
 import javax.inject.Inject
@@ -29,8 +29,8 @@ class RestaurantRepositoryImpl @Inject constructor(
         return restaurantDataSource.getRestaurantLocationInfo(query, latitude, longitude, page)
     }
 
-    override suspend fun getRecommendRestaurantInfo(recommendRestaurantId: Int): RestaurantInfoResponse {
-        return restaurantDataSource.getRecommendRestaurantInfo(recommendRestaurantId)
+    override suspend fun getRecommendRestaurantInfo(recommendRestaurantId: Int,  userLocation: UserLocation): RestaurantInfoResponse {
+        return restaurantDataSource.getRecommendRestaurantInfo(recommendRestaurantId, userLocation)
     }
 
     override suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean {
