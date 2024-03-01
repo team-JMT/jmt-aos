@@ -28,6 +28,7 @@ import org.gdsc.domain.model.Filter
 import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
 import org.gdsc.domain.model.request.RestaurantSearchMapRequest
@@ -51,8 +52,8 @@ class RestaurantDataSourceImpl @Inject constructor(
         return restaurantAPI.getRestaurantLocationInfo(query, latitude, longitude, page).data
     }
 
-    override suspend fun getRecommendRestaurantInfo(recommendRestaurantId: Int): RestaurantInfoResponse {
-        return restaurantAPI.getRecommendRestaurantInfo(recommendRestaurantId).data
+    override suspend fun getRecommendRestaurantInfo(recommendRestaurantId: Int, userLocation: UserLocation): RestaurantInfoResponse {
+        return restaurantAPI.getRecommendRestaurantInfo(recommendRestaurantId, userLocation).data
     }
 
     override suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean {
