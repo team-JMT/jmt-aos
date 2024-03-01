@@ -33,7 +33,10 @@ interface UserAPI {
     @GET("api/v1/user/info")
     suspend fun getUserInfo(): Response<UserInfo>
 
-    @HTTP(method="DELETE", path="api/v1/auth/user", hasBody = true)
+    @GET("api/v1/user/info/{id}")
+    suspend fun getOtherUserInfo(@Path(value = "id") id: Int): Response<UserInfo>
+
+    @HTTP(method = "DELETE", path = "api/v1/auth/user", hasBody = true)
     suspend fun postUserLogOut(
         @Body request: LogoutRequest
     ): Response<String>
