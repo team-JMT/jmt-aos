@@ -10,6 +10,7 @@ import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
 import org.gdsc.domain.model.request.RestaurantSearchMapRequest
@@ -22,7 +23,7 @@ interface RestaurantDataSource {
         longitude: String, page: Int
     ): List<RestaurantLocationInfo>
 
-    suspend fun getRecommendRestaurantInfo(recommendRestaurantId: Int): RestaurantInfoResponse
+    suspend fun getRecommendRestaurantInfo(recommendRestaurantId: Int,  userLocation: UserLocation): RestaurantInfoResponse
 
     suspend fun checkRestaurantRegistration(kakaoSubId: String): Boolean
 

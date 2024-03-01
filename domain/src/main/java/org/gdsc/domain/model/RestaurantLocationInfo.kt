@@ -26,5 +26,7 @@ data class RestaurantLocationInfo(
     @SerializedName("x")
     val x: String,
     @SerializedName("y")
-    val y: String
+    val y: String,
+    @SerializedName("differenceInDistance")
+    val differenceInDistance: String
 ): java.io.Serializable
