@@ -6,7 +6,7 @@ import org.gdsc.data.database.RegisteredRestaurantPaging
 import org.gdsc.data.model.Response
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.UserLocation
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
+import org.gdsc.domain.model.request.RestaurantSearchRequest
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 import org.gdsc.domain.model.response.RestaurantRegistrationResponse
@@ -59,7 +59,7 @@ interface RestaurantAPI {
         @Query("page") page: Int? = null,
         @Query("size") size: Int? = null,
         @Query("sort") sort: String? = null,
-        @Body restaurantSearchMapRequest: RestaurantSearchMapRequest,
+        @Body restaurantSearchRequest: RestaurantSearchRequest,
     ): Response<RegisteredRestaurantPaging>
 
     @PUT("api/v1/restaurant")
@@ -72,7 +72,7 @@ interface RestaurantAPI {
         @Query("page") page: Int? = null,
         @Query("size") size: Int? = null,
         @Query("sort") sort: Array<String>? = null,
-        @Body restaurantSearchMapRequest: RestaurantSearchMapRequest,
+        @Body restaurantSearchRequest: RestaurantSearchRequest,
     ): Response<RegisteredRestaurantPaging>
 
 }
