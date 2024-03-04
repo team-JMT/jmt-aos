@@ -1,13 +1,11 @@
 package org.gdsc.data.datasource
 
 import android.util.Log
-import androidx.lifecycle.asFlow
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.liveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +13,7 @@ import kotlinx.coroutines.flow.map
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.gdsc.data.database.RegisteredRestaurant
 import org.gdsc.data.database.RestaurantByMapPagingSource
+import org.gdsc.data.database.RestaurantBySearchPagingSource
 import org.gdsc.data.database.RestaurantDatabase
 import org.gdsc.data.database.RestaurantMediator
 import org.gdsc.data.model.RegisteredRestaurantResponse
@@ -205,4 +204,21 @@ class RestaurantDataSourceImpl @Inject constructor(
         }.flow.cachedIn(coroutineScope)
     }
 
+    override suspend fun getRegisteredRestaurantsBySearch(
+        keyword: String?, userLocation: Location?
+    ): Flow<PagingData<RegisteredRestaurantResponse>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = true
+            )) {
+            RestaurantBySearchPagingSource(
+                restaurantAPI,
+                RestaurantSearchRequest(
+                    keyword = keyword,
+                    userLocation = userLocation
+                )
+            )
+        }.flow.cachedIn(coroutineScope)
+    }
 }
