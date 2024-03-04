@@ -56,6 +56,7 @@ class JmtSearchEditText(context: Context, attrs: AttributeSet) : ConstraintLayou
         addView(binding.root)
 
         setCancel()
+        setClear()
         setAnimation()
         setEditorKeyListener()
         setTextChangedListener()
@@ -71,6 +72,14 @@ class JmtSearchEditText(context: Context, attrs: AttributeSet) : ConstraintLayou
             cancelViewListener?.onCancel()
         }
     }
+
+    private fun setClear() {
+        binding.clearIcon.setOnClickListener {
+            binding.searchEditText.text?.clear()
+            searchViewListener?.onSearchClear()
+        }
+    }
+
 
     private fun setAnimation() {
 
@@ -113,6 +122,7 @@ class JmtSearchEditText(context: Context, attrs: AttributeSet) : ConstraintLayou
     private fun setTextChangedListener() {
         binding.searchEditText.textChangedListener {
             onTextChanged { charSequence, _, _, _ ->
+                binding.clearIcon.isVisible = !charSequence.isNullOrEmpty()
                 searchViewListener?.onChangeText(charSequence ?: "")
                 if (autoSubmit) {
                     searchViewListener?.onSubmitText(binding.searchEditText.text.toString())

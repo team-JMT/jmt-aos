@@ -47,6 +47,15 @@
             android:inputType="text"
             />
 
+        <ImageView
+            android:id="@+id/clear_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_x_clear"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="@dimen/half_element_spacing"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
