@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,11 +23,9 @@ import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.Empty
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
-import org.gdsc.domain.model.Filter
 import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RegisteredRestaurant
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.model.response.NicknameResponse
 import org.gdsc.domain.usecase.CheckDuplicatedNicknameUseCase
 import org.gdsc.domain.usecase.GetRegisteredRestaurantUseCase

@@ -31,7 +31,7 @@ import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
+import org.gdsc.domain.model.request.RestaurantSearchRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -139,10 +139,10 @@ class RestaurantDataSourceImpl @Inject constructor(
             isCanDrinkLiquor =  isCanDrinkLiquor,
         )
 
-        val restaurantSearchMapRequest = RestaurantSearchMapRequest(filter, locationData)
+        val restaurantSearchRequest = RestaurantSearchRequest(filter, locationData)
         val mediator = RestaurantMediator(
             userId = userId,
-            restaurantSearchMapRequest = restaurantSearchMapRequest,
+            restaurantSearchRequest = restaurantSearchRequest,
             db = db,
             api = restaurantAPI,
         )
@@ -176,7 +176,7 @@ class RestaurantDataSourceImpl @Inject constructor(
     override suspend fun getRestaurantsByMap(
         userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
     ): Flow<PagingData<RegisteredRestaurantResponse>> {
-        val restaurantSearchMapRequest = RestaurantSearchMapRequest(
+        val restaurantSearchRequest = RestaurantSearchRequest(
             userLocation = userLocation,
             startLocation = startLocation,
             endLocation = endLocation,
@@ -200,7 +200,7 @@ class RestaurantDataSourceImpl @Inject constructor(
             )) {
             RestaurantByMapPagingSource(
                 restaurantAPI,
-                restaurantSearchMapRequest
+                restaurantSearchRequest
             )
         }.flow.cachedIn(coroutineScope)
     }

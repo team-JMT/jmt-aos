@@ -6,14 +6,14 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import org.gdsc.data.network.RestaurantAPI
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
+import org.gdsc.domain.model.request.RestaurantSearchRequest
 import retrofit2.HttpException
 import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 class RestaurantMediator(
     private val userId: Int,
-    private val restaurantSearchMapRequest: RestaurantSearchMapRequest,
+    private val restaurantSearchRequest: RestaurantSearchRequest,
     private val db: RestaurantDatabase,
     private val api: RestaurantAPI,
 ): RemoteMediator<Int,RegisteredRestaurant>()  {
@@ -47,7 +47,7 @@ class RestaurantMediator(
                 userId = userId,
                 page = currentPageNumber,
                 size = state.config.pageSize,
-                restaurantSearchMapRequest = restaurantSearchMapRequest
+                restaurantSearchRequest = restaurantSearchRequest
             )
 
             val repos = response.data
