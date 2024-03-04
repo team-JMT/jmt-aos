@@ -5,12 +5,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
+import dagger.hilt.android.AndroidEntryPoint
+import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentSearchCategoryAllBinding
+import org.gdsc.presentation.utils.repeatWhenUiStarted
 
-class SearchCategoryAllFragment: Fragment() {
+@AndroidEntryPoint
+class SearchCategoryAllFragment(
+    private val searchKeyword: String
+): Fragment() {
 
     private var _binding: FragmentSearchCategoryAllBinding? = null
     private val binding get() = _binding!!
+
+
+    val viewModel: AllSearchViewModel by viewModels()
+
+
+    private val searchCategoryRestaurantAdapter = SearchCategoryRestaurantAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,5 +37,28 @@ class SearchCategoryAllFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.restaurantRecyclerView.adapter = searchCategoryRestaurantAdapter
+        binding.restaurantRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        binding.icRestaurant.setOnClickListener {
+            val viewPager = requireActivity().findViewById<ViewPager2>(R.id.search_category_pager)
+            viewPager.currentItem = 1
+        }
+
+        viewModel.setSearchKeyword(searchKeyword)
+        observeState()
+    }
+    private fun observeState() {
+        repeatWhenUiStarted {
+            viewModel.registeredPagingData().collect {
+                searchCategoryRestaurantAdapter.submitData(it)
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

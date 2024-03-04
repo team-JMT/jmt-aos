@@ -5,19 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import org.gdsc.presentation.R
 import org.gdsc.presentation.base.CancelViewListener
 import org.gdsc.presentation.base.SearchViewListener
 import org.gdsc.presentation.databinding.FragmentAllSearchContainerBinding
+import org.gdsc.presentation.utils.repeatWhenUiStarted
 
 @AndroidEntryPoint
 class AllSearchContainerFragment: Fragment() {
 
     private var _binding: FragmentAllSearchContainerBinding? = null
     private val binding get() = _binding!!
+
+    val viewModel: AllSearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +39,7 @@ class AllSearchContainerFragment: Fragment() {
         binding.searchBar.setCancelViewListener(cancelViewListener)
 
         arguments?.getString("keyword")?.let {
+            viewModel.setSearchKeyword(it)
             binding.searchBar.setSearchText(it)
         }
 
@@ -42,7 +48,15 @@ class AllSearchContainerFragment: Fragment() {
     }
 
     private fun setPager() {
-        binding.searchCategoryPager.adapter = SearchCategoryPagerAdapter(this)
+        binding.searchCategoryPager.adapter = SearchCategoryPagerAdapter(
+            this,
+            viewModel.searchKeyword.value
+        )
+        repeatWhenUiStarted {
+            viewModel.searchKeyword.collect {
+                binding.searchCategoryPager.adapter = SearchCategoryPagerAdapter(this, it)
+            }
+        }
     }
 
     private fun setTabLayout() {
@@ -61,6 +75,8 @@ class AllSearchContainerFragment: Fragment() {
         override fun onChangeText(text: CharSequence) {}
         override fun onSubmitText(text: CharSequence) {
             if (text.isEmpty()) return
+            viewModel.setSearchKeyword(text.toString())
+            binding.searchBar.setSearchText(text.toString())
         }
     }
     private val cancelViewListener = object : CancelViewListener {

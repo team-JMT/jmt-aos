@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.gdsc.presentation.databinding.FragmentSearchCategoryGroupBinding
 
-class SearchCategoryGroupFragment: Fragment() {
+class SearchCategoryGroupFragment(
+    private val searchKeyword: String
+): Fragment() {
 
     private var _binding: FragmentSearchCategoryGroupBinding? = null
     private val binding get() = _binding!!
