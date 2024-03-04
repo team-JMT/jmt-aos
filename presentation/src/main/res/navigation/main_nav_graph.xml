@@ -16,12 +16,21 @@
     </fragment>
     <fragment
         android:id="@+id/all_search_fragment"
-        android:name="org.gdsc.presentation.view.home.HomeFragment"
-        android:label="home_fragment"
-        tools:layout="@layout/fragment_home" >
+        android:name="org.gdsc.presentation.view.allsearch.AllSearchFragment"
+        android:label="all_search_fragment"
+        tools:layout="@layout/fragment_all_search" >
         <action
-            android:id="@+id/action_home_fragment_to_registerRestaurant_fragment"
-            app:destination="@id/registerRestaurant_fragment" />
+            android:id="@+id/action_all_search_fragment_to_all_search_container_fragment"
+            app:destination="@+id/all_search_container_fragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/all_search_container_fragment"
+        android:name="org.gdsc.presentation.view.allsearch.AllSearchContainerFragment"
+        android:label="all_search_container_fragment"
+        tools:layout="@layout/fragment_all_search_container" >
+        <argument
+            android:name="keyword"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/my_group_fragment"
