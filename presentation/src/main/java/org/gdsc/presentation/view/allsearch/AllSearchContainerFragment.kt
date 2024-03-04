@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import org.gdsc.presentation.R
 import org.gdsc.presentation.base.CancelViewListener
 import org.gdsc.presentation.base.SearchViewListener
 import org.gdsc.presentation.databinding.FragmentAllSearchContainerBinding
@@ -34,7 +36,25 @@ class AllSearchContainerFragment: Fragment() {
         arguments?.getString("keyword")?.let {
             binding.searchBar.setSearchText(it)
         }
+
+        setPager()
+        setTabLayout()
     }
+
+    private fun setPager() {
+        binding.searchCategoryPager.adapter = SearchCategoryPagerAdapter(this)
+    }
+
+    private fun setTabLayout() {
+        TabLayoutMediator(binding.tabLayout, binding.searchCategoryPager) { tab, position ->
+            when (position) {
+                SearchCategoryPagerAdapter.CATEGORY_ALL -> tab.text = getString(R.string.search_category_all)
+                SearchCategoryPagerAdapter.CATEGORY_RESTAURANT -> tab.text = getString(R.string.search_category_restaurant)
+                SearchCategoryPagerAdapter.CATEGORY_GROUP -> tab.text = getString(R.string.search_category_group)
+            }
+        }.attach()
+    }
+
     private val searchListener = object : SearchViewListener {
         override fun onSearchClear() {}
         override fun changeFocus(focus: Boolean) {}
