@@ -53,6 +53,11 @@ interface RestaurantAPI {
         @Part pictures: List<MultipartBody.Part>,
     ): Response<RestaurantRegistrationResponse>
 
+    @POST("api/v1/restaurant/search")
+    suspend fun getRegisteredRestaurantsBySearch(
+        @Body restaurantSearchRequest: RestaurantSearchRequest,
+    ): Response<RegisteredRestaurantPaging>
+
     @POST("api/v1/restaurant/search/{userid}")
     suspend fun getRegisteredRestaurants(
         @Path("userid") userId: Int,
