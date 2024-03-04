@@ -3,14 +3,17 @@ package org.gdsc.presentation.view.allsearch
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class SearchCategoryPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+class SearchCategoryPagerAdapter(
+    fragment: Fragment,
+    private val keyword: String
+) : FragmentStateAdapter(fragment) {
     override fun getItemCount() = SEARCH_CATEGORY_PAGER_SIZE
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            CATEGORY_RESTAURANT -> SearchCategoryRestaurantFragment()
-            CATEGORY_GROUP -> SearchCategoryGroupFragment()
-            else -> SearchCategoryAllFragment()
+            CATEGORY_RESTAURANT -> SearchCategoryRestaurantFragment(keyword)
+            CATEGORY_GROUP -> SearchCategoryGroupFragment(keyword)
+            else -> SearchCategoryAllFragment(keyword)
         }
     }
 
