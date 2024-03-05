@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_myPageFragment_to_settingsFragment"
             app:destination="@id/settings_fragment" />
+        <action
+            android:id="@+id/action_my_page_fragment_to_restaurantDetailFragment"
+            app:destination="@id/restaurantDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/search_restaurant_location_info_fragment"
@@ -162,5 +165,19 @@
             android:name="url"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/restaurantDetailFragment"
+        android:name="org.gdsc.presentation.view.mypage.restaurantdetail.RestaurantDetailFragment"
+        android:label="fragment_restaurant_detail"
+        tools:layout="@layout/fragment_restaurant_detail" >
+        <action
+            android:id="@+id/action_restaurantDetailFragment_to_restaurantPhotoDetailFragment"
+            app:destination="@id/restaurantPhotoDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/restaurantPhotoDetailFragment"
+        android:name="org.gdsc.presentation.view.mypage.restaurantdetail.RestaurantPhotoDetailFragment"
+        android:label="fragment_restaurant_photo_detail"
+        tools:layout="@layout/fragment_restaurant_photo_detail" />
 
 </navigation>

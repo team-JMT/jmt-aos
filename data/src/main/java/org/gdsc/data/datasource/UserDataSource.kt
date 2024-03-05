@@ -18,6 +18,8 @@ interface UserDataSource {
 
     suspend fun getUserInfo(): UserInfo
 
+    suspend fun getOtherUserInfo(id: Int): UserInfo
+
     suspend fun postUserLogout(refreshToken: String): String
 
     suspend fun postUserSignout(): String
