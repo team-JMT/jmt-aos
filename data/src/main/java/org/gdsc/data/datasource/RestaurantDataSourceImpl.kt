@@ -16,6 +16,7 @@ import org.gdsc.data.database.RestaurantByMapPagingSource
 import org.gdsc.data.database.RestaurantBySearchPagingSource
 import org.gdsc.data.database.RestaurantDatabase
 import org.gdsc.data.database.RestaurantMediator
+import org.gdsc.data.database.ReviewPaging
 import org.gdsc.data.model.RegisteredRestaurantResponse
 import org.gdsc.data.network.RestaurantAPI
 import org.gdsc.domain.DrinkPossibility
@@ -221,4 +222,9 @@ class RestaurantDataSourceImpl @Inject constructor(
             )
         }.flow.cachedIn(coroutineScope)
     }
+
+    override suspend fun getRestaurantReviews(restaurantId: Int): ReviewPaging {
+        return restaurantAPI.getRestaurantReviews(restaurantId).data
+    }
+
 }

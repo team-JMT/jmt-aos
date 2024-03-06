@@ -9,6 +9,7 @@ import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.Review
 import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
@@ -40,4 +41,7 @@ interface RestaurantRepository {
     ): Flow<PagingData<RegisteredRestaurant>>
 
     suspend fun getRegisteredRestaurantsBySearch(keyword: String?, userLocation: Location?): Flow<PagingData<RegisteredRestaurant>>
+
+    suspend fun getRestaurantReviews(restaurantId: Int): List<Review>
+
 }
