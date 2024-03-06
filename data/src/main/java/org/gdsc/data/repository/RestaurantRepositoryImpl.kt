@@ -12,6 +12,7 @@ import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.RestaurantLocationInfo
+import org.gdsc.domain.model.Review
 import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
@@ -144,5 +145,9 @@ class RestaurantRepositoryImpl @Inject constructor(
                 )
             }
         }
+
+    override suspend fun getRestaurantReviews(restaurantId: Int): List<Review> {
+        return restaurantDataSource.getRestaurantReviews(restaurantId).reviewList
+
     }
 }
