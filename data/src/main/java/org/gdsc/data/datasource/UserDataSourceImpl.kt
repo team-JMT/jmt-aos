@@ -1,6 +1,7 @@
 package org.gdsc.data.datasource
 
 import okhttp3.MultipartBody
+import org.gdsc.data.LocalHistoryDataStore
 import org.gdsc.data.network.UserAPI
 import org.gdsc.domain.model.Response
 import org.gdsc.domain.model.request.NicknameRequest
@@ -11,7 +12,8 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class UserDataSourceImpl @Inject constructor(
-    private val userAPI: UserAPI
+    private val userAPI: UserAPI,
+    private val localHistoryDataStore: LocalHistoryDataStore
 ) : UserDataSource {
     override suspend fun postNickname(nicknameRequest: NicknameRequest): NicknameResponse {
         return userAPI.postNickname(nicknameRequest).data
@@ -68,5 +70,17 @@ class UserDataSourceImpl @Inject constructor(
 
     override suspend fun postUserSignout(): String {
         return userAPI.postUserSignOut().code
+    }
+
+    override suspend fun getSearchedKeywords(): List<String> {
+        return localHistoryDataStore.getSearchedKeyword()
+    }
+
+    override suspend fun updateSearchedKeyword(newKeyword: String): List<String> {
+        return localHistoryDataStore.updateSearchedKeyword(newKeyword)
+    }
+
+    override suspend fun deleteSearchedKeyword(targetKeyword: String): List<String> {
+        return localHistoryDataStore.deleteSearchedKeyword(targetKeyword)
     }
 }

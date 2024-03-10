@@ -23,4 +23,10 @@ interface UserDataSource {
     suspend fun postUserLogout(refreshToken: String): String
 
     suspend fun postUserSignout(): String
+
+    suspend fun getSearchedKeywords(): List<String>
+
+    suspend fun updateSearchedKeyword(newKeyword: String): List<String>
+
+    suspend fun deleteSearchedKeyword(targetKeyword: String): List<String>
 }
