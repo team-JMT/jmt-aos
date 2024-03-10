@@ -44,4 +44,6 @@ interface RestaurantRepository {
 
     suspend fun getRestaurantReviews(restaurantId: Int): List<Review>
 
+    suspend fun getRegisteredRestaurantsBySearchWithLimitCount(keyword: String?, userLocation: Location?, limit: Int): List<RegisteredRestaurant>
+
 }

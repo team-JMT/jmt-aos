@@ -41,7 +41,7 @@ class RestaurantDataSourceImpl @Inject constructor(
     private val db: RestaurantDatabase,
 ) : RestaurantDataSource {
 
-    private val coroutineScope : CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     override suspend fun getRestaurantLocationInfo(
         query: String,
         latitude: String,
@@ -52,7 +52,10 @@ class RestaurantDataSourceImpl @Inject constructor(
         return restaurantAPI.getRestaurantLocationInfo(query, latitude, longitude, page).data
     }
 
-    override suspend fun getRecommendRestaurantInfo(recommendRestaurantId: Int, userLocation: UserLocation): RestaurantInfoResponse {
+    override suspend fun getRecommendRestaurantInfo(
+        recommendRestaurantId: Int,
+        userLocation: UserLocation
+    ): RestaurantInfoResponse {
         return restaurantAPI.getRecommendRestaurantInfo(recommendRestaurantId, userLocation).data
     }
 
@@ -87,7 +90,8 @@ class RestaurantDataSourceImpl @Inject constructor(
                 mapOf(
                     "name" to restaurantRegistrationRequest.name.toRequestBody(),
                     "introduce" to restaurantRegistrationRequest.introduce.toRequestBody(),
-                    "categoryId" to restaurantRegistrationRequest.categoryId.toString().toRequestBody(),
+                    "categoryId" to restaurantRegistrationRequest.categoryId.toString()
+                        .toRequestBody(),
                     "canDrinkLiquor" to restaurantRegistrationRequest.canDrinkLiquor.toString()
                         .toRequestBody(),
                     "goWellWithLiquor" to restaurantRegistrationRequest.goWellWithLiquor.toRequestBody(),
@@ -118,7 +122,11 @@ class RestaurantDataSourceImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override suspend fun getRestaurants(
-        userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
+        userId: Int,
+        locationData: Location,
+        sortType: SortType,
+        foodCategory: FoodCategory,
+        drinkPossibility: DrinkPossibility
     ): Flow<PagingResult<RegisteredRestaurant>> {
         val categoryFilter = when (foodCategory) {
             FoodCategory.INIT, FoodCategory.ETC -> null
@@ -136,7 +144,7 @@ class RestaurantDataSourceImpl @Inject constructor(
                 FoodCategory.INIT, FoodCategory.ETC -> String.Empty
                 else -> foodCategory.key
             },
-            isCanDrinkLiquor =  isCanDrinkLiquor,
+            isCanDrinkLiquor = isCanDrinkLiquor,
         )
 
         val restaurantSearchRequest = RestaurantSearchRequest(filter, locationData)
@@ -156,9 +164,23 @@ class RestaurantDataSourceImpl @Inject constructor(
         ) {
             with(db.restaurantDao()) {
                 when (sortType) {
-                    SortType.DISTANCE -> getRegisteredRestaurantsSortedDistance(userId, categoryFilter, isCanDrinkLiquor)
-                    SortType.RECENCY -> getRegisteredRestaurantsSortedRecent(userId, categoryFilter, isCanDrinkLiquor)
-                    SortType.LIKED -> getRegisteredRestaurants(userId, categoryFilter, isCanDrinkLiquor)
+                    SortType.DISTANCE -> getRegisteredRestaurantsSortedDistance(
+                        userId,
+                        categoryFilter,
+                        isCanDrinkLiquor
+                    )
+
+                    SortType.RECENCY -> getRegisteredRestaurantsSortedRecent(
+                        userId,
+                        categoryFilter,
+                        isCanDrinkLiquor
+                    )
+
+                    SortType.LIKED -> getRegisteredRestaurants(
+                        userId,
+                        categoryFilter,
+                        isCanDrinkLiquor
+                    )
                 }
             }
 
@@ -174,7 +196,12 @@ class RestaurantDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getRestaurantsByMap(
-        userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
+        userLocation: Location?,
+        startLocation: Location?,
+        endLocation: Location?,
+        sortType: SortType,
+        foodCategory: FoodCategory?,
+        drinkPossibility: DrinkPossibility?
     ): Flow<PagingData<RegisteredRestaurantResponse>> {
         val restaurantSearchRequest = RestaurantSearchRequest(
             userLocation = userLocation,
@@ -197,7 +224,8 @@ class RestaurantDataSourceImpl @Inject constructor(
             config = PagingConfig(
                 pageSize = 20,
                 enablePlaceholders = true
-            )) {
+            )
+        ) {
             RestaurantByMapPagingSource(
                 restaurantAPI,
                 restaurantSearchRequest
@@ -212,7 +240,8 @@ class RestaurantDataSourceImpl @Inject constructor(
             config = PagingConfig(
                 pageSize = 20,
                 enablePlaceholders = true
-            )) {
+            )
+        ) {
             RestaurantBySearchPagingSource(
                 restaurantAPI,
                 RestaurantSearchRequest(
@@ -221,6 +250,21 @@ class RestaurantDataSourceImpl @Inject constructor(
                 )
             )
         }.flow.cachedIn(coroutineScope)
+    }
+
+    override suspend fun getRegisteredRestaurantsBySearchWithLimitCount(
+        keyword: String?,
+        userLocation: Location?,
+        limit: Int
+    ): List<RegisteredRestaurantResponse> {
+
+        return restaurantAPI.
+        getRegisteredRestaurantsBySearch(
+            RestaurantSearchRequest(
+                keyword = keyword,
+                userLocation = userLocation
+            )
+        ).data.restaurants.take(limit)
     }
 
     override suspend fun getRestaurantReviews(restaurantId: Int): ReviewPaging {
