@@ -169,4 +169,32 @@ class RestaurantRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun getRegisteredRestaurantsBySearchWithLimitCount(
+        keyword: String?,
+        userLocation: Location?,
+        limit: Int
+    ): List<RegisteredRestaurant> {
+        return restaurantDataSource.getRegisteredRestaurantsBySearchWithLimitCount(keyword, userLocation, limit)
+            .map { restaurant ->
+                RegisteredRestaurant(
+                    id = restaurant.id,
+                    name = restaurant.name,
+                    placeUrl = restaurant.placeUrl,
+                    phone = restaurant.phone,
+                    address = restaurant.address,
+                    roadAddress = restaurant.roadAddress,
+                    x = restaurant.x,
+                    y = restaurant.y,
+                    restaurantImageUrl = restaurant.restaurantImageUrl,
+                    introduce = restaurant.introduce,
+                    category = restaurant.category,
+                    userId = restaurant.id,
+                    userNickName = restaurant.userNickName,
+                    userProfileImageUrl = restaurant.userProfileImageUrl,
+                    canDrinkLiquor = restaurant.canDrinkLiquor,
+                    differenceInDistance = restaurant.differenceInDistance,
+                )
+            }
+    }
+
 }
