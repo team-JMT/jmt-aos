@@ -44,4 +44,16 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.postUserSignout()
     }
 
+    override suspend fun getSearchedKeywords(): List<String> {
+        return userDataSource.getSearchedKeywords()
+    }
+
+    override suspend fun updateSearchedKeyword(newKeyword: String): List<String> {
+        return userDataSource.updateSearchedKeyword(newKeyword)
+    }
+
+    override suspend fun deleteSearchedKeyword(targetKeyword: String): List<String> {
+        return userDataSource.deleteSearchedKeyword(targetKeyword)
+    }
+
 }
