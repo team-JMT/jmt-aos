@@ -3,6 +3,7 @@ package org.gdsc.data.network
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.gdsc.data.database.RegisteredRestaurantPaging
+import org.gdsc.data.database.ReviewPaging
 import org.gdsc.data.model.Response
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.UserLocation
@@ -74,5 +75,10 @@ interface RestaurantAPI {
         @Query("sort") sort: Array<String>? = null,
         @Body restaurantSearchMapRequest: RestaurantSearchMapRequest,
     ): Response<RegisteredRestaurantPaging>
+
+    @GET("/api/v1/restaurant/{recommendRestaurantId}/review")
+    suspend fun getRestaurantReviews(
+        @Path("recommendRestaurantId") recommendRestaurantId: Int,
+    ): Response<ReviewPaging>
 
 }

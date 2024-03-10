@@ -16,5 +16,6 @@ data class RestaurantInfoResponse(
     val userNickName: String,
     val userProfileImageUrl: String,
     val x: Double,
-    val y: Double
+    val y: Double,
+    val differenceInDistance: String
 )

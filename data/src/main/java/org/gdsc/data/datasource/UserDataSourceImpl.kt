@@ -58,6 +58,10 @@ class UserDataSourceImpl @Inject constructor(
         return UserInfo()
     }
 
+    override suspend fun getOtherUserInfo(id: Int): UserInfo {
+        return userAPI.getOtherUserInfo(id).data
+    }
+
     override suspend fun postUserLogout(refreshToken: String): String {
         return userAPI.postUserLogOut(LogoutRequest(refreshToken)).code
     }
