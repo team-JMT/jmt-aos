@@ -2,7 +2,6 @@ package org.gdsc.presentation.view.home
 
 import android.graphics.PointF
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +18,6 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.Projection
-import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.OverlayImage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,9 +33,7 @@ import org.gdsc.presentation.R
 import org.gdsc.presentation.base.BaseViewHolder
 import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.FragmentHomeBinding
-import org.gdsc.presentation.model.FoodCategoryItem
 import org.gdsc.presentation.utils.repeatWhenUiStarted
-import org.gdsc.presentation.utils.toDp
 import org.gdsc.presentation.view.custom.JmtSpinner
 
 
@@ -56,6 +51,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     private val recommendPopularRestaurantTitleAdapter by lazy { RecommendPopularRestaurantTitleAdapter("그룹에서 인기가 많아요") }
     private val recommendPopularRestaurantWrapperAdapter by lazy { RecommendPopularRestaurantWrapperAdapter(recommendPopularRestaurantList)}
     private val restaurantFilterAdapter by lazy { RestaurantFilterAdapter(this) }
+    private val restaurantListAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
     private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
     private val emptyAdapter by lazy { EmptyAdapter() }
     private lateinit var concatAdapter: ConcatAdapter
@@ -77,12 +73,12 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 recommendPopularRestaurantTitleAdapter,
                 recommendPopularRestaurantWrapperAdapter,
                 restaurantFilterAdapter,
-                mapMarkerAdapter
+                restaurantListAdapter
             )
         } else {
             ConcatAdapter(
                 restaurantFilterAdapter,
-                mapMarkerAdapter
+                restaurantListAdapter
             )
         }
         setRecyclerView()
@@ -96,49 +92,8 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        standardBottomSheetBehavior.addBottomSheetCallback(
-            object : BottomSheetBehavior.BottomSheetCallback() {
-                fun setBottomSheetRelatedView(isVisible: Boolean) {
-                    binding.bottomSheetHandle.isVisible = isVisible
-                    binding.bottomSheetHandleSpace.isVisible = isVisible
-                    binding.mapOptionContainer.isVisible = isVisible
-                }
 
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    when (newState) {
-                        BottomSheetBehavior.STATE_EXPANDED -> {
-                            binding.groupHeader.elevation = 10F
-                            setBottomSheetRelatedView(false)
-                            binding.bottomSheet.background = ResourcesCompat.getDrawable(
-                                resources,
-                                R.color.white,
-                                null
-                            )
-                        }
-                        BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                            binding.mapOptionContainer.isVisible = true
-                        }
-
-                        BottomSheetBehavior.STATE_DRAGGING -> {
-                            binding.groupHeader.elevation = 0F
-                            setBottomSheetRelatedView(true)
-                            binding.bottomSheet.background = ResourcesCompat.getDrawable(
-                                resources,
-                                R.drawable.bg_bottom_sheet_top_round,
-                                null
-                            )
-                        }
-                    }
-                }
-
-                override fun onSlide(bottomSheet: View, slideOffset: Float) { }
-            })
-
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(1000)
-            if (standardBottomSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED)
-                standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-        }
+        setRestaurantListBottomSheet()
     }
 
     override fun onViewHolderBind(holder: BaseViewHolder<out ViewBinding>, _item: Any) {
@@ -184,11 +139,17 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
         mapView.getMapAsync { naverMap ->
 
-            val markerList = mutableListOf<Marker>()
-            val markerInsertCheckList= mutableListOf<Int>()
+            val markerManager = MarkerManager(naverMap)
 
             naverMap.uiSettings.isZoomControlEnabled = false
             naverMap.uiSettings.isScaleBarEnabled = false
+
+            repeatWhenUiStarted {
+
+                viewModel.registeredPagingDataByMap().collect {
+                    mapMarkerAdapter.submitData(it)
+                }
+            }
 
             repeatWhenUiStarted {
                 val location = viewModel.getCurrentLocation()
@@ -201,61 +162,20 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     naverMap.moveCamera(zoom)
                 }
 
-                mapMarkerAdapter.addLoadStateListener { loadState ->
-                    if (loadState.append.endOfPaginationReached) {
-                        if (mapMarkerAdapter.itemCount < 1) {
-                            concatAdapter.addAdapter(emptyAdapter)
-                            standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                        } else {
-                            concatAdapter.removeAdapter(emptyAdapter)
-                        }
-                        setRecyclerView()
-                    }
-                }
-
                 mapMarkerAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
-                    fun setMark(items: List<RegisteredRestaurant>) {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            items.forEach { data ->
-                                markerInsertCheckList.add(data.id)
-
-                                markerList.add(Marker().apply {
-                                    position = LatLng(data.y, data.x)
-                                    icon = OverlayImage.fromResource(
-                                        FoodCategoryItem(
-                                            FoodCategory.fromName(data.category)
-                                        ).getMarkerIcon()
-                                    )
-                                    map = naverMap
-                                })
-                            }
-                        }
-                    }
                     override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                         super.onItemRangeInserted(positionStart, itemCount)
-                        setMark(
-                            mapMarkerAdapter.snapshot().items.filter {
-                                it.id !in markerInsertCheckList
-                            })
+                        markerManager.updateDataList(mapMarkerAdapter.snapshot().items)
                     }
 
                     override fun onChanged() {
                         super.onChanged()
-                        setMark(mapMarkerAdapter.snapshot().items)
+                        markerManager.updateDataList(mapMarkerAdapter.snapshot().items)
                     }
 
                     override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
                         super.onItemRangeRemoved(positionStart, itemCount)
-                        val currentItemIds = mapMarkerAdapter.snapshot().items.map {
-                            it.id
-                        }
-                        markerInsertCheckList.filter {
-                            it !in currentItemIds
-                        }.forEach {
-                            markerList[markerInsertCheckList.indexOf(it)].map = null
-                            markerList.removeAt(markerInsertCheckList.indexOf(it))
-                            markerInsertCheckList.remove(it)
-                        }
+                        markerManager.updateDataList(mapMarkerAdapter.snapshot().items)
                     }
                 })
             }
@@ -270,13 +190,73 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 viewModel.setEndLocation(Location(bottomRight.longitude.toString(), bottomRight.latitude.toString()))
             }
         }
+    }
 
+
+    private fun setRestaurantListBottomSheet() {
+
+        restaurantListAdapter.addLoadStateListener { loadState ->
+            if (loadState.append.endOfPaginationReached) {
+                if (restaurantListAdapter.itemCount < 1) {
+                    concatAdapter.addAdapter(emptyAdapter)
+                    standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                } else {
+                    concatAdapter.removeAdapter(emptyAdapter)
+                }
+                setRecyclerView()
+            }
+        }
+
+        standardBottomSheetBehavior.addBottomSheetCallback(
+            object : BottomSheetBehavior.BottomSheetCallback() {
+                fun setBottomSheetRelatedView(isVisible: Boolean) {
+                    binding.bottomSheetHandle.isVisible = isVisible
+                    binding.bottomSheetHandleSpace.isVisible = isVisible
+                    binding.mapOptionContainer.isVisible = isVisible
+                }
+
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    when (newState) {
+                        BottomSheetBehavior.STATE_EXPANDED -> {
+                            binding.groupHeader.elevation = 10F
+                            setBottomSheetRelatedView(false)
+                            binding.bottomSheet.background = ResourcesCompat.getDrawable(
+                                resources,
+                                R.color.white,
+                                null
+                            )
+                        }
+                        BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                            binding.mapOptionContainer.isVisible = true
+                        }
+
+                        BottomSheetBehavior.STATE_DRAGGING -> {
+                            binding.groupHeader.elevation = 0F
+                            setBottomSheetRelatedView(true)
+                            binding.bottomSheet.background = ResourcesCompat.getDrawable(
+                                resources,
+                                R.drawable.bg_bottom_sheet_top_round,
+                                null
+                            )
+                        }
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) { }
+            })
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(1000)
+            if (standardBottomSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED)
+                standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        }
     }
 
     private fun observeState() {
+
         repeatWhenUiStarted {
-            viewModel.registeredPagingData().collect {
-                mapMarkerAdapter.submitData(it)
+            viewModel.registeredPagingDataByGroup().collect {
+                restaurantListAdapter.submitData(it)
             }
         }
 
