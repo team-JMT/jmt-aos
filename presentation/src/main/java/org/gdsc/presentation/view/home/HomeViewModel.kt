@@ -114,11 +114,12 @@ class HomeViewModel @Inject constructor(
 
         return run {
             return@run combine(
+                userLocationState,
                 sortTypeState,
                 foodCategoryState,
                 drinkPossibilityState
-            ) { sortType, foodCategory, drinkPossibility ->
-                getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, null, null, null)
+            ) { userLoc, sortType, foodCategory, drinkPossibility ->
+                getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, userLoc, null, null)
             }.distinctUntilChanged()
                 .flatMapLatest { it }
         }.cachedIn(viewModelScope)
