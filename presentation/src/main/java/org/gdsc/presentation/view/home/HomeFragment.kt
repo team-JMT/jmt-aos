@@ -36,6 +36,7 @@ import org.gdsc.presentation.R
 import org.gdsc.presentation.base.BaseViewHolder
 import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.FragmentHomeBinding
+import org.gdsc.presentation.model.FoodCategoryItem
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.utils.toDp
 import org.gdsc.presentation.view.custom.JmtSpinner
@@ -88,7 +89,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         return binding.root
     }
 
-    fun setRecyclerView() {
+    private fun setRecyclerView() {
         binding.recyclerView.adapter = concatAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
@@ -182,6 +183,10 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         mapView.onCreate(savedInstanceState)
 
         mapView.getMapAsync { naverMap ->
+
+            val markerList = mutableListOf<Marker>()
+            val markerInsertCheckList= mutableListOf<Int>()
+
             naverMap.uiSettings.isZoomControlEnabled = false
             naverMap.uiSettings.isScaleBarEnabled = false
 
@@ -207,32 +212,55 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                         setRecyclerView()
                     }
                 }
+
                 mapMarkerAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
-                    fun setMark() {
+                    fun setMark(items: List<RegisteredRestaurant>) {
                         CoroutineScope(Dispatchers.Main).launch {
-                            mapMarkerAdapter.snapshot().items.forEach { data ->
-                                Marker().apply {
+                            items.forEach { data ->
+                                markerInsertCheckList.add(data.id)
+
+                                markerList.add(Marker().apply {
                                     position = LatLng(data.y, data.x)
-                                    icon = OverlayImage.fromResource(R.drawable.jmt_marker)
+                                    icon = OverlayImage.fromResource(
+                                        FoodCategoryItem(
+                                            FoodCategory.fromName(data.category)
+                                        ).getMarkerIcon()
+                                    )
                                     map = naverMap
-                                }
+                                })
                             }
                         }
                     }
                     override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                         super.onItemRangeInserted(positionStart, itemCount)
-                        setMark()
+                        setMark(
+                            mapMarkerAdapter.snapshot().items.filter {
+                                it.id !in markerInsertCheckList
+                            })
                     }
 
                     override fun onChanged() {
                         super.onChanged()
-                        setMark()
+                        setMark(mapMarkerAdapter.snapshot().items)
+                    }
+
+                    override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                        super.onItemRangeRemoved(positionStart, itemCount)
+                        val currentItemIds = mapMarkerAdapter.snapshot().items.map {
+                            it.id
+                        }
+                        markerInsertCheckList.filter {
+                            it !in currentItemIds
+                        }.forEach {
+                            markerList[markerInsertCheckList.indexOf(it)].map = null
+                            markerList.removeAt(markerInsertCheckList.indexOf(it))
+                            markerInsertCheckList.remove(it)
+                        }
                     }
                 })
             }
 
             binding.mapRefreshBtn.setOnClickListener {
-
                 val projection: Projection = naverMap.projection
 
                 val topLeft: LatLng = projection.fromScreenLocation(PointF(0F, 0F))
@@ -261,5 +289,4 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         _binding = null
         super.onDestroyView()
     }
-
 }
