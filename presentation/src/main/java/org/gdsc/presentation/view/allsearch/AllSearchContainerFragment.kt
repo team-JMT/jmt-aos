@@ -5,16 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import org.gdsc.presentation.R
 import org.gdsc.presentation.base.CancelViewListener
 import org.gdsc.presentation.base.SearchViewListener
 import org.gdsc.presentation.databinding.FragmentAllSearchContainerBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.view.MainActivity
+import org.gdsc.presentation.view.allsearch.adapter.SearchCategoryPagerAdapter
 
 @AndroidEntryPoint
 class AllSearchContainerFragment: Fragment() {
@@ -22,7 +23,9 @@ class AllSearchContainerFragment: Fragment() {
     private var _binding: FragmentAllSearchContainerBinding? = null
     private val binding get() = _binding!!
 
-    val viewModel: AllSearchViewModel by viewModels()
+    private val parent by lazy { requireActivity() as MainActivity }
+
+    val viewModel: AllSearchViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +37,8 @@ class AllSearchContainerFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        parent.changeToolbarVisible(false)
 
         binding.searchBar.setSearchViewListener(searchListener)
         binding.searchBar.setCancelViewListener(cancelViewListener)
@@ -83,5 +88,11 @@ class AllSearchContainerFragment: Fragment() {
         override fun onCancel() {
             findNavController().navigateUp()
         }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        parent.changeToolbarVisible(true)
+        super.onDestroyView()
     }
 }

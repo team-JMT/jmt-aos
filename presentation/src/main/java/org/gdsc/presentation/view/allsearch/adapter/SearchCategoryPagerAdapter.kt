@@ -1,7 +1,10 @@
-package org.gdsc.presentation.view.allsearch
+package org.gdsc.presentation.view.allsearch.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import org.gdsc.presentation.view.allsearch.SearchCategoryAllFragment
+import org.gdsc.presentation.view.allsearch.SearchCategoryGroupFragment
+import org.gdsc.presentation.view.allsearch.SearchCategoryRestaurantFragment
 
 class SearchCategoryPagerAdapter(
     fragment: Fragment,

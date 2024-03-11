@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,6 +15,7 @@ import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.presentation.databinding.FragmentSearchCategoryRestaurantBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.view.allsearch.adapter.SearchCategoryRestaurantAdapter
 
 @AndroidEntryPoint
 class SearchCategoryRestaurantFragment(
@@ -23,7 +25,7 @@ class SearchCategoryRestaurantFragment(
     private var _binding: FragmentSearchCategoryRestaurantBinding? = null
     private val binding get() = _binding!!
 
-    val viewModel: AllSearchViewModel by viewModels()
+    val viewModel: AllSearchViewModel by activityViewModels()
     private val searchCategoryRestaurantAdapter = SearchCategoryRestaurantAdapter()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +50,7 @@ class SearchCategoryRestaurantFragment(
 
     private fun observeState() {
         repeatWhenUiStarted {
-            viewModel.registeredPagingData().collect {
+            viewModel.searchedRestaurantState.collect {
                 searchCategoryRestaurantAdapter.submitData(it)
             }
         }
