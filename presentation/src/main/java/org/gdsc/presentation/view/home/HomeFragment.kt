@@ -1,8 +1,8 @@
 package org.gdsc.presentation.view.home
 
+import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,9 +35,11 @@ import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.presentation.R
 import org.gdsc.presentation.base.BaseViewHolder
 import org.gdsc.presentation.base.ViewHolderBindListener
+import org.gdsc.presentation.databinding.ContentSheetEmptyGroupBinding
 import org.gdsc.presentation.databinding.FragmentHomeBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
-import org.gdsc.presentation.utils.toDp
+import org.gdsc.presentation.view.WebViewActivity
+import org.gdsc.presentation.view.custom.BottomSheetDialog
 import org.gdsc.presentation.view.custom.JmtSpinner
 
 
@@ -68,6 +70,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        setGroup()
         setMap(savedInstanceState)
         observeState()
 
@@ -84,7 +87,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 mapMarkerAdapter
             )
         }
-        setRecyclerView()
+//        setRecyclerView()
         return binding.root
     }
 
@@ -177,6 +180,49 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         }
     }
 
+    private fun setGroup() {
+        repeatWhenUiStarted {
+            viewModel.getMyGroup().let { groupList ->
+                if (groupList.isEmpty()) {
+                    BottomSheetDialog(requireContext())
+                        .bindBuilder(
+                            ContentSheetEmptyGroupBinding.inflate(LayoutInflater.from(requireContext()))
+                        ) { dialog ->
+                            with(dialog) {
+                                binding.groupHeader.isVisible = false
+                                dialog.setCancelable(false)
+                                dialog.behavior.isDraggable = false
+                                createGroupButton.setOnClickListener {
+                                    startActivity(
+                                        Intent(requireContext(), WebViewActivity::class.java)
+                                    )
+                                }
+                                show()
+                            }
+                        }
+                } else {
+                    binding.groupHeader.isVisible = true
+                    groupList.forEach {
+                        if (it.isSelected) {
+                            binding.groupName.text = it.groupName
+                            if (it.restaurantCnt == 0) {
+
+                                binding.recyclerView.isVisible = false
+                                binding.registGroup.isVisible = true
+                            }
+                            return@forEach
+                        }
+                    }
+
+                    // 선택 된 그룹이 없는 경우
+                    if (groupList.isNotEmpty()) {
+                        binding.groupName.text = groupList[0].groupName
+                    }
+                }
+            }
+        }
+    }
+
     private fun setMap(savedInstanceState: Bundle?) {
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
@@ -255,6 +301,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         repeatWhenUiStarted {
             viewModel.setSortType(SortType.DISTANCE)
         }
+
     }
 
     override fun onDestroyView() {

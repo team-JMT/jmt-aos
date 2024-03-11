@@ -15,6 +15,7 @@ import android.webkit.WebViewClient
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import org.gdsc.presentation.databinding.ActivityWebViewBinding
+import org.gdsc.presentation.utils.repeatWhenUiStarted
 
 
 class WebViewActivity : AppCompatActivity() {
@@ -25,24 +26,40 @@ class WebViewActivity : AppCompatActivity() {
         binding = ActivityWebViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        onBackPressedDispatcher.addCallback {
-            if(webView.canGoBack()) {
-                webView.goBack()
-            } else {
-                // TODO(): 메인으로 이동 등, 페이지 이동 기능 추가
-                finish()
-            }
-        }
+//        webViewInit()
 
         webView = binding.webView
-        webViewInit()
+
+        setWebViewBackPress()
         intent.extras?.let {
-            binding.webView.loadUrl(it.getString("url")!!)
+            binding.webView.apply {
+
+                repeatWhenUiStarted {
+                    loadUrl(it.getString("url") ?: WEB_BASE_URL)
+                }
+
+                settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
+                webViewClient = WebViewClient()
+
+                addJavascriptInterface(WebAppInterface(context), "webviewBridge")
+            }
+
         }
 
 //        val actionBar: ActionBar? = supportActionBar
 //        actionBar!!.hide()
     }
+    private fun setWebViewBackPress() {
+        this.onBackPressedDispatcher.addCallback(this) {
+            if (binding.webView.canGoBack()) {
+                binding.webView.goBack()
+            } else {
+                finish()
+            }
+        }
+    }
+
     fun webViewInit() {
         val webSettings: WebSettings = webView.getSettings()
         webSettings.javaScriptEnabled = true // allow the js
@@ -51,6 +68,6 @@ class WebViewActivity : AppCompatActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
         webView.webViewClient = WebViewClient()
 
-        webView.addJavascriptInterface(WebAppInterface(this), "Android")
+        webView.addJavascriptInterface(WebAppInterface(this), "webviewBridge")
     }
 }
