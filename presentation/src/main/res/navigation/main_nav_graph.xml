@@ -173,6 +173,9 @@
         <action
             android:id="@+id/action_restaurantDetailFragment_to_restaurantPhotoDetailFragment"
             app:destination="@id/restaurantPhotoDetailFragment" />
+        <action
+            android:id="@+id/action_restaurantDetailFragment_to_multiImagePicker_fragment"
+            app:destination="@id/multiImagePicker_fragment" />
     </fragment>
     <fragment
         android:id="@+id/restaurantPhotoDetailFragment"
