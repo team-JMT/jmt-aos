@@ -83,4 +83,8 @@ class UserDataSourceImpl @Inject constructor(
     override suspend fun deleteSearchedKeyword(targetKeyword: String): List<String> {
         return localHistoryDataStore.deleteSearchedKeyword(targetKeyword)
     }
+
+    override suspend fun initSearchedKeyword(): List<String> {
+        return localHistoryDataStore.initSearchedKeyword()
+    }
 }

@@ -31,14 +31,19 @@ class LocalHistoryDataStore @Inject constructor(private val context: Context) {
         return newHistories.toConvertedList()
     }
 
+    suspend fun initSearchedKeyword(): List<String> {
+        updateSearchedKeywordToken(emptyList<String>().toConvertedString())
+        return emptyList()
+    }
+
     private suspend fun getSearchedKeywordToken() = context.historyDataStore.data
         .map { preferences ->
             preferences[searchedKeywordKey]
         }.first()
 
-    private suspend fun updateSearchedKeywordToken(accessToken: String) {
+    private suspend fun updateSearchedKeywordToken(newKeywords: String) {
         context.historyDataStore.edit { preferences ->
-            preferences[searchedKeywordKey] = accessToken
+            preferences[searchedKeywordKey] = newKeywords
         }
     }
 
