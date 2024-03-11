@@ -81,4 +81,12 @@ interface RestaurantAPI {
         @Path("recommendRestaurantId") recommendRestaurantId: Int,
     ): Response<ReviewPaging>
 
+    @Multipart
+    @POST("/api/v1/restaurant/{recommendRestaurantId}/review")
+    suspend fun postRestaurantReview(
+        @Path("recommendRestaurantId") recommendRestaurantId: Int,
+        @Part reviewContent: MultipartBody.Part,
+        @Part reviewImages: List<MultipartBody.Part>,
+    ): Response<String>
+
 }
