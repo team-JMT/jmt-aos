@@ -1,17 +1,20 @@
-package org.gdsc.presentation.view.allsearch
+package org.gdsc.presentation.view.allsearch.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.ItemSearchRestaurantBinding
 
-class SearchCategoryRestaurantAdapter
-    : PagingDataAdapter<RegisteredRestaurant, SearchCategoryRestaurantAdapter.RestaurantsWithSearchViewHolder>(diffCallback) {
+class SearchCategoryRestaurantPreviewAdapter
+    : ListAdapter<RegisteredRestaurant, SearchCategoryRestaurantPreviewAdapter.RestaurantsWithSearchPreviewViewHolder>(
+    diffCallback
+) {
+
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<RegisteredRestaurant>() {
             override fun areItemsTheSame(
@@ -30,7 +33,7 @@ class SearchCategoryRestaurantAdapter
         }
     }
 
-    class RestaurantsWithSearchViewHolder(
+    class RestaurantsWithSearchPreviewViewHolder(
         private val binding: ItemSearchRestaurantBinding,
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: RegisteredRestaurant) {
@@ -53,7 +56,7 @@ class SearchCategoryRestaurantAdapter
         }
     }
 
-    override fun onBindViewHolder(holder: RestaurantsWithSearchViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RestaurantsWithSearchPreviewViewHolder, position: Int) {
         val item = getItem(position)
         if (item != null) {
             holder.bind(item)
@@ -63,8 +66,9 @@ class SearchCategoryRestaurantAdapter
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): RestaurantsWithSearchViewHolder {
+    ): RestaurantsWithSearchPreviewViewHolder {
         val binding = ItemSearchRestaurantBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SearchCategoryRestaurantAdapter.RestaurantsWithSearchViewHolder(binding)
+        return RestaurantsWithSearchPreviewViewHolder(binding)
     }
+
 }

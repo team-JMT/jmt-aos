@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import org.gdsc.presentation.databinding.FragmentSearchCategoryGroupBinding
 
 class SearchCategoryGroupFragment(
@@ -13,6 +14,8 @@ class SearchCategoryGroupFragment(
 
     private var _binding: FragmentSearchCategoryGroupBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: AllSearchViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
