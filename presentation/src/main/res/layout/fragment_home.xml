@@ -178,6 +178,48 @@
                 app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_handle_space"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
+            <TextView
+                android:id="@+id/regist_title"
+                style="@style/title_small_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="그룹에 맛집을 등록해 볼까요?"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/regist_sub_title"
+                style="@style/text_large_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="아직 등록된 맛집이 없어요"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/regist_title"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/regist_button"
+                style="@style/JmtButtonMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="맛집 등록하기"
+                android:paddingHorizontal="30dp"
+                android:paddingVertical="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/regist_sub_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/regist_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="regist_title,regist_sub_title,regist_button"
+                android:visibility="gone"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -23,6 +23,8 @@ import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RegisteredRestaurant
+import org.gdsc.domain.model.response.GroupResponse
+import org.gdsc.domain.usecase.GetMyGroupUseCase
 import org.gdsc.domain.usecase.GetRestaurantsByMapUseCase
 import org.gdsc.domain.usecase.token.GetAccessTokenUseCase
 import org.gdsc.presentation.JmtLocationManager
@@ -31,7 +33,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val locationManager: JmtLocationManager,
-    private val getRestaurantsByMapUseCase: GetRestaurantsByMapUseCase
+    private val getRestaurantsByMapUseCase: GetRestaurantsByMapUseCase,
+    private val getMyGroupUseCase: GetMyGroupUseCase,
 ) : ViewModel() {
 
     suspend fun getCurrentLocation() = locationManager.getCurrentLocation()
@@ -62,13 +65,6 @@ class HomeViewModel @Inject constructor(
     val drinkPossibilityState: StateFlow<DrinkPossibility>
         get() = _drinkPossibilityState
 
-    private var _markerState = MutableStateFlow(listOf<LatLng>())
-    val markerState: StateFlow<List<LatLng>>
-        get() = _markerState
-
-    fun setMarkerState(value: List<LatLng>) {
-        _markerState.value = value
-    }
 
     fun setUserLocation(userLocation: Location) {
         _userLocationState.value = userLocation
@@ -112,5 +108,25 @@ class HomeViewModel @Inject constructor(
             }.distinctUntilChanged()
                 .flatMapLatest { it }
         }.cachedIn(viewModelScope)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun registeredPagingDataByGroup(): Flow<PagingData<RegisteredRestaurant>> {
+
+        return run {
+            return@run combine(
+                userLocationState,
+                sortTypeState,
+                foodCategoryState,
+                drinkPossibilityState
+            ) { userLoc, sortType, foodCategory, drinkPossibility ->
+                getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, userLoc, null, null)
+            }.distinctUntilChanged()
+                .flatMapLatest { it }
+        }.cachedIn(viewModelScope)
+    }
+
+    suspend fun getMyGroup(): List<GroupResponse> {
+        return getMyGroupUseCase()
     }
 }
