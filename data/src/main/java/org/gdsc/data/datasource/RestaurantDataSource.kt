@@ -2,6 +2,7 @@ package org.gdsc.data.datasource
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
 import org.gdsc.data.database.RegisteredRestaurant
 import org.gdsc.data.database.ReviewPaging
 import org.gdsc.data.model.RegisteredRestaurantResponse
@@ -43,5 +44,7 @@ interface RestaurantDataSource {
     ): Flow<PagingData<RegisteredRestaurantResponse>>
 
     suspend fun getRestaurantReviews(restaurantId: Int): ReviewPaging
+
+    suspend fun postRestaurantReview(restaurantId: Int, reviewContent: String, reviewImages: List<MultipartBody.Part>): Boolean
 
 }
