@@ -29,4 +29,6 @@ interface UserDataSource {
     suspend fun updateSearchedKeyword(newKeyword: String): List<String>
 
     suspend fun deleteSearchedKeyword(targetKeyword: String): List<String>
+
+    suspend fun initSearchedKeyword(): List<String>
 }
