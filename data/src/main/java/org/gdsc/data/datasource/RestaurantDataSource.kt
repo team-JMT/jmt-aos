@@ -15,7 +15,6 @@ import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 
 interface RestaurantDataSource {
@@ -42,6 +41,10 @@ interface RestaurantDataSource {
     suspend fun getRestaurantsByMap(
         userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
     ): Flow<PagingData<RegisteredRestaurantResponse>>
+
+    suspend fun getRegisteredRestaurantsBySearch(keyword: String?, userLocation: Location?): Flow<PagingData<RegisteredRestaurantResponse>>
+
+    suspend fun getRegisteredRestaurantsBySearchWithLimitCount(keyword: String?, userLocation: Location?, limit: Int): List<RegisteredRestaurantResponse>
 
     suspend fun getRestaurantReviews(restaurantId: Int): ReviewPaging
 

@@ -41,8 +41,12 @@ interface RestaurantRepository {
         userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
     ): Flow<PagingData<RegisteredRestaurant>>
 
+    suspend fun getRegisteredRestaurantsBySearch(keyword: String?, userLocation: Location?): Flow<PagingData<RegisteredRestaurant>>
+
     suspend fun getRestaurantReviews(restaurantId: Int): List<Review>
 
+    suspend fun getRegisteredRestaurantsBySearchWithLimitCount(keyword: String?, userLocation: Location?, limit: Int): List<RegisteredRestaurant>
+  
     suspend fun postRestaurantReview(restaurantId: Int, reviewContent: String, reviewImages: List<MultipartBody.Part>): Boolean
 
 }

@@ -6,16 +6,21 @@ import org.gdsc.data.model.RegisteredRestaurantResponse
 import org.gdsc.data.network.RestaurantAPI
 import org.gdsc.domain.model.request.RestaurantSearchRequest
 
-class RestaurantByMapPagingSource(
+class RestaurantBySearchPagingSource(
     private val api: RestaurantAPI,
     private val restaurantSearchRequest: RestaurantSearchRequest,
-): PagingSource<Int, RegisteredRestaurantResponse>() {
+): PagingSource<Int, RegisteredRestaurantResponse>()  {
+    override fun getRefreshKey(state: PagingState<Int, RegisteredRestaurantResponse>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            val anchorPage = state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+        }
+    }
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RegisteredRestaurantResponse> {
         val page = params.key ?: 1
         return try {
-            val items = api.getRestaurantLocationInfoByMap(
-                page = page,
-                size = params.loadSize,
+            val items = api.getRegisteredRestaurantsBySearch(
                 restaurantSearchRequest = restaurantSearchRequest
             )
             LoadResult.Page(
@@ -25,13 +30,6 @@ class RestaurantByMapPagingSource(
             )
         } catch (e: Exception) {
             return LoadResult.Error(e)
-        }
-    }
-
-    override fun getRefreshKey(state: PagingState<Int, RegisteredRestaurantResponse>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
 }

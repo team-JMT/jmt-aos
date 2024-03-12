@@ -15,6 +15,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.gdsc.data.database.RegisteredRestaurant
 import org.gdsc.data.database.RestaurantByMapPagingSource
+import org.gdsc.data.database.RestaurantBySearchPagingSource
 import org.gdsc.data.database.RestaurantDatabase
 import org.gdsc.data.database.RestaurantMediator
 import org.gdsc.data.database.ReviewPaging
@@ -32,7 +33,7 @@ import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
+import org.gdsc.domain.model.request.RestaurantSearchRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -148,10 +149,10 @@ class RestaurantDataSourceImpl @Inject constructor(
             isCanDrinkLiquor = isCanDrinkLiquor,
         )
 
-        val restaurantSearchMapRequest = RestaurantSearchMapRequest(filter, locationData)
+        val restaurantSearchRequest = RestaurantSearchRequest(filter, locationData)
         val mediator = RestaurantMediator(
             userId = userId,
-            restaurantSearchMapRequest = restaurantSearchMapRequest,
+            restaurantSearchRequest = restaurantSearchRequest,
             db = db,
             api = restaurantAPI,
         )
@@ -204,7 +205,7 @@ class RestaurantDataSourceImpl @Inject constructor(
         foodCategory: FoodCategory?,
         drinkPossibility: DrinkPossibility?
     ): Flow<PagingData<RegisteredRestaurantResponse>> {
-        val restaurantSearchMapRequest = RestaurantSearchMapRequest(
+        val restaurantSearchRequest = RestaurantSearchRequest(
             userLocation = userLocation,
             startLocation = startLocation,
             endLocation = endLocation,
@@ -229,9 +230,43 @@ class RestaurantDataSourceImpl @Inject constructor(
         ) {
             RestaurantByMapPagingSource(
                 restaurantAPI,
-                restaurantSearchMapRequest
+                restaurantSearchRequest
             )
         }.flow.cachedIn(coroutineScope)
+    }
+
+    override suspend fun getRegisteredRestaurantsBySearch(
+        keyword: String?, userLocation: Location?
+    ): Flow<PagingData<RegisteredRestaurantResponse>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = true
+            )
+        ) {
+            RestaurantBySearchPagingSource(
+                restaurantAPI,
+                RestaurantSearchRequest(
+                    keyword = keyword,
+                    userLocation = userLocation
+                )
+            )
+        }.flow.cachedIn(coroutineScope)
+    }
+
+    override suspend fun getRegisteredRestaurantsBySearchWithLimitCount(
+        keyword: String?,
+        userLocation: Location?,
+        limit: Int
+    ): List<RegisteredRestaurantResponse> {
+
+        return restaurantAPI.
+        getRegisteredRestaurantsBySearch(
+            RestaurantSearchRequest(
+                keyword = keyword,
+                userLocation = userLocation
+            )
+        ).data.restaurants.take(limit)
     }
 
     override suspend fun getRestaurantReviews(restaurantId: Int): ReviewPaging {

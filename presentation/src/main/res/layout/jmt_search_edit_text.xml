@@ -19,7 +19,7 @@
             android:id="@+id/search_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="@dimen/half_element_spacing"
             android:layout_marginVertical="19dp"
             android:src="@drawable/search_text_icon"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,13 +39,23 @@
             android:textColorHint="@color/grey200"
             android:textColor="@color/grey900"
             android:textCursorDrawable="@null"
+            android:imeOptions="actionSearch"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/clear_icon"
             app:layout_constraintStart_toEndOf="@id/search_icon"
             app:layout_constraintTop_toTopOf="parent"
             android:inputType="text"
             />
 
+        <ImageView
+            android:id="@+id/clear_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_x_clear"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="@dimen/half_element_spacing"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
