@@ -10,6 +10,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.gdsc.data.database.RegisteredRestaurant
 import org.gdsc.data.database.RestaurantByMapPagingSource
@@ -269,6 +271,18 @@ class RestaurantDataSourceImpl @Inject constructor(
 
     override suspend fun getRestaurantReviews(restaurantId: Int): ReviewPaging {
         return restaurantAPI.getRestaurantReviews(restaurantId).data
+    }
+
+    override suspend fun postRestaurantReview(
+        restaurantId: Int,
+        reviewContent: String,
+        reviewImages: List<MultipartBody.Part>
+    ): Boolean {
+
+        return restaurantAPI.postRestaurantReview(
+            restaurantId,
+            MultipartBody.Part.createFormData("reviewContent", reviewContent), reviewImages
+        ).code == "RESTAURANT_REVIEW_CREATED"
     }
 
 }
