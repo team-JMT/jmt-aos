@@ -5,12 +5,15 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import org.gdsc.domain.model.Review
 import org.gdsc.domain.model.UserInfo
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 import org.gdsc.domain.usecase.GetRestaurantInfoUseCase
 import org.gdsc.domain.usecase.GetRestaurantReviewsUseCase
+import org.gdsc.domain.usecase.PostReviewUseCase
 import org.gdsc.domain.usecase.user.GetOtherUserInfoUseCase
 import org.gdsc.presentation.JmtLocationManager
 import javax.inject.Inject
@@ -21,7 +24,8 @@ class RestaurantDetailViewModel
     private val jmtLocationManager: JmtLocationManager,
     private val getRestaurantInfoUseCase: GetRestaurantInfoUseCase,
     private val getOtherUserInfoUseCase: GetOtherUserInfoUseCase,
-    private val getRestaurantReviewsUseCase: GetRestaurantReviewsUseCase
+    private val getRestaurantReviewsUseCase: GetRestaurantReviewsUseCase,
+    private val postReviewUseCase: PostReviewUseCase
 ): ViewModel() {
 
     private var _restaurantInfo: MutableStateFlow<RestaurantInfoResponse?> = MutableStateFlow(null)
@@ -36,6 +40,17 @@ class RestaurantDetailViewModel
     val reviews: StateFlow<List<Review>>
         get() = _reviews
 
+    private var _photosForReviewState: MutableStateFlow<List<String>> =
+        MutableStateFlow(emptyList())
+    val photosForReviewState = _photosForReviewState.asStateFlow()
+
+    fun setPhotosForReviewState(images: List<String>) {
+        _photosForReviewState.value = images
+    }
+
+    fun deletePhotoForReviewState(image: String) {
+        _photosForReviewState.value = _photosForReviewState.value - image
+    }
 
     init {
         viewModelScope.launch {
@@ -52,6 +67,17 @@ class RestaurantDetailViewModel
 
         }
 
+    }
+
+    fun postReview(content: String, pictures: List<MultipartBody.Part>, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            val isSuccess = postReviewUseCase(1, content, pictures)
+
+            if (isSuccess) {
+                _photosForReviewState.value = emptyList()
+                onSuccess()
+            }
+        }
     }
 
 }
