@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
 import org.gdsc.data.datasource.RestaurantDataSource
 import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
@@ -197,4 +198,13 @@ class RestaurantRepositoryImpl @Inject constructor(
             }
     }
 
+}
+
+    override suspend fun postRestaurantReview(
+        restaurantId: Int,
+        reviewContent: String,
+        reviewImages: List<MultipartBody.Part>
+    ): Boolean {
+        return restaurantDataSource.postRestaurantReview(restaurantId, reviewContent, reviewImages)
+    }
 }
