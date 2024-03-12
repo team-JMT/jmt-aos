@@ -175,7 +175,11 @@ class RestaurantRepositoryImpl @Inject constructor(
         userLocation: Location?,
         limit: Int
     ): List<RegisteredRestaurant> {
-        return restaurantDataSource.getRegisteredRestaurantsBySearchWithLimitCount(keyword, userLocation, limit)
+        return restaurantDataSource.getRegisteredRestaurantsBySearchWithLimitCount(
+            keyword,
+            userLocation,
+            limit
+        )
             .map { restaurant ->
                 RegisteredRestaurant(
                     id = restaurant.id,
@@ -198,8 +202,6 @@ class RestaurantRepositoryImpl @Inject constructor(
             }
     }
 
-}
-
     override suspend fun postRestaurantReview(
         restaurantId: Int,
         reviewContent: String,
@@ -208,3 +210,5 @@ class RestaurantRepositoryImpl @Inject constructor(
         return restaurantDataSource.postRestaurantReview(restaurantId, reviewContent, reviewImages)
     }
 }
+
+
