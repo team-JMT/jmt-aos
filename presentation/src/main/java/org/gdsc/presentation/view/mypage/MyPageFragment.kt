@@ -20,7 +20,6 @@ import org.gdsc.presentation.databinding.FragmentMyPageBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter
-import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.LIKED_RESTAURANT
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.MY_REVIEW
 import org.gdsc.presentation.view.mypage.adapter.MyPagePagerAdapter.Companion.REGISTERED_RESTAURANT
 import org.gdsc.presentation.view.mypage.viewmodel.MyPageViewModel
@@ -104,7 +103,7 @@ class MyPageFragment : Fragment() {
         TabLayoutMediator(binding.tabLayout, binding.myPagePager) { tab, position ->
             when (position) {
                 REGISTERED_RESTAURANT -> tab.text = getString(R.string.registered_restaurant)
-                LIKED_RESTAURANT -> tab.text = getString(R.string.liked_restaurant)
+//                LIKED_RESTAURANT -> tab.text = getString(R.string.liked_restaurant)
                 MY_REVIEW -> tab.text = getString(R.string.my_review)
             }
         }.attach()
