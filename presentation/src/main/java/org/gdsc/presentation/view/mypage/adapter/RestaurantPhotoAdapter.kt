@@ -16,16 +16,25 @@ class RestaurantPhotoAdapter(
         diffUtil
     ) {
 
-        private var width = 0
-        private var height = 0
+    private var width = 0
+    private var height = 0
 
     inner class RestaurantPhotoViewHolder(private val binding: ItemPhotoRestaurantBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: RestaurantPhotoItem) {
             with(binding) {
-                Glide.with(root)
-                    .load(item.photoUrl)
-                    .into(ivPhoto)
+
+                if (item.photoUrl != "BUTTON") {
+                    Glide.with(root)
+                        .load(item.photoUrl)
+                        .into(ivPhoto)
+                } else {
+                    morePhotoButton.visibility = ViewGroup.VISIBLE
+                    morePhotoButton.setOnClickListener {
+                        onItemSelected()
+                    }
+                }
+
             }
         }
     }
