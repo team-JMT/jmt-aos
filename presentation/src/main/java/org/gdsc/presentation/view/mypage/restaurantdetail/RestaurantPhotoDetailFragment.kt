@@ -28,7 +28,16 @@ class RestaurantPhotoDetailFragment : Fragment() {
 
     private val imageSlider = ImageSlider(
 
-    )
+    ) {
+        with(binding.reviewItem) {
+            Glide.with(root)
+                .load(it.reviewerImageUrl)
+                .into(ivProfile)
+
+            tvNickname.text = it.userName
+            tvContent.text = it.reviewContent
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,48 +49,30 @@ class RestaurantPhotoDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setAdapter()
-        observeData()
 
-    }
-
-    private fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.reviews.collect { reviewList ->
-                if (reviewList.isNotEmpty()) {
-
-                    // TODO: to be dynamic
-                    val firstReview = reviewList.first()
-                    with(binding.reviewItem) {
-                        Glide.with(root)
-                            .load(firstReview.reviewerImageUrl)
-                            .into(ivProfile)
-
-                        tvNickname.text = firstReview.userName
-                        tvContent.text = firstReview.reviewContent
-                    }
-                }
-            }
-        }
     }
 
     private fun setAdapter() {
         binding.imageSlider.adapter = imageSlider
 
-        viewModel.restaurantInfo.value?.let { restaurantInfo ->
+        viewModel.reviews.value.let { reviews ->
+
+            val imageSliderItems = reviews.map { review ->
+                review.reviewImages.map { imageUrl ->
+                    ImageSliderItem(imageUrl, review)
+                }
+            }.flatten()
 
             binding.imageSlider.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    parentActivity.changeToolbarTitle("${position + 1} / ${restaurantInfo.pictures.size}")
+                    parentActivity.changeToolbarTitle("${position + 1} / ${imageSliderItems.size}")
                 }
             })
 
-            imageSlider.submitList(restaurantInfo.pictures.map {
-                ImageSliderItem(it)
-            })
+            imageSlider.submitList(imageSliderItems)
         }
     }
 
