@@ -12,6 +12,8 @@
         android:text="맛집 사진"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/text_medium_medium"
+        android:textColor="@color/grey700"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
