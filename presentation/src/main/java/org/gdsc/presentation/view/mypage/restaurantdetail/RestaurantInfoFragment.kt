@@ -98,13 +98,12 @@ class RestaurantInfoFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.restaurantInfo.collect {
-                it?.let { notNullRestaurantInfo ->
-                    restaurantPhotoAdapter.submitList(
-                        notNullRestaurantInfo.pictures.map { imageUrl ->
-                            (RestaurantPhotoItem(imageUrl))
-                        })
-                }
+
+            viewModel.reviews.collect { reviews ->
+                restaurantPhotoAdapter.submitList(
+                    reviews.map { it.reviewImages }.flatten().take(8).map { imageUrl ->
+                        (RestaurantPhotoItem(imageUrl))
+                    })
             }
         }
     }

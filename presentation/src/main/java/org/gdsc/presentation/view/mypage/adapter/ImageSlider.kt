@@ -6,14 +6,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import org.gdsc.domain.model.Review
 import org.gdsc.presentation.databinding.ItemImageSlideBinding
 
 data class ImageSliderItem(
-    val imageUrl: String
+    val imageUrl: String,
+    val review: Review
 )
 
 class ImageSlider(
-    private val onItemSelected: () -> Unit = {}
+    private val onItemSelected: () -> Unit = {},
+    private val onReviewRefreshed: (Review) -> Unit = {}
 ) :
     ListAdapter<ImageSliderItem, ImageSlider.ImageSliderViewHolder>(
         diffUtil
@@ -27,6 +30,7 @@ class ImageSlider(
                     .load(item.imageUrl)
                     .into(imageView)
             }
+            onReviewRefreshed(item.review)
         }
     }
 

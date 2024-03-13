@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView
-    android:id="@+id/image_view"
+<org.gdsc.presentation.view.custom.FlexibleCornerImageView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/image_view"
     android:scaleType="centerCrop"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_constraintDimensionRatio="1:1"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:all_corner_radius="5dp">
 
 
-</ImageView>
+</org.gdsc.presentation.view.custom.FlexibleCornerImageView>
