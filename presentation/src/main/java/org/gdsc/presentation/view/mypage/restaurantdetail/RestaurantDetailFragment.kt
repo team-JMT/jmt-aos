@@ -167,6 +167,7 @@ class RestaurantDetailFragment : Fragment() {
 
         binding.restaurantDetailPager.adapter = RestaurantDetailPagerAdapter(this)
         binding.restaurantDetailPager.isUserInputEnabled = false
+        binding.restaurantDetailPager.offscreenPageLimit = 1
 
         TabLayoutMediator(binding.tabLayout, binding.restaurantDetailPager) { tab, position ->
             when (position) {
