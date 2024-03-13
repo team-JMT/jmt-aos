@@ -44,7 +44,7 @@ class RestaurantInfoFragment : Fragment() {
     }
 
     private val restaurantPhotoAdapter = RestaurantPhotoAdapter {
-
+        (parentFragment as RestaurantDetailFragment).changeCategory(RestaurantDetailPagerAdapter.PHOTO)
     }
 
     override fun onCreateView(
@@ -103,7 +103,7 @@ class RestaurantInfoFragment : Fragment() {
                 restaurantPhotoAdapter.submitList(
                     reviews.map { it.reviewImages }.flatten().take(8).map { imageUrl ->
                         (RestaurantPhotoItem(imageUrl))
-                    })
+                    } + RestaurantPhotoItem("BUTTON"))
             }
         }
     }
