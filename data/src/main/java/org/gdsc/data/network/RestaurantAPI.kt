@@ -73,7 +73,7 @@ interface RestaurantAPI {
         @Query("page") page: Int? = null,
         @Query("size") size: Int? = null,
         @Query("sort") sort: String? = null,
-        @Body restaurantSearchMapRequest: RestaurantSearchMapRequest,
+        @Body restaurantSearchRequest: RestaurantSearchRequest,
     ): Response<RegisteredRestaurantPaging>
 
     @GET("/api/v1/restaurant/{recommendRestaurantId}/review")

@@ -200,7 +200,7 @@ class RestaurantDataSourceImpl @Inject constructor(
             RestaurantByMapPagingSource(
                 restaurantAPI,
                 sortType,
-                restaurantSearchMapRequest
+                restaurantSearchRequest
             )
         }.flow.cachedIn(coroutineScope)
     }
