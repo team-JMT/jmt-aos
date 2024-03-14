@@ -2,7 +2,7 @@ package org.gdsc.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class GroupResponse(
+data class Group(
     @SerializedName("groupId") val groupId: Int,
     @SerializedName("groupIntroduce") val groupIntroduce: String,
     @SerializedName("groupProfileImageUrl") val groupProfileImageUrl: String,

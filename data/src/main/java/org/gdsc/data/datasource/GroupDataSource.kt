@@ -1,6 +1,6 @@
 package org.gdsc.data.datasource
 
-import org.gdsc.domain.model.response.GroupResponse
+import org.gdsc.domain.model.response.Group
 
 
 interface GroupDataSource {

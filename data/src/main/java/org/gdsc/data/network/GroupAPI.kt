@@ -1,7 +1,7 @@
 package org.gdsc.data.network
 
 import org.gdsc.data.model.Response
-import org.gdsc.domain.model.response.GroupResponse
+import org.gdsc.domain.model.response.Group
 import retrofit2.http.GET
 
 interface GroupAPI {
