@@ -147,19 +147,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         }
     }
 
-
-    private fun setRestaurantListBottomSheet() {
-        standardBottomSheetBehavior.addBottomSheetCallback(
-            object : BottomSheetBehavior.BottomSheetCallback() {
-                fun setBottomSheetRelatedView(isVisible: Boolean) {
-                    binding.bottomSheetHandle.isVisible = isVisible
-                    binding.bottomSheetHandleSpace.isVisible = isVisible
-                    binding.mapOptionContainer.isVisible = isVisible
-                }
-
-        setRestaurantListBottomSheet()
-    }
-
     private fun setGroup() {
         binding.groupArrow.setOnClickListener {
             repeatWhenUiStarted {
@@ -305,37 +292,38 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
         standardBottomSheetBehavior.addBottomSheetCallback(
             object : BottomSheetBehavior.BottomSheetCallback() {
-                fun setBottomSheetRelatedView(isVisible: Boolean) {
-                    binding.bottomSheetHandle.isVisible = isVisible
-                    binding.bottomSheetHandleSpace.isVisible = isVisible
-                    binding.mapOptionContainer.isVisible = isVisible
+                fun setBottomSheetRelatedView(isExpanded: Boolean) {
+                    viewModel.currentGroup.value.let {
+                        val isNotFullExpanded = isExpanded.not() || it == null || it.restaurantCnt == 0
+
+                        with(binding) {
+                            binding.bottomSheetActionButtons.isVisible = isExpanded && it != null && it.restaurantCnt != 0
+                            bottomSheetHandle.isVisible = isNotFullExpanded
+                            bottomSheetHandleSpace.isVisible = isNotFullExpanded
+                            mapOptionContainer.isVisible = isNotFullExpanded
+                            groupHeader.elevation = if (isNotFullExpanded) 0F else 10F
+                            bottomSheet.background =
+                                ResourcesCompat.getDrawable(
+                                    resources,
+                                    if (isNotFullExpanded)
+                                        R.drawable.bg_bottom_sheet_top_round
+                                    else
+                                        R.color.white,
+                                    null
+                                )
+
+                        }
+                    }
                 }
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
                         BottomSheetBehavior.STATE_EXPANDED -> {
-                            binding.groupHeader.elevation = 10F
-                            binding.bottomSheetActionButtons.isVisible = true
-
-                            setBottomSheetRelatedView(false)
-                            binding.bottomSheet.background = ResourcesCompat.getDrawable(
-                                resources,
-                                R.color.white,
-                                null
-                            )
-                        }
-                        BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                            binding.mapOptionContainer.isVisible = true
+                            setBottomSheetRelatedView(true)
                         }
 
                         BottomSheetBehavior.STATE_DRAGGING -> {
-                            binding.groupHeader.elevation = 0F
-                            setBottomSheetRelatedView(true)
-                            binding.bottomSheet.background = ResourcesCompat.getDrawable(
-                                resources,
-                                R.drawable.bg_bottom_sheet_top_round,
-                                null
-                            )
+                            setBottomSheetRelatedView(false)
                         }
                     }
                 }
@@ -380,29 +368,9 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     is ResultState.OnSuccess -> {
                         val groupList = state.response
 
-                        if (groupList.isEmpty()) {
+                        if (groupList.isNullOrEmpty()) {
                             viewModel.setCurrentGroup(null)
-                        } else {
-                            groupList.forEach {
-                                if (it.isSelected) {
-                                    viewModel.setCurrentGroup(it)
-                                    return@forEach
-                                }
-                            }
-                        }
-                    }
 
-                    else -> {}
-                }
-            }
-        }
-
-        repeatWhenUiStarted {
-            viewModel.currentGroup.collect { state ->
-                when(state) {
-                    is ResultState.OnSuccess -> {
-                        val group = state.response
-                        if (group == null) {
                             BottomSheetDialog(requireContext())
                                 .bindBuilder(
                                     ContentSheetEmptyGroupBinding.inflate(LayoutInflater.from(requireContext()))
@@ -420,24 +388,42 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                                     }
                                 }
                         } else {
-                            binding.groupHeader.isVisible = true
-                            binding.groupName.text = group.groupName
-                            binding.groupImage.apply {
-                                Glide.with(this.context).load(group.groupProfileImageUrl)
-                                    .into(this)
-                                invalidate()
-                            }
-
-                            if (group.restaurantCnt == 0) {
-
-                                binding.recyclerView.isVisible = false
-                                binding.registGroup.isVisible = true
+                            groupList.forEach {
+                                if (it.isSelected) {
+                                    viewModel.setCurrentGroup(it)
+                                    return@forEach
+                                }
                             }
                         }
                     }
+
                     else -> {}
                 }
             }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.currentGroup.collect {
+                if (it != null) {
+                    binding.groupHeader.isVisible = true
+                    binding.groupName.text = it.groupName
+                    binding.groupImage.apply {
+                        Glide.with(this.context).load(it.groupProfileImageUrl)
+                            .into(this)
+                    }
+
+                    if (it.restaurantCnt == 0) {
+                        binding.bottomSheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                        binding.recyclerView.isVisible = false
+                        binding.registLayout.isVisible = true
+                    } else {
+                        binding.bottomSheet.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                        binding.recyclerView.isVisible = true
+                        binding.registLayout.isVisible = false
+                    }
+                }
+            }
+
         }
     }
 
