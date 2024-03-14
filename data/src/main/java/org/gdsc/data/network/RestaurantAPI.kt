@@ -7,7 +7,7 @@ import org.gdsc.data.database.ReviewPaging
 import org.gdsc.data.model.Response
 import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.UserLocation
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
+import org.gdsc.domain.model.request.RestaurantSearchRequest
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 import org.gdsc.domain.model.response.RestaurantRegistrationResponse
@@ -54,13 +54,18 @@ interface RestaurantAPI {
         @Part pictures: List<MultipartBody.Part>,
     ): Response<RestaurantRegistrationResponse>
 
+    @POST("api/v1/restaurant/search")
+    suspend fun getRegisteredRestaurantsBySearch(
+        @Body restaurantSearchRequest: RestaurantSearchRequest,
+    ): Response<RegisteredRestaurantPaging>
+
     @POST("api/v1/restaurant/search/{userid}")
     suspend fun getRegisteredRestaurants(
         @Path("userid") userId: Int,
         @Query("page") page: Int? = null,
         @Query("size") size: Int? = null,
         @Query("sort") sort: String? = null,
-        @Body restaurantSearchMapRequest: RestaurantSearchMapRequest,
+        @Body restaurantSearchRequest: RestaurantSearchRequest,
     ): Response<RegisteredRestaurantPaging>
 
     @PUT("api/v1/restaurant")
@@ -72,13 +77,21 @@ interface RestaurantAPI {
     suspend fun getRestaurantLocationInfoByMap(
         @Query("page") page: Int? = null,
         @Query("size") size: Int? = null,
-        @Query("sort") sort: Array<String>? = null,
-        @Body restaurantSearchMapRequest: RestaurantSearchMapRequest,
+        @Query("sort") sort: String? = null,
+        @Body restaurantSearchRequest: RestaurantSearchRequest,
     ): Response<RegisteredRestaurantPaging>
 
     @GET("/api/v1/restaurant/{recommendRestaurantId}/review")
     suspend fun getRestaurantReviews(
         @Path("recommendRestaurantId") recommendRestaurantId: Int,
     ): Response<ReviewPaging>
+
+    @Multipart
+    @POST("/api/v1/restaurant/{recommendRestaurantId}/review")
+    suspend fun postRestaurantReview(
+        @Path("recommendRestaurantId") recommendRestaurantId: Int,
+        @Part reviewContent: MultipartBody.Part,
+        @Part reviewImages: List<MultipartBody.Part>,
+    ): Response<String>
 
 }

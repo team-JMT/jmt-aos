@@ -46,6 +46,11 @@
     <string name="select">선택</string>
     <string name="do_select">선택하기</string>
     <string name="register">등록하기</string>
+    
+    
+    <string name="search_category_all">전체</string>
+    <string name="search_category_restaurant">맛집</string>
+    <string name="search_category_group">그룹</string>
 
     <string name="distance_from_current_location">내 위치에서 %s</string>
     <string name="get_location_error">위치 정보를 가져올 수 없습니다.</string>
@@ -63,7 +68,7 @@
     <string name="select_text_counter_max_ten">선택하기 %d/10</string>
     <!-- myPage-->
     <string name="liked_restaurant">좋아한 맛집</string>
-    <string name="my_review">나의 후기</string>
+    <string name="my_review">등록한 후기</string>
     <string name="registered_restaurant">등록한 맛집</string>
     <string name="follower">팔로워</string>
     <string name="following">팔로잉</string>

@@ -3,6 +3,7 @@
     <dimen name="divider_small">1dp</dimen>
     <dimen name="divider_medium">2dp</dimen>
     <dimen name="divider_large">8dp</dimen>
+    <dimen name="divider_x_large">12dp</dimen>
 
     <dimen name="default_spacing">20dp</dimen>
     <dimen name="half_spacing">10dp</dimen>

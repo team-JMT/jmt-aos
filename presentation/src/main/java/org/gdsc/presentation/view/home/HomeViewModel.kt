@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -106,7 +107,7 @@ class HomeViewModel @Inject constructor(
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun registeredPagingData(): Flow<PagingData<RegisteredRestaurant>> {
+    suspend fun registeredPagingDataByMap(): Flow<PagingData<RegisteredRestaurant>> {
         val location = locationManager.getCurrentLocation() ?: return flowOf(PagingData.empty())
         val userLoc = Location(location.longitude.toString(), location.latitude.toString())
 
@@ -119,6 +120,22 @@ class HomeViewModel @Inject constructor(
                 drinkPossibilityState
             ) { startLoc, endLoc, sortType, foodCategory, drinkPossibility ->
                 getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, userLoc, startLoc, endLoc)
+            }.distinctUntilChanged()
+                .flatMapLatest { it }
+        }.cachedIn(viewModelScope)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun registeredPagingDataByGroup(): Flow<PagingData<RegisteredRestaurant>> {
+
+        return run {
+            return@run combine(
+                userLocationState,
+                sortTypeState,
+                foodCategoryState,
+                drinkPossibilityState
+            ) { userLoc, sortType, foodCategory, drinkPossibility ->
+                getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, userLoc, null, null)
             }.distinctUntilChanged()
                 .flatMapLatest { it }
         }.cachedIn(viewModelScope)

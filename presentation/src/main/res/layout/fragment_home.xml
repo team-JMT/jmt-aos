@@ -220,6 +220,47 @@
                 app:constraint_referenced_ids="regist_title,regist_sub_title,regist_button"
                 android:visibility="gone"/>
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/scroll_up_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rotation="90"
+                android:elevation="10dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/back_arrow"
+                android:background="@drawable/shape_circle"
+                android:backgroundTint="@color/white"
+                app:fabSize="normal"
+                app:backgroundTint="@color/white"
+                app:layout_constraintBottom_toTopOf="@+id/regist_restaurant_button"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/regist_restaurant_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rotation="90"
+                android:elevation="10dp"
+                android:layout_marginBottom="100dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/ic_plus"
+                android:background="@drawable/shape_circle"
+                android:backgroundTint="@color/white"
+                app:backgroundTint="@color/white"
+                app:fabSize="normal"
+                app:tint="@color/main500"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/bottom_sheet_action_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="scroll_up_button,regist_restaurant_button"
+                android:visibility="gone"
+                tool:visibility="visible"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

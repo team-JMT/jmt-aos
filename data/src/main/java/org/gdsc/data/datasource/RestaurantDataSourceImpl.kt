@@ -10,9 +10,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.gdsc.data.database.RegisteredRestaurant
 import org.gdsc.data.database.RestaurantByMapPagingSource
+import org.gdsc.data.database.RestaurantBySearchPagingSource
 import org.gdsc.data.database.RestaurantDatabase
 import org.gdsc.data.database.RestaurantMediator
 import org.gdsc.data.database.ReviewPaging
@@ -30,7 +33,7 @@ import org.gdsc.domain.model.RestaurantLocationInfo
 import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
+import org.gdsc.domain.model.request.RestaurantSearchRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -40,7 +43,7 @@ class RestaurantDataSourceImpl @Inject constructor(
     private val db: RestaurantDatabase,
 ) : RestaurantDataSource {
 
-    private val coroutineScope : CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     override suspend fun getRestaurantLocationInfo(
         query: String,
         latitude: String,
@@ -51,7 +54,10 @@ class RestaurantDataSourceImpl @Inject constructor(
         return restaurantAPI.getRestaurantLocationInfo(query, latitude, longitude, page).data
     }
 
-    override suspend fun getRecommendRestaurantInfo(recommendRestaurantId: Int, userLocation: UserLocation): RestaurantInfoResponse {
+    override suspend fun getRecommendRestaurantInfo(
+        recommendRestaurantId: Int,
+        userLocation: UserLocation
+    ): RestaurantInfoResponse {
         return restaurantAPI.getRecommendRestaurantInfo(recommendRestaurantId, userLocation).data
     }
 
@@ -86,7 +92,8 @@ class RestaurantDataSourceImpl @Inject constructor(
                 mapOf(
                     "name" to restaurantRegistrationRequest.name.toRequestBody(),
                     "introduce" to restaurantRegistrationRequest.introduce.toRequestBody(),
-                    "categoryId" to restaurantRegistrationRequest.categoryId.toString().toRequestBody(),
+                    "categoryId" to restaurantRegistrationRequest.categoryId.toString()
+                        .toRequestBody(),
                     "canDrinkLiquor" to restaurantRegistrationRequest.canDrinkLiquor.toString()
                         .toRequestBody(),
                     "goWellWithLiquor" to restaurantRegistrationRequest.goWellWithLiquor.toRequestBody(),
@@ -117,7 +124,11 @@ class RestaurantDataSourceImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override suspend fun getRestaurants(
-        userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
+        userId: Int,
+        locationData: Location,
+        sortType: SortType,
+        foodCategory: FoodCategory,
+        drinkPossibility: DrinkPossibility
     ): Flow<PagingResult<RegisteredRestaurant>> {
         val categoryFilter = when (foodCategory) {
             FoodCategory.INIT, FoodCategory.ETC -> null
@@ -135,13 +146,13 @@ class RestaurantDataSourceImpl @Inject constructor(
                 FoodCategory.INIT, FoodCategory.ETC -> String.Empty
                 else -> foodCategory.key
             },
-            isCanDrinkLiquor =  isCanDrinkLiquor,
+            isCanDrinkLiquor = isCanDrinkLiquor,
         )
 
-        val restaurantSearchMapRequest = RestaurantSearchMapRequest(filter, locationData)
+        val restaurantSearchRequest = RestaurantSearchRequest(filter, locationData)
         val mediator = RestaurantMediator(
             userId = userId,
-            restaurantSearchMapRequest = restaurantSearchMapRequest,
+            restaurantSearchRequest = restaurantSearchRequest,
             db = db,
             api = restaurantAPI,
         )
@@ -155,9 +166,23 @@ class RestaurantDataSourceImpl @Inject constructor(
         ) {
             with(db.restaurantDao()) {
                 when (sortType) {
-                    SortType.DISTANCE -> getRegisteredRestaurantsSortedDistance(userId, categoryFilter, isCanDrinkLiquor)
-                    SortType.RECENCY -> getRegisteredRestaurantsSortedRecent(userId, categoryFilter, isCanDrinkLiquor)
-                    SortType.LIKED -> getRegisteredRestaurants(userId, categoryFilter, isCanDrinkLiquor)
+                    SortType.DISTANCE -> getRegisteredRestaurantsSortedDistance(
+                        userId,
+                        categoryFilter,
+                        isCanDrinkLiquor
+                    )
+
+                    SortType.RECENCY -> getRegisteredRestaurantsSortedRecent(
+                        userId,
+                        categoryFilter,
+                        isCanDrinkLiquor
+                    )
+
+                    SortType.LIKED -> getRegisteredRestaurants(
+                        userId,
+                        categoryFilter,
+                        isCanDrinkLiquor
+                    )
                 }
             }
 
@@ -173,9 +198,14 @@ class RestaurantDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getRestaurantsByMap(
-        userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
+        userLocation: Location?,
+        startLocation: Location?,
+        endLocation: Location?,
+        sortType: SortType,
+        foodCategory: FoodCategory?,
+        drinkPossibility: DrinkPossibility?
     ): Flow<PagingData<RegisteredRestaurantResponse>> {
-        val restaurantSearchMapRequest = RestaurantSearchMapRequest(
+        val restaurantSearchRequest = RestaurantSearchRequest(
             userLocation = userLocation,
             startLocation = startLocation,
             endLocation = endLocation,
@@ -196,16 +226,64 @@ class RestaurantDataSourceImpl @Inject constructor(
             config = PagingConfig(
                 pageSize = 20,
                 enablePlaceholders = true
-            )) {
+            )
+        ) {
             RestaurantByMapPagingSource(
                 restaurantAPI,
-                restaurantSearchMapRequest
+                sortType,
+                restaurantSearchRequest
             )
         }.flow.cachedIn(coroutineScope)
     }
 
+    override suspend fun getRegisteredRestaurantsBySearch(
+        keyword: String?, userLocation: Location?
+    ): Flow<PagingData<RegisteredRestaurantResponse>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = true
+            )
+        ) {
+            RestaurantBySearchPagingSource(
+                restaurantAPI,
+                RestaurantSearchRequest(
+                    keyword = keyword,
+                    userLocation = userLocation
+                )
+            )
+        }.flow.cachedIn(coroutineScope)
+    }
+
+    override suspend fun getRegisteredRestaurantsBySearchWithLimitCount(
+        keyword: String?,
+        userLocation: Location?,
+        limit: Int
+    ): List<RegisteredRestaurantResponse> {
+
+        return restaurantAPI.
+        getRegisteredRestaurantsBySearch(
+            RestaurantSearchRequest(
+                keyword = keyword,
+                userLocation = userLocation
+            )
+        ).data.restaurants.take(limit)
+    }
+
     override suspend fun getRestaurantReviews(restaurantId: Int): ReviewPaging {
         return restaurantAPI.getRestaurantReviews(restaurantId).data
+    }
+
+    override suspend fun postRestaurantReview(
+        restaurantId: Int,
+        reviewContent: String,
+        reviewImages: List<MultipartBody.Part>
+    ): Boolean {
+
+        return restaurantAPI.postRestaurantReview(
+            restaurantId,
+            MultipartBody.Part.createFormData("reviewContent", reviewContent), reviewImages
+        ).code == "RESTAURANT_REVIEW_CREATED"
     }
 
 }
