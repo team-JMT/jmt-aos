@@ -23,6 +23,7 @@ import org.gdsc.domain.usecase.GetMyGroupUseCase
 import org.gdsc.domain.usecase.GetRestaurantsByMapUseCase
 import org.gdsc.domain.usecase.PostSelectGroupUseCase
 import org.gdsc.presentation.JmtLocationManager
+import org.gdsc.presentation.model.ResultState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -61,10 +62,14 @@ class HomeViewModel @Inject constructor(
     val drinkPossibilityState: StateFlow<DrinkPossibility>
         get() = _drinkPossibilityState
 
-    private var _myGroupList = MutableStateFlow<List<Group>>(emptyList())
-    val myGroupList: StateFlow<List<Group>>
+    private var _myGroupList = MutableStateFlow<ResultState<List<Group>>>(ResultState.OnLoading())
+    val myGroupList: StateFlow<ResultState<List<Group>>>
         get() = _myGroupList
 
+
+    private var _currentGroup = MutableStateFlow<ResultState<Group?>>(ResultState.OnLoading())
+    val currentGroup: StateFlow<ResultState<Group?>>
+        get() = _currentGroup
 
 
     fun setUserLocation(userLocation: Location) {
@@ -92,7 +97,11 @@ class HomeViewModel @Inject constructor(
     }
 
     fun setGroupList(groupList: List<Group>) {
-        _myGroupList.value = groupList
+        _myGroupList.value = ResultState.OnSuccess(groupList)
+    }
+
+    fun setCurrentGroup(group: Group?) {
+        _currentGroup.value = ResultState.OnSuccess(group)
     }
 
 
