@@ -94,7 +94,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 mapMarkerAdapter
             )
         }
-//        setRecyclerView()
+        
         return binding.root
     }
 
@@ -105,6 +105,51 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setRestaurantListBottomSheet()
+        setGroup()
+
+    }
+
+    override fun onViewHolderBind(holder: BaseViewHolder<out ViewBinding>, _item: Any) {
+        if (holder is RestaurantFilterAdapter.RestaurantFilterViewHolder) {
+
+            val sortSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.sort_spinner)
+            val foodSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.food_category_spinner)
+            val drinkSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.drink_possibility_spinner)
+
+            sortSpinner.setMenu(SortType.getAllText()) {
+                viewModel.setSortType(SortType.values()[it.itemId])
+            }
+
+            foodSpinner.setMenu(FoodCategory.getAllText()) {
+                viewModel.setFoodCategory(FoodCategory.values()[it.itemId])
+            }
+
+            drinkSpinner.setMenu(DrinkPossibility.getAllText()) {
+                viewModel.setDrinkPossibility(DrinkPossibility.values()[it.itemId])
+            }
+
+            repeatWhenUiStarted {
+                viewModel.sortTypeState.collectLatest {
+                    sortSpinner.setMenuTitle(it.text)
+                }
+            }
+            repeatWhenUiStarted {
+                viewModel.foodCategoryState.collectLatest {
+                    foodSpinner.setMenuTitle(it.text)
+                }
+            }
+            repeatWhenUiStarted {
+                viewModel.drinkPossibilityState.collectLatest {
+                    drinkSpinner.setMenuTitle(it.text)
+                }
+            }
+        }
+    }
+
+
+    private fun setRestaurantListBottomSheet() {
         standardBottomSheetBehavior.addBottomSheetCallback(
             object : BottomSheetBehavior.BottomSheetCallback() {
                 fun setBottomSheetRelatedView(isVisible: Boolean) {
@@ -148,7 +193,9 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             if (standardBottomSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED)
                 standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
+    }
 
+    private fun setGroup() {
         binding.groupArrow.setOnClickListener {
             repeatWhenUiStarted {
                 viewModel.getMyGroup().let { groupList ->
@@ -205,117 +252,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                         show()
                     }
                 }
-        }
-    }
-
-    override fun onViewHolderBind(holder: BaseViewHolder<out ViewBinding>, _item: Any) {
-        if (holder is RestaurantFilterAdapter.RestaurantFilterViewHolder) {
-
-            val sortSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.sort_spinner)
-            val foodSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.food_category_spinner)
-            val drinkSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.drink_possibility_spinner)
-
-            sortSpinner.setMenu(SortType.getAllText()) {
-                viewModel.setSortType(SortType.values()[it.itemId])
-            }
-
-            foodSpinner.setMenu(FoodCategory.getAllText()) {
-                viewModel.setFoodCategory(FoodCategory.values()[it.itemId])
-            }
-
-            drinkSpinner.setMenu(DrinkPossibility.getAllText()) {
-                viewModel.setDrinkPossibility(DrinkPossibility.values()[it.itemId])
-            }
-
-            repeatWhenUiStarted {
-                viewModel.sortTypeState.collectLatest {
-                    sortSpinner.setMenuTitle(it.text)
-                }
-            }
-            repeatWhenUiStarted {
-                viewModel.foodCategoryState.collectLatest {
-                    foodSpinner.setMenuTitle(it.text)
-                }
-            }
-            repeatWhenUiStarted {
-                viewModel.drinkPossibilityState.collectLatest {
-                    drinkSpinner.setMenuTitle(it.text)
-                }
-            }
-        }
-    }
-
-    private fun setGroup() {
-        repeatWhenUiStarted {
-            viewModel.getMyGroup().let { groupList ->
-                viewModel.setGroupList(groupList)
-            }
-        }
-
-        repeatWhenUiStarted {
-            viewModel.myGroupList.collect { state ->
-                when(state) {
-                    is ResultState.OnSuccess -> {
-                        val groupList = state.response
-
-                        if (groupList.isEmpty()) {
-                            viewModel.setCurrentGroup(null)
-                        } else {
-                            groupList.forEach {
-                                if (it.isSelected) {
-                                    viewModel.setCurrentGroup(it)
-                                    return@forEach
-                                }
-                            }
-                        }
-                    }
-
-                    else -> {}
-                }
-            }
-        }
-
-        repeatWhenUiStarted {
-            viewModel.currentGroup.collect { state ->
-                when(state) {
-                    is ResultState.OnSuccess -> {
-                        val group = state.response
-                        if (group == null) {
-                            BottomSheetDialog(requireContext())
-                                .bindBuilder(
-                                    ContentSheetEmptyGroupBinding.inflate(LayoutInflater.from(requireContext()))
-                                ) { dialog ->
-                                    with(dialog) {
-                                        binding.groupHeader.isVisible = false
-                                        dialog.setCancelable(false)
-                                        dialog.behavior.isDraggable = false
-                                        createGroupButton.setOnClickListener {
-                                            startActivity(
-                                                Intent(requireContext(), WebViewActivity::class.java)
-                                            )
-                                        }
-                                        show()
-                                    }
-                                }
-                        } else {
-                            binding.groupHeader.isVisible = true
-                            binding.groupName.text = group.groupName
-                            binding.groupImage.apply {
-                                Glide.with(this.context).load(group.groupProfileImageUrl)
-                                    .into(this)
-                                invalidate()
-                            }
-
-                            if (group.restaurantCnt == 0) {
-
-                                binding.recyclerView.isVisible = false
-                                binding.registGroup.isVisible = true
-                            }
-                        }
-                    }
-                    else -> {}
-                }
-            }
         }
     }
 
@@ -389,8 +325,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
     private fun observeState() {
 
-        setGroup()
-
         repeatWhenUiStarted {
             viewModel.registeredPagingData().collect {
                 mapMarkerAdapter.submitData(it)
@@ -404,6 +338,78 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         repeatWhenUiStarted {
             viewModel.myGroupList.collect {
                 binding.groupName.text
+            }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.getMyGroup().let { groupList ->
+                viewModel.setGroupList(groupList)
+            }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.myGroupList.collect { state ->
+                when(state) {
+                    is ResultState.OnSuccess -> {
+                        val groupList = state.response
+
+                        if (groupList.isEmpty()) {
+                            viewModel.setCurrentGroup(null)
+                        } else {
+                            groupList.forEach {
+                                if (it.isSelected) {
+                                    viewModel.setCurrentGroup(it)
+                                    return@forEach
+                                }
+                            }
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.currentGroup.collect { state ->
+                when(state) {
+                    is ResultState.OnSuccess -> {
+                        val group = state.response
+                        if (group == null) {
+                            BottomSheetDialog(requireContext())
+                                .bindBuilder(
+                                    ContentSheetEmptyGroupBinding.inflate(LayoutInflater.from(requireContext()))
+                                ) { dialog ->
+                                    with(dialog) {
+                                        binding.groupHeader.isVisible = false
+                                        dialog.setCancelable(false)
+                                        dialog.behavior.isDraggable = false
+                                        createGroupButton.setOnClickListener {
+                                            startActivity(
+                                                Intent(requireContext(), WebViewActivity::class.java)
+                                            )
+                                        }
+                                        show()
+                                    }
+                                }
+                        } else {
+                            binding.groupHeader.isVisible = true
+                            binding.groupName.text = group.groupName
+                            binding.groupImage.apply {
+                                Glide.with(this.context).load(group.groupProfileImageUrl)
+                                    .into(this)
+                                invalidate()
+                            }
+
+                            if (group.restaurantCnt == 0) {
+
+                                binding.recyclerView.isVisible = false
+                                binding.registGroup.isVisible = true
+                            }
+                        }
+                    }
+                    else -> {}
+                }
             }
         }
     }
