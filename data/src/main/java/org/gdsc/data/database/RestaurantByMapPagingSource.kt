@@ -6,6 +6,7 @@ import org.gdsc.data.model.RegisteredRestaurantResponse
 import org.gdsc.data.network.RestaurantAPI
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.request.RestaurantSearchRequest
+import org.gdsc.domain.model.response.Group
 
 class RestaurantByMapPagingSource(
     private val api: RestaurantAPI,

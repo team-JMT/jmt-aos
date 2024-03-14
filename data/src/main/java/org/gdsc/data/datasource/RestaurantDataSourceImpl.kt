@@ -34,6 +34,7 @@ import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
 import org.gdsc.domain.model.request.RestaurantSearchRequest
+import org.gdsc.domain.model.response.Group
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -203,12 +204,14 @@ class RestaurantDataSourceImpl @Inject constructor(
         endLocation: Location?,
         sortType: SortType,
         foodCategory: FoodCategory?,
-        drinkPossibility: DrinkPossibility?
+        drinkPossibility: DrinkPossibility?,
+        currentGroup: Group?,
     ): Flow<PagingData<RegisteredRestaurantResponse>> {
         val restaurantSearchRequest = RestaurantSearchRequest(
             userLocation = userLocation,
             startLocation = startLocation,
             endLocation = endLocation,
+            groupId = currentGroup?.groupId,
             filter = Filter(
                 categoryFilter = when (foodCategory) {
                     FoodCategory.INIT, FoodCategory.ETC -> String.Empty

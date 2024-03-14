@@ -1,5 +1,6 @@
 package org.gdsc.presentation.view.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -9,16 +10,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.RegisteredRestaurant
+import org.gdsc.domain.model.ScreenLocation
 import org.gdsc.domain.model.response.Group
 import org.gdsc.domain.usecase.GetMyGroupUseCase
 import org.gdsc.domain.usecase.GetRestaurantsByMapUseCase
@@ -46,10 +50,23 @@ class HomeViewModel @Inject constructor(
     val startLocationState: StateFlow<Location>
         get() = _startLocationState
 
-
     private var _endLocationState = MutableStateFlow(Location("0", "0"))
     val endLocationState: StateFlow<Location>
         get() = _endLocationState
+
+
+    val _screenLocationState: StateFlow<ScreenLocation> =
+        combine(
+            startLocationState,
+            endLocationState
+        ) { startLocationState, endLocationState ->
+            ScreenLocation(startLocationState, endLocationState)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ScreenLocation(Location("0", "0"), Location("0", "0")))
+
+    val screenLocationState: StateFlow<ScreenLocation>
+        get() = _screenLocationState
+
+
 
     private var _sortTypeState = MutableStateFlow(SortType.DISTANCE)
     val sortTypeState: StateFlow<SortType>
@@ -68,8 +85,8 @@ class HomeViewModel @Inject constructor(
         get() = _myGroupList
 
 
-    private var _currentGroup = MutableStateFlow<ResultState<Group?>>(ResultState.OnLoading())
-    val currentGroup: StateFlow<ResultState<Group?>>
+    private var _currentGroup = MutableStateFlow<Group?>(null)
+    val currentGroup: StateFlow<Group?>
         get() = _currentGroup
 
 
@@ -102,7 +119,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun setCurrentGroup(group: Group?) {
-        _currentGroup.value = ResultState.OnSuccess(group)
+        _currentGroup.value = group
     }
 
 
@@ -113,13 +130,13 @@ class HomeViewModel @Inject constructor(
 
         return run {
             return@run combine(
-                startLocationState,
-                endLocationState,
+                screenLocationState,
                 sortTypeState,
                 foodCategoryState,
-                drinkPossibilityState
-            ) { startLoc, endLoc, sortType, foodCategory, drinkPossibility ->
-                getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, userLoc, startLoc, endLoc)
+                drinkPossibilityState,
+                currentGroup,
+            ) { screenLoc, sortType, foodCategory, drinkPossibility, group ->
+                getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, userLoc, screenLoc.startLocation, screenLoc.endLocation, group)
             }.distinctUntilChanged()
                 .flatMapLatest { it }
         }.cachedIn(viewModelScope)
@@ -133,25 +150,10 @@ class HomeViewModel @Inject constructor(
                 userLocationState,
                 sortTypeState,
                 foodCategoryState,
-                drinkPossibilityState
-            ) { userLoc, sortType, foodCategory, drinkPossibility ->
-                getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, userLoc, null, null)
-            }.distinctUntilChanged()
-                .flatMapLatest { it }
-        }.cachedIn(viewModelScope)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun registeredPagingDataByGroup(): Flow<PagingData<RegisteredRestaurant>> {
-
-        return run {
-            return@run combine(
-                userLocationState,
-                sortTypeState,
-                foodCategoryState,
-                drinkPossibilityState
-            ) { userLoc, sortType, foodCategory, drinkPossibility ->
-                getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, userLoc, null, null)
+                drinkPossibilityState,
+                currentGroup,
+            ) { userLoc, sortType, foodCategory, drinkPossibility, group ->
+                getRestaurantsByMapUseCase(sortType, foodCategory, drinkPossibility, userLoc, null, null, group)
             }.distinctUntilChanged()
                 .flatMapLatest { it }
         }.cachedIn(viewModelScope)

@@ -13,6 +13,8 @@ data class RestaurantSearchRequest(
     val startLocation: Location? = null,
     @SerializedName("endLocation")
     val endLocation: Location? = null,
+    @SerializedName("groupId")
+    val groupId: Int? = null,
     @SerializedName("keyword")
     val keyword: String? = null,
 )
