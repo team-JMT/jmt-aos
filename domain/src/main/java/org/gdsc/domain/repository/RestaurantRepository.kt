@@ -14,6 +14,7 @@ import org.gdsc.domain.model.Review
 import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
+import org.gdsc.domain.model.response.Group
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 
 interface RestaurantRepository {
@@ -38,7 +39,13 @@ interface RestaurantRepository {
     suspend fun putRestaurantInfo(putRestaurantInfoRequest: ModifyRestaurantInfoRequest): String
 
     suspend fun getRestaurantsByMap(
-        userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
+        userLocation: Location?,
+        startLocation: Location?,
+        endLocation: Location?,
+        sortType: SortType,
+        foodCategory: FoodCategory?,
+        drinkPossibility: DrinkPossibility?,
+        currentGroup: Group?,
     ): Flow<PagingData<RegisteredRestaurant>>
 
     suspend fun getRegisteredRestaurantsBySearch(keyword: String?, userLocation: Location?): Flow<PagingData<RegisteredRestaurant>>

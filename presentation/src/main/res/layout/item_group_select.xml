@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="32dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/group_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_rounded_10"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/group_name"
+        style="@style/title_small_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Group 1"
+        android:layout_marginHorizontal="8dp"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/group_image"
+        app:layout_constraintEnd_toStartOf="@+id/select_button"
+        app:layout_constraintTop_toTopOf="@+id/group_image"
+        app:layout_constraintBottom_toBottomOf="@+id/group_image"/>
+
+    <ImageView
+        android:id="@+id/select_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_check_main"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@+id/group_image"
+        app:layout_constraintBottom_toBottomOf="@+id/group_image"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

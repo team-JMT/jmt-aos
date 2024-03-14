@@ -17,6 +17,7 @@ import org.gdsc.domain.model.Review
 import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
+import org.gdsc.domain.model.response.Group
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 import org.gdsc.domain.repository.RestaurantRepository
 import javax.inject.Inject
@@ -103,7 +104,8 @@ class RestaurantRepositoryImpl @Inject constructor(
         endLocation: Location?,
         sortType: SortType,
         foodCategory: FoodCategory?,
-        drinkPossibility: DrinkPossibility?
+        drinkPossibility: DrinkPossibility?,
+        currentGroup: Group?,
     ): Flow<PagingData<RegisteredRestaurant>> {
         return restaurantDataSource.getRestaurantsByMap(
             userLocation,
@@ -111,7 +113,8 @@ class RestaurantRepositoryImpl @Inject constructor(
             endLocation,
             sortType,
             foodCategory,
-            drinkPossibility
+            drinkPossibility,
+            currentGroup,
         ).map { result ->
             result.map { restaurant ->
                 RegisteredRestaurant(
