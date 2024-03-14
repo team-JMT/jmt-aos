@@ -77,7 +77,7 @@ interface RestaurantAPI {
     suspend fun getRestaurantLocationInfoByMap(
         @Query("page") page: Int? = null,
         @Query("size") size: Int? = null,
-        @Query("sort") sort: Array<String>? = null,
+        @Query("sort") sort: String? = null,
         @Body restaurantSearchRequest: RestaurantSearchRequest,
     ): Response<RegisteredRestaurantPaging>
 
