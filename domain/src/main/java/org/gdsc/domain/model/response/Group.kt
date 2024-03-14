@@ -1,6 +1,6 @@
 package org.gdsc.domain.model.response
 
-data class GroupResponse(
+data class Group(
     val groupId: Int,
     val groupName: String,
     val groupIntroduce: String,

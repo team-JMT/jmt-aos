@@ -1,7 +1,7 @@
 package org.gdsc.domain.repository
 
-import org.gdsc.domain.model.response.GroupResponse
+import org.gdsc.domain.model.response.Group
 
 interface GroupRepository {
-    suspend fun getMyGroups(): List<GroupResponse>
+    suspend fun getMyGroups(): List<Group>
 }

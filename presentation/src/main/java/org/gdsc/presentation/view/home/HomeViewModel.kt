@@ -23,7 +23,7 @@ import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RegisteredRestaurant
-import org.gdsc.domain.model.response.GroupResponse
+import org.gdsc.domain.model.response.Group
 import org.gdsc.domain.usecase.GetMyGroupUseCase
 import org.gdsc.domain.usecase.GetRestaurantsByMapUseCase
 import org.gdsc.domain.usecase.token.GetAccessTokenUseCase
@@ -126,7 +126,7 @@ class HomeViewModel @Inject constructor(
         }.cachedIn(viewModelScope)
     }
 
-    suspend fun getMyGroup(): List<GroupResponse> {
+    suspend fun getMyGroup(): List<Group> {
         return getMyGroupUseCase()
     }
 }
