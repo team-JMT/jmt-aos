@@ -5,12 +5,12 @@ import androidx.paging.PagingState
 import org.gdsc.data.model.RegisteredRestaurantResponse
 import org.gdsc.data.network.RestaurantAPI
 import org.gdsc.domain.SortType
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
+import org.gdsc.domain.model.request.RestaurantSearchRequest
 
 class RestaurantByMapPagingSource(
     private val api: RestaurantAPI,
     private val sortType: SortType,
-    private val restaurantSearchMapRequest: RestaurantSearchMapRequest,
+    private val restaurantSearchRequest: RestaurantSearchRequest,
 ): PagingSource<Int, RegisteredRestaurantResponse>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RegisteredRestaurantResponse> {
         val page = params.key ?: 1
@@ -19,7 +19,7 @@ class RestaurantByMapPagingSource(
                 page = page,
                 size = params.loadSize,
                 sort = sortType.key,
-                restaurantSearchMapRequest = restaurantSearchMapRequest
+                restaurantSearchRequest = restaurantSearchRequest
             )
             LoadResult.Page(
                 data = items.data.restaurants,
