@@ -2,6 +2,7 @@ package org.gdsc.presentation.view.home
 
 import android.graphics.PointF
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -195,6 +196,15 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
     private fun setRestaurantListBottomSheet() {
 
+        binding.scrollUpButton.setOnClickListener {
+            binding.recyclerView.scrollToPosition(0)
+        }
+
+        binding.registRestaurantButton.setOnClickListener {
+            // TODO : 식당 등록 버튼 클릭 시 동작 정의 필요
+            Log.d("testLog", "식당 등록 버튼 클릭")
+        }
+
         restaurantListAdapter.addLoadStateListener { loadState ->
             if (loadState.append.endOfPaginationReached) {
                 if (restaurantListAdapter.itemCount < 1) {
@@ -219,6 +229,8 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     when (newState) {
                         BottomSheetBehavior.STATE_EXPANDED -> {
                             binding.groupHeader.elevation = 10F
+                            binding.bottomSheetActionButtons.isVisible = true
+
                             setBottomSheetRelatedView(false)
                             binding.bottomSheet.background = ResourcesCompat.getDrawable(
                                 resources,
