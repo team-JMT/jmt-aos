@@ -39,11 +39,7 @@ class MyGroupFragment: Fragment() {
         
         binding.webView.apply {
             repeatWhenUiStarted {
-                loadUrl(
-                    WEB_BASE_URL,
-                    hashMapOf<String, String>().apply {
-                    put("token", specificWebViewViewModel.getAccessToken())
-                })
+                loadUrl(WEB_BASE_URL)
             }
 
             settings.javaScriptEnabled = true
