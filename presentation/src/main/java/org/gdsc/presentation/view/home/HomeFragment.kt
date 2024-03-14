@@ -3,6 +3,7 @@ package org.gdsc.presentation.view.home
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.gdsc.domain.DrinkPossibility
@@ -42,6 +44,7 @@ import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.ContentSheetEmptyGroupBinding
 import org.gdsc.presentation.databinding.ContentSheetGroupSelectBinding
 import org.gdsc.presentation.databinding.FragmentHomeBinding
+import org.gdsc.presentation.model.ResultState
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.WebViewActivity
 import org.gdsc.presentation.view.custom.BottomSheetDialog
@@ -75,7 +78,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        setGroup()
         setMap(savedInstanceState)
         observeState()
 
@@ -148,10 +150,8 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         }
 
         binding.groupArrow.setOnClickListener {
-
             repeatWhenUiStarted {
                 viewModel.getMyGroup().let { groupList ->
-
                     viewModel.setGroupList(groupList)
                 }
             }
@@ -176,8 +176,8 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                                         // TODO GroupList : 추후에 Room에 Current Group 넣어주게 되면, 반영해야 하는 부분
                                         repeatWhenUiStarted {
                                             viewModel.selectGroup(_item.groupId)
+                                            viewModel.setCurrentGroup(_item)
                                         }
-                                        binding.groupName.text = _item.groupName
                                         dialog.dismiss()
                                     }
                                 }
@@ -188,8 +188,14 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
                     with(dialog) {
                         val groupSelectAdapter = GroupSelectAdapter(listener)
-
-                        groupSelectAdapter.submitList(viewModel.myGroupList.value ?: emptyList())
+                        viewModel.myGroupList.value.let {
+                            when(it) {
+                                is ResultState.OnSuccess -> {
+                                    groupSelectAdapter.submitList(it.response ?: emptyList())
+                                }
+                                else -> {}
+                            }
+                        }
 
                         findViewById<RecyclerView>(R.id.group_select_recycler_view)?.apply {
                             adapter = groupSelectAdapter
@@ -237,67 +243,77 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 }
             }
         }
-
-        if (holder is GroupSelectAdapter.GroupSelectViewHolder && _item is Group) {
-            with(holder.itemView) {
-                findViewById<TextView>(R.id.group_name).text = _item.groupName
-                findViewById<ImageView>(R.id.select_button).isVisible = _item.isSelected
-                Glide.with(this).load(_item.groupProfileImageUrl).into(findViewById(R.id.group_image))
-
-                setOnClickListener {
-                    repeatWhenUiStarted {
-                        viewModel.selectGroup(_item.groupId)
-                    }
-                    // TODO GroupList : 추후에 Room에 Current Group 넣어주게 되면, 반영해야 하는 부분
-                    binding.groupName.text = _item.groupName
-                }
-            }
-
-        }
     }
 
     private fun setGroup() {
         repeatWhenUiStarted {
             viewModel.getMyGroup().let { groupList ->
-
                 viewModel.setGroupList(groupList)
+            }
+        }
 
-                if (groupList.isEmpty()) {
-                    BottomSheetDialog(requireContext())
-                        .bindBuilder(
-                            ContentSheetEmptyGroupBinding.inflate(LayoutInflater.from(requireContext()))
-                        ) { dialog ->
-                            with(dialog) {
-                                binding.groupHeader.isVisible = false
-                                dialog.setCancelable(false)
-                                dialog.behavior.isDraggable = false
-                                createGroupButton.setOnClickListener {
-                                    startActivity(
-                                        Intent(requireContext(), WebViewActivity::class.java)
-                                    )
+        repeatWhenUiStarted {
+            viewModel.myGroupList.collect { state ->
+                when(state) {
+                    is ResultState.OnSuccess -> {
+                        val groupList = state.response
+
+                        if (groupList.isEmpty()) {
+                            viewModel.setCurrentGroup(null)
+                        } else {
+                            groupList.forEach {
+                                if (it.isSelected) {
+                                    viewModel.setCurrentGroup(it)
+                                    return@forEach
                                 }
-                                show()
                             }
                         }
-                } else {
-                    binding.groupHeader.isVisible = true
-                    groupList.forEach {
-                        if (it.isSelected) {
-                            binding.groupName.text = it.groupName
-                            if (it.restaurantCnt == 0) {
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.currentGroup.collect { state ->
+                when(state) {
+                    is ResultState.OnSuccess -> {
+                        val group = state.response
+                        if (group == null) {
+                            BottomSheetDialog(requireContext())
+                                .bindBuilder(
+                                    ContentSheetEmptyGroupBinding.inflate(LayoutInflater.from(requireContext()))
+                                ) { dialog ->
+                                    with(dialog) {
+                                        binding.groupHeader.isVisible = false
+                                        dialog.setCancelable(false)
+                                        dialog.behavior.isDraggable = false
+                                        createGroupButton.setOnClickListener {
+                                            startActivity(
+                                                Intent(requireContext(), WebViewActivity::class.java)
+                                            )
+                                        }
+                                        show()
+                                    }
+                                }
+                        } else {
+                            binding.groupHeader.isVisible = true
+                            binding.groupName.text = group.groupName
+                            binding.groupImage.apply {
+                                Glide.with(this.context).load(group.groupProfileImageUrl)
+                                    .into(this)
+                                invalidate()
+                            }
+
+                            if (group.restaurantCnt == 0) {
 
                                 binding.recyclerView.isVisible = false
                                 binding.registGroup.isVisible = true
                             }
-                            return@forEach
                         }
                     }
-
-                    // 선택 된 그룹이 없는 경우
-                    if (groupList.isNotEmpty()) {
-                        binding.groupName.text = groupList[0].groupName
-                        viewModel.selectGroup(groupList[0].groupId)
-                    }
+                    else -> {}
                 }
             }
         }
@@ -372,6 +388,9 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     }
 
     private fun observeState() {
+
+        setGroup()
+
         repeatWhenUiStarted {
             viewModel.registeredPagingData().collect {
                 mapMarkerAdapter.submitData(it)
@@ -382,6 +401,11 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             viewModel.setSortType(SortType.DISTANCE)
         }
 
+        repeatWhenUiStarted {
+            viewModel.myGroupList.collect {
+                binding.groupName.text
+            }
+        }
     }
 
     override fun onDestroyView() {
