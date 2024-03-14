@@ -86,6 +86,10 @@ class RestaurantInfoFragment : Fragment() {
                                 binding.cgRecommendDrink.addView(newChip(it))
                             }
                         }
+
+                        photoAdapter.submitList(pictures.map {
+                            ImagePagerItem(it)
+                        })
                     }
                 }
             }
@@ -111,17 +115,6 @@ class RestaurantInfoFragment : Fragment() {
     private fun setAdapter() {
 
         binding.pagerPhotos.adapter = photoAdapter
-
-        photoAdapter.submitList(
-            listOf(
-                ImagePagerItem("https://picsum.photos/200/200"),
-                ImagePagerItem("https://picsum.photos/200/200"),
-                ImagePagerItem("https://picsum.photos/200/200"),
-                ImagePagerItem("https://picsum.photos/200/200"),
-                ImagePagerItem("https://picsum.photos/200/200"),
-                ImagePagerItem("https://picsum.photos/200/200"),
-            )
-        )
 
         binding.rvReviews.adapter = restaurantReviewAdapter
         binding.rvReviews.layoutManager = LinearLayoutManager(context)
