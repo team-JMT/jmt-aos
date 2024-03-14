@@ -2,6 +2,7 @@ package org.gdsc.domain.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
 import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
@@ -13,7 +14,6 @@ import org.gdsc.domain.model.Review
 import org.gdsc.domain.model.UserLocation
 import org.gdsc.domain.model.request.ModifyRestaurantInfoRequest
 import org.gdsc.domain.model.request.RestaurantRegistrationRequest
-import org.gdsc.domain.model.request.RestaurantSearchMapRequest
 import org.gdsc.domain.model.response.RestaurantInfoResponse
 
 interface RestaurantRepository {
@@ -41,6 +41,12 @@ interface RestaurantRepository {
         userLocation: Location?, startLocation: Location?, endLocation: Location?, sortType: SortType, foodCategory: FoodCategory?, drinkPossibility: DrinkPossibility?
     ): Flow<PagingData<RegisteredRestaurant>>
 
+    suspend fun getRegisteredRestaurantsBySearch(keyword: String?, userLocation: Location?): Flow<PagingData<RegisteredRestaurant>>
+
     suspend fun getRestaurantReviews(restaurantId: Int): List<Review>
+
+    suspend fun getRegisteredRestaurantsBySearchWithLimitCount(keyword: String?, userLocation: Location?, limit: Int): List<RegisteredRestaurant>
+  
+    suspend fun postRestaurantReview(restaurantId: Int, reviewContent: String, reviewImages: List<MultipartBody.Part>): Boolean
 
 }

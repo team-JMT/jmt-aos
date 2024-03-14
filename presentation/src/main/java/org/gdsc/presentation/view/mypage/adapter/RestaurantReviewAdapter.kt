@@ -1,6 +1,7 @@
 package org.gdsc.presentation.view.mypage.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -26,6 +27,14 @@ class RestaurantReviewAdapter(
 
                 tvNickname.text = item.userName
                 tvContent.text = item.reviewContent
+
+                if (item.reviewImages.isEmpty()) {
+                    rvReviewImages.visibility = View.GONE
+                } else {
+                    rvReviewImages.adapter = ReviewImageAdapter().apply {
+                        submitList(item.reviewImages)
+                    }
+                }
             }
         }
     }

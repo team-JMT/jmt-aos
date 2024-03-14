@@ -8,15 +8,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRestaurantDetailBinding
+import org.gdsc.presentation.utils.BitmapUtils.getCompressedBitmapFromUri
+import org.gdsc.presentation.utils.BitmapUtils.saveBitmapToFile
 import org.gdsc.presentation.utils.CalculatorUtils
+import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.view.mypage.adapter.PhotoWillBeUploadedAdapter
 import org.gdsc.presentation.view.mypage.adapter.RestaurantDetailPagerAdapter
 import org.gdsc.presentation.view.mypage.viewmodel.RestaurantDetailViewModel
 
@@ -27,6 +38,10 @@ class RestaurantDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: RestaurantDetailViewModel by activityViewModels()
+
+    private val adapter = PhotoWillBeUploadedAdapter {
+        viewModel.deletePhotoForReviewState(it)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +56,66 @@ class RestaurantDetailFragment : Fragment() {
         setButtons()
         setTabLayout()
         observeData()
+
+        repeatWhenUiStarted {
+            viewModel.photosForReviewState.collect {
+                adapter.submitList(it)
+            }
+        }
+
+        binding.rvImageListWillBeUploaded.adapter = adapter
+
+        binding.addImageIcon.setOnClickListener {
+            val directions =
+                RestaurantDetailFragmentDirections.actionRestaurantDetailFragmentToMultiImagePickerFragment()
+
+            findNavController().navigate(directions)
+        }
+
+        binding.btnRegister.setOnClickListener {
+
+            val pictures = mutableListOf<MultipartBody.Part>()
+
+            viewModel.photosForReviewState.value.forEachIndexed { index, sUri ->
+
+                sUri.toUri()
+                    .getCompressedBitmapFromUri(requireContext())
+                    ?.saveBitmapToFile(requireContext(), "$index.jpg")?.let { imageFile ->
+
+                        val requestFile =
+                            RequestBody.create(
+                                MediaType.parse("image/png"),
+                                imageFile
+                            )
+
+                        val body =
+                            MultipartBody.Part.createFormData(
+                                "reviewImages",
+                                imageFile.name,
+                                requestFile
+                            )
+
+                        pictures.add(body)
+
+                    }
+
+            }
+
+            viewModel.postReview(
+                binding.etReview.text.toString(),
+                pictures
+            ) {
+                binding.etReview.text.clear()
+                Toast.makeText(requireContext(), "후기가 등록되었습니다!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        setFragmentResultListener("pickImages") { _, bundle ->
+            val images = bundle.getStringArray("imagesUri")
+            viewModel.setPhotosForReviewState(images?.toList() ?: emptyList())
+
+            if (images.isNullOrEmpty()) return@setFragmentResultListener
+        }
     }
 
     private fun setButtons() {

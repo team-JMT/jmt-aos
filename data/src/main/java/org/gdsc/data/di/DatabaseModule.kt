@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.gdsc.data.LocalHistoryDataStore
 import org.gdsc.data.database.RestaurantDatabase
 import javax.inject.Singleton
 
@@ -24,4 +25,8 @@ class DatabaseModule {
     @Singleton
     @Provides
     fun provideRestaurantDao(database: RestaurantDatabase) = database.restaurantDao()
+
+    @Singleton
+    @Provides
+    fun provideHistoryDataStore(@ApplicationContext context: Context) = LocalHistoryDataStore(context)
 }

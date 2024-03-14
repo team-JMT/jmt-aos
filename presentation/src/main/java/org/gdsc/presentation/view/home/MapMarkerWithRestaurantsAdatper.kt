@@ -27,7 +27,7 @@ class MapMarkerWithRestaurantsAdatper
                 oldItem: RegisteredRestaurant,
                 newItem: RegisteredRestaurant
             ): Boolean {
-                return oldItem == newItem
+                return oldItem.id == newItem.id
             }
         }
     }
