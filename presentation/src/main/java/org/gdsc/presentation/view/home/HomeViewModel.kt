@@ -1,13 +1,9 @@
 package org.gdsc.presentation.view.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
-import com.google.gson.Gson
-import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -21,12 +17,11 @@ import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
-import org.gdsc.domain.model.PagingResult
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.response.Group
 import org.gdsc.domain.usecase.GetMyGroupUseCase
 import org.gdsc.domain.usecase.GetRestaurantsByMapUseCase
-import org.gdsc.domain.usecase.token.GetAccessTokenUseCase
+import org.gdsc.domain.usecase.PostSelectGroupUseCase
 import org.gdsc.presentation.JmtLocationManager
 import javax.inject.Inject
 
@@ -35,6 +30,7 @@ class HomeViewModel @Inject constructor(
     private val locationManager: JmtLocationManager,
     private val getRestaurantsByMapUseCase: GetRestaurantsByMapUseCase,
     private val getMyGroupUseCase: GetMyGroupUseCase,
+    private val postSelectGroupUserCase: PostSelectGroupUseCase,
 ) : ViewModel() {
 
     suspend fun getCurrentLocation() = locationManager.getCurrentLocation()
@@ -65,6 +61,11 @@ class HomeViewModel @Inject constructor(
     val drinkPossibilityState: StateFlow<DrinkPossibility>
         get() = _drinkPossibilityState
 
+    private var _myGroupList = MutableStateFlow<List<Group>>(emptyList())
+    val myGroupList: StateFlow<List<Group>>
+        get() = _myGroupList
+
+
 
     fun setUserLocation(userLocation: Location) {
         _userLocationState.value = userLocation
@@ -88,6 +89,10 @@ class HomeViewModel @Inject constructor(
 
     fun setDrinkPossibility(drinkPossibility: DrinkPossibility) {
         _drinkPossibilityState.value = drinkPossibility
+    }
+
+    fun setGroupList(groupList: List<Group>) {
+        _myGroupList.value = groupList
     }
 
 
@@ -128,5 +133,9 @@ class HomeViewModel @Inject constructor(
 
     suspend fun getMyGroup(): List<Group> {
         return getMyGroupUseCase()
+    }
+
+    suspend fun selectGroup(groupID: Int) {
+        postSelectGroupUserCase(groupID)
     }
 }

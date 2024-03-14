@@ -12,4 +12,7 @@ class GroupRepositoryImpl @Inject constructor(
         return groupDataSource.getMyGroups()
     }
 
+    override suspend fun selectGroup(groupId: Int): String {
+        return groupDataSource.selectGroup(groupId)
+    }
 }
