@@ -18,4 +18,15 @@ class GroupDataSourceImpl @Inject constructor(
         }
         return emptyList()
     }
+
+    override suspend fun selectGroup(groupId: Int): String {
+        runCatching {
+            groupAPI.selectGroup(groupId)
+        }.onSuccess {
+            return it.data
+        }.onFailure {
+            return ""
+        }
+        return ""
+    }
 }

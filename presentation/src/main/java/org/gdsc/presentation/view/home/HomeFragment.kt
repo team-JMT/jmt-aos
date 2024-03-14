@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -32,10 +35,12 @@ import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
 import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.RegisteredRestaurant
+import org.gdsc.domain.model.response.Group
 import org.gdsc.presentation.R
 import org.gdsc.presentation.base.BaseViewHolder
 import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.ContentSheetEmptyGroupBinding
+import org.gdsc.presentation.databinding.ContentSheetGroupSelectBinding
 import org.gdsc.presentation.databinding.FragmentHomeBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.WebViewActivity
@@ -141,6 +146,60 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             if (standardBottomSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED)
                 standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
+
+        binding.groupArrow.setOnClickListener {
+
+            repeatWhenUiStarted {
+                viewModel.getMyGroup().let { groupList ->
+
+                    viewModel.setGroupList(groupList)
+                }
+            }
+
+            BottomSheetDialog(requireContext())
+                .bindBuilder(
+                    ContentSheetGroupSelectBinding.inflate(LayoutInflater.from(requireContext()))
+                ) { dialog ->
+
+                    val listener: ViewHolderBindListener = object : ViewHolderBindListener {
+                        override fun onViewHolderBind(
+                            holder: BaseViewHolder<out ViewBinding>,
+                            _item: Any
+                        ) {
+                            if (holder is GroupSelectAdapter.GroupSelectViewHolder && _item is Group) {
+                                with(holder.itemView) {
+                                    findViewById<TextView>(R.id.group_name).text = _item.groupName
+                                    findViewById<ImageView>(R.id.select_button).isVisible = _item.isSelected
+                                    Glide.with(this).load(_item.groupProfileImageUrl).into(findViewById(R.id.group_image))
+
+                                    setOnClickListener {
+                                        // TODO GroupList : 추후에 Room에 Current Group 넣어주게 되면, 반영해야 하는 부분
+                                        repeatWhenUiStarted {
+                                            viewModel.selectGroup(_item.groupId)
+                                        }
+                                        binding.groupName.text = _item.groupName
+                                        dialog.dismiss()
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
+                    with(dialog) {
+                        val groupSelectAdapter = GroupSelectAdapter(listener)
+
+                        groupSelectAdapter.submitList(viewModel.myGroupList.value ?: emptyList())
+
+                        findViewById<RecyclerView>(R.id.group_select_recycler_view)?.apply {
+                            adapter = groupSelectAdapter
+                            layoutManager = LinearLayoutManager(requireContext())
+                        }
+
+                        show()
+                    }
+                }
+        }
     }
 
     override fun onViewHolderBind(holder: BaseViewHolder<out ViewBinding>, _item: Any) {
@@ -178,11 +237,31 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 }
             }
         }
+
+        if (holder is GroupSelectAdapter.GroupSelectViewHolder && _item is Group) {
+            with(holder.itemView) {
+                findViewById<TextView>(R.id.group_name).text = _item.groupName
+                findViewById<ImageView>(R.id.select_button).isVisible = _item.isSelected
+                Glide.with(this).load(_item.groupProfileImageUrl).into(findViewById(R.id.group_image))
+
+                setOnClickListener {
+                    repeatWhenUiStarted {
+                        viewModel.selectGroup(_item.groupId)
+                    }
+                    // TODO GroupList : 추후에 Room에 Current Group 넣어주게 되면, 반영해야 하는 부분
+                    binding.groupName.text = _item.groupName
+                }
+            }
+
+        }
     }
 
     private fun setGroup() {
         repeatWhenUiStarted {
             viewModel.getMyGroup().let { groupList ->
+
+                viewModel.setGroupList(groupList)
+
                 if (groupList.isEmpty()) {
                     BottomSheetDialog(requireContext())
                         .bindBuilder(
@@ -217,6 +296,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     // 선택 된 그룹이 없는 경우
                     if (groupList.isNotEmpty()) {
                         binding.groupName.text = groupList[0].groupName
+                        viewModel.selectGroup(groupList[0].groupId)
                     }
                 }
             }
