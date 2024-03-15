@@ -368,7 +368,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     is ResultState.OnSuccess -> {
                         val groupList = state.response
 
-                        if (groupList.isNullOrEmpty()) {
+                        if (groupList.isEmpty()) {
                             viewModel.setCurrentGroup(null)
 
                             BottomSheetDialog(requireContext())
