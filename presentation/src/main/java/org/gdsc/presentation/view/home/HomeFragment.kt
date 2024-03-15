@@ -13,6 +13,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +28,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.gdsc.domain.DrinkPossibility
@@ -55,13 +55,46 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels()
 
     private lateinit var mapView: MapView
 
+    private val bottomSheetDialog by lazy {
+        BottomSheetDialog(requireContext())
+            .bindBuilder(
+                ContentSheetEmptyGroupBinding.inflate(LayoutInflater.from(requireContext()))
+            ) { dialog ->
+                with(dialog) {
+                    binding.groupHeader.isVisible = false
+                    dialog.setCancelable(false)
+                    dialog.behavior.isDraggable = false
+                    createGroupButton.setOnClickListener {
+                        startActivity(
+                            Intent(requireContext(), WebViewActivity::class.java)
+                        )
+                    }
+                    searchGroupButton.setOnClickListener {
+                        dialog.dismiss()
+                        findNavController().navigate(
+                            HomeFragmentDirections.actionHomeFragmentToAllSearchFragment()
+                        )
+                    }
+                    show()
+                }
+            }
+    }
+
     // TODO : titleAdapter 문구 정리 필요
-    private val recommendPopularRestaurantTitleAdapter by lazy { RecommendPopularRestaurantTitleAdapter("그룹에서 인기가 많아요") }
-    private val recommendPopularRestaurantWrapperAdapter by lazy { RecommendPopularRestaurantWrapperAdapter(recommendPopularRestaurantList)}
+    private val recommendPopularRestaurantTitleAdapter by lazy {
+        RecommendPopularRestaurantTitleAdapter(
+            "그룹에서 인기가 많아요"
+        )
+    }
+    private val recommendPopularRestaurantWrapperAdapter by lazy {
+        RecommendPopularRestaurantWrapperAdapter(
+            recommendPopularRestaurantList
+        )
+    }
     private val restaurantFilterAdapter by lazy { RestaurantFilterAdapter(this) }
     private val restaurantListAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
     private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
@@ -76,6 +109,16 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    private fun setRecyclerView() {
+        binding.recyclerView.adapter = concatAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setMap(savedInstanceState)
         observeState()
@@ -93,17 +136,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 restaurantListAdapter
             )
         }
-        
-        return binding.root
-    }
-
-    private fun setRecyclerView() {
-        binding.recyclerView.adapter = concatAdapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         setRestaurantListBottomSheet()
         setGroup()
@@ -115,7 +147,8 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
             val sortSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.sort_spinner)
             val foodSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.food_category_spinner)
-            val drinkSpinner = holder.itemView.findViewById<JmtSpinner>(R.id.drink_possibility_spinner)
+            val drinkSpinner =
+                holder.itemView.findViewById<JmtSpinner>(R.id.drink_possibility_spinner)
 
             sortSpinner.setMenu(SortType.getAllText()) {
                 viewModel.setSortType(SortType.values()[it.itemId])
@@ -168,8 +201,10 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                             if (holder is GroupSelectAdapter.GroupSelectViewHolder && _item is Group) {
                                 with(holder.itemView) {
                                     findViewById<TextView>(R.id.group_name).text = _item.groupName
-                                    findViewById<ImageView>(R.id.select_button).isVisible = _item.isSelected
-                                    Glide.with(this).load(_item.groupProfileImageUrl).into(findViewById(R.id.group_image))
+                                    findViewById<ImageView>(R.id.select_button).isVisible =
+                                        _item.isSelected
+                                    Glide.with(this).load(_item.groupProfileImageUrl)
+                                        .into(findViewById(R.id.group_image))
 
                                     setOnClickListener {
                                         // TODO GroupList : 추후에 Room에 Current Group 넣어주게 되면, 반영해야 하는 부분
@@ -188,10 +223,11 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     with(dialog) {
                         val groupSelectAdapter = GroupSelectAdapter(listener)
                         viewModel.myGroupList.value.let {
-                            when(it) {
+                            when (it) {
                                 is ResultState.OnSuccess -> {
                                     groupSelectAdapter.submitList(it.response ?: emptyList())
                                 }
+
                                 else -> {}
                             }
                         }
@@ -236,7 +272,8 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     naverMap.moveCamera(zoom)
                 }
 
-                mapMarkerAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+                mapMarkerAdapter.registerAdapterDataObserver(object :
+                    RecyclerView.AdapterDataObserver() {
                     override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                         super.onItemRangeInserted(positionStart, itemCount)
                         markerManager.updateDataList(mapMarkerAdapter.snapshot().items)
@@ -258,10 +295,25 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                 val projection: Projection = naverMap.projection
 
                 val topLeft: LatLng = projection.fromScreenLocation(PointF(0F, 0F))
-                val bottomRight: LatLng = projection.fromScreenLocation(PointF(naverMap.width.toFloat(), naverMap.height.toFloat()))
+                val bottomRight: LatLng = projection.fromScreenLocation(
+                    PointF(
+                        naverMap.width.toFloat(),
+                        naverMap.height.toFloat()
+                    )
+                )
 
-                viewModel.setStartLocation(Location(topLeft.longitude.toString(), topLeft.latitude.toString()))
-                viewModel.setEndLocation(Location(bottomRight.longitude.toString(), bottomRight.latitude.toString()))
+                viewModel.setStartLocation(
+                    Location(
+                        topLeft.longitude.toString(),
+                        topLeft.latitude.toString()
+                    )
+                )
+                viewModel.setEndLocation(
+                    Location(
+                        bottomRight.longitude.toString(),
+                        bottomRight.latitude.toString()
+                    )
+                )
             }
         }
     }
@@ -294,10 +346,12 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             object : BottomSheetBehavior.BottomSheetCallback() {
                 fun setBottomSheetRelatedView(isExpanded: Boolean) {
                     viewModel.currentGroup.value.let {
-                        val isNotFullExpanded = isExpanded.not() || it == null || it.restaurantCnt == 0
+                        val isNotFullExpanded =
+                            isExpanded.not() || it == null || it.restaurantCnt == 0
 
                         with(binding) {
-                            binding.bottomSheetActionButtons.isVisible = isExpanded && it != null && it.restaurantCnt != 0
+                            binding.bottomSheetActionButtons.isVisible =
+                                isExpanded && it != null && it.restaurantCnt != 0
                             bottomSheetHandle.isVisible = isNotFullExpanded
                             bottomSheetHandleSpace.isVisible = isNotFullExpanded
                             mapOptionContainer.isVisible = isNotFullExpanded
@@ -328,7 +382,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     }
                 }
 
-                override fun onSlide(bottomSheet: View, slideOffset: Float) { }
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -364,29 +418,16 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
         repeatWhenUiStarted {
             viewModel.myGroupList.collect { state ->
-                when(state) {
+                when (state) {
                     is ResultState.OnSuccess -> {
                         val groupList = state.response
 
                         if (groupList.isEmpty()) {
                             viewModel.setCurrentGroup(null)
 
-                            BottomSheetDialog(requireContext())
-                                .bindBuilder(
-                                    ContentSheetEmptyGroupBinding.inflate(LayoutInflater.from(requireContext()))
-                                ) { dialog ->
-                                    with(dialog) {
-                                        binding.groupHeader.isVisible = false
-                                        dialog.setCancelable(false)
-                                        dialog.behavior.isDraggable = false
-                                        createGroupButton.setOnClickListener {
-                                            startActivity(
-                                                Intent(requireContext(), WebViewActivity::class.java)
-                                            )
-                                        }
-                                        show()
-                                    }
-                                }
+                            if (bottomSheetDialog.isShowing.not()) {
+                                bottomSheetDialog.show()
+                            }
                         } else {
                             groupList.forEach {
                                 if (it.isSelected) {
@@ -413,11 +454,13 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     }
 
                     if (it.restaurantCnt == 0) {
-                        binding.bottomSheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                        binding.bottomSheet.layoutParams.height =
+                            ViewGroup.LayoutParams.WRAP_CONTENT
                         binding.recyclerView.isVisible = false
                         binding.registLayout.isVisible = true
                     } else {
-                        binding.bottomSheet.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                        binding.bottomSheet.layoutParams.height =
+                            ViewGroup.LayoutParams.MATCH_PARENT
                         binding.recyclerView.isVisible = true
                         binding.registLayout.isVisible = false
                     }
