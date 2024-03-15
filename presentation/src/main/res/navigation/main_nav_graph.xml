@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_home_fragment_to_registerRestaurant_fragment"
             app:destination="@id/registerRestaurant_fragment" />
+        <action
+            android:id="@+id/action_home_fragment_to_all_search_fragment"
+            app:destination="@id/all_search_fragment" />
     </fragment>
     <fragment
         android:id="@+id/all_search_fragment"
