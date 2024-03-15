@@ -1,143 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager_photos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/tv_menu"
+        style="@style/text_medium_medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="메인메뉴"
+        android:textColor="@color/grey700"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pager_photos" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/pager_photos"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cg_recommend_menu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_menu"/>
 
-            <TextView
-                android:id="@+id/tv_menu"
-                android:text="메인메뉴"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                style="@style/text_medium_medium"
-                android:textColor="@color/grey700"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/pager_photos"
-                android:layout_marginTop="24dp" />
+    <TextView
+        android:id="@+id/tv_drink"
+        style="@style/text_medium_medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="술과 함께 즐길 수 있어요 🍻"
+        android:textColor="@color/grey700"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cg_recommend_menu" />
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/cg_recommend_menu"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_menu">
-            </com.google.android.material.chip.ChipGroup>
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cg_recommend_drink"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_drink"/>
 
-            <TextView
-                android:id="@+id/tv_drink"
-                android:text="술과 함께 즐길 수 있어요 🍻"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                style="@style/text_medium_medium"
-                android:textColor="@color/grey700"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cg_recommend_menu"
-                android:layout_marginTop="20dp" />
+    <View
+        android:id="@+id/dv_first"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/grey100"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cg_recommend_drink" />
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/cg_recommend_drink"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_drink">
-            </com.google.android.material.chip.ChipGroup>
+    <TextView
+        android:id="@+id/tv_reviews"
+        style="@style/text_medium_medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="멤버의 추천 한마디 ✍️"
+        android:textColor="@color/grey700"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dv_first" />
 
-            <View
-                android:id="@+id/dv_first"
-                android:layout_width="0dp"
-                android:layout_height="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cg_recommend_drink"
-                android:layout_marginTop="24dp"
-                android:background="@color/grey100"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_reviews"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_reviews" />
 
-            <TextView
-                android:id="@+id/tv_reviews"
-                android:text="멤버의 추천 한마디 ✍️"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                style="@style/text_medium_medium"
-                android:textColor="@color/grey700"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dv_first"
-                android:layout_marginTop="20dp" />
+    <TextView
+        android:id="@+id/tv_more_reviews"
+        style="@style/text_medium_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="멤버 후기 더보기+"
+        android:textColor="@color/main400"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_reviews" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_reviews"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_reviews" />
+    <View
+        android:id="@+id/dv_second"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/grey100"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_more_reviews" />
 
-            <TextView
-                android:id="@+id/tv_more_reviews"
-                android:text="멤버 후기 더보기+"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_reviews"
-                android:layout_marginTop="24dp"
-                android:textColor="@color/main400"
-                style="@style/text_medium_medium"/>
+    <TextView
+        android:id="@+id/tv_photos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="맛집 사진"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dv_second" />
 
-            <View
-                android:id="@+id/dv_second"
-                android:layout_width="0dp"
-                android:layout_height="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_more_reviews"
-                android:layout_marginTop="20dp"
-                android:background="@color/grey100"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_photos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_photos" />
 
-            <TextView
-                android:id="@+id/tv_photos"
-                android:text="맛집 사진"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dv_second"
-                android:layout_marginTop="24dp"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_photos"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_photos"
-                android:layout_marginTop="16dp"/>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

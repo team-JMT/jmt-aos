@@ -44,7 +44,7 @@ class RestaurantInfoFragment : Fragment() {
     }
 
     private val restaurantPhotoAdapter = RestaurantPhotoAdapter {
-
+        (parentFragment as RestaurantDetailFragment).changeCategory(RestaurantDetailPagerAdapter.PHOTO)
     }
 
     override fun onCreateView(
@@ -86,6 +86,10 @@ class RestaurantInfoFragment : Fragment() {
                                 binding.cgRecommendDrink.addView(newChip(it))
                             }
                         }
+
+                        photoAdapter.submitList(pictures.map {
+                            ImagePagerItem(it)
+                        })
                     }
                 }
             }
@@ -98,13 +102,12 @@ class RestaurantInfoFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.restaurantInfo.collect {
-                it?.let { notNullRestaurantInfo ->
-                    restaurantPhotoAdapter.submitList(
-                        notNullRestaurantInfo.pictures.map { imageUrl ->
-                            (RestaurantPhotoItem(imageUrl))
-                        })
-                }
+
+            viewModel.reviews.collect { reviews ->
+                restaurantPhotoAdapter.submitList(
+                    reviews.map { it.reviewImages }.flatten().take(8).map { imageUrl ->
+                        (RestaurantPhotoItem(imageUrl))
+                    } + RestaurantPhotoItem("BUTTON"))
             }
         }
     }
@@ -112,17 +115,6 @@ class RestaurantInfoFragment : Fragment() {
     private fun setAdapter() {
 
         binding.pagerPhotos.adapter = photoAdapter
-
-        photoAdapter.submitList(
-            listOf(
-                ImagePagerItem("https://picsum.photos/200/200"),
-                ImagePagerItem("https://picsum.photos/200/200"),
-                ImagePagerItem("https://picsum.photos/200/200"),
-                ImagePagerItem("https://picsum.photos/200/200"),
-                ImagePagerItem("https://picsum.photos/200/200"),
-                ImagePagerItem("https://picsum.photos/200/200"),
-            )
-        )
 
         binding.rvReviews.adapter = restaurantReviewAdapter
         binding.rvReviews.layoutManager = LinearLayoutManager(context)

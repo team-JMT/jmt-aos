@@ -1,59 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fillViewport="true"
+        android:id="@+id/top_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="22dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="129dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@id/divider"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:nestedScrollingEnabled="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            >
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/tv_restaurant_name"
+                style="@style/title_small_bold"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                style="@style/title_small_bold"
                 android:textColor="@color/grey900"
-                tools:text="용용선생 노원점"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="용용선생 노원점" />
 
             <LinearLayout
                 android:id="@+id/ct_distance_and_category"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_restaurant_name"
-                android:layout_marginTop="4dp">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_restaurant_name">
 
                 <TextView
                     android:id="@+id/tv_distance"
+                    style="@style/text_large_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/text_large_medium"
                     android:textColor="@color/grey900"
                     tools:text="위치에서 300m" />
 
@@ -61,17 +58,16 @@
                     android:layout_width="1dp"
                     android:layout_height="12dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/grey200"
                     android:layout_marginHorizontal="12dp"
-                    />
+                    android:background="@color/grey200" />
 
                 <TextView
                     android:id="@+id/tv_category"
+                    style="@style/text_large_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/text_large_medium"
                     android:textColor="@color/grey900"
-                    tools:text="중식"/>
+                    tools:text="중식" />
 
             </LinearLayout>
 
@@ -79,82 +75,80 @@
                 android:id="@+id/ct_address"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ct_distance_and_category"
-                android:layout_marginTop="4dp">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ct_distance_and_category">
 
                 <TextView
                     android:id="@+id/tv_address"
+                    style="@style/text_medium_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/text_medium_medium"
                     android:textColor="@color/grey700"
                     tools:text="서울시 노원구 동일로 32-1길, 101호" />
 
                 <TextView
                     android:id="@+id/tv_copy"
+                    style="@style/text_small_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="주소복사"
                     android:layout_marginStart="16dp"
-                    style="@style/text_small_medium"
-                    android:textColor="@color/main300"
-                    />
+                    android:text="주소복사"
+                    android:textColor="@color/main300" />
 
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/iv_profile"
-                android:src="@drawable/mock_profile"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ct_address"
                 android:layout_marginTop="16dp"
-                android:contentDescription="profile" />
+                android:contentDescription="profile"
+                android:src="@drawable/mock_profile"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ct_address" />
 
             <TextView
                 android:id="@+id/tv_nickname"
+                style="@style/text_medium_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textColor="@color/grey900"
+                app:layout_constraintBottom_toBottomOf="@id/iv_profile"
                 app:layout_constraintStart_toEndOf="@id/iv_profile"
                 app:layout_constraintTop_toTopOf="@id/iv_profile"
-                app:layout_constraintBottom_toBottomOf="@id/iv_profile"
-                android:layout_marginStart="4dp"
-                style="@style/text_medium_medium"
-                android:textColor="@color/grey900"
-                tools:text="Blaire"/>
+                tools:text="Blaire" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_nickname"
-                android:background="@drawable/bg_rounded_border_4_grey100"
-                app:tabRippleColor="@null"
-                app:tabTextColor="@color/grey400"
-                app:tabSelectedTextColor="@color/main500"
-                app:tabIndicator="@null"
-                app:tabTextAppearance="@style/text_medium_bold"
-                app:tabBackground="@drawable/bg_tab_item"
+                android:layout_marginTop="16dp"
                 android:animateLayoutChanges="true"
-                android:layout_marginTop="16dp">
+                android:background="@drawable/bg_rounded_border_4_grey100"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_nickname"
+                app:tabBackground="@drawable/bg_tab_item"
+                app:tabIndicator="@null"
+                app:tabRippleColor="@null"
+                app:tabSelectedTextColor="@color/main500"
+                app:tabTextAppearance="@style/text_medium_bold"
+                app:tabTextColor="@color/grey400">
 
             </com.google.android.material.tabs.TabLayout>
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/restaurant_detail_pager"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tab_layout"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tab_layout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -165,70 +159,69 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="@color/grey100"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ct_review_foam"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ct_review_foam"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ct_review_foam"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/grey100"
         android:paddingHorizontal="20dp"
         android:paddingTop="14dp"
         android:paddingBottom="24dp"
-        android:backgroundTint="@color/grey200"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <EditText
             android:id="@+id/et_review"
+            style="@style/text_medium_medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:maxLines="2"
             android:background="@null"
             android:hint="방문 후기를 작성해보세요!"
+            android:maxLines="2"
+            android:textColor="@color/grey900"
             android:textColorHint="@color/grey300"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            style="@style/text_medium_medium"
-            android:textColor="@color/grey900"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/add_image_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginTop="27dp"
             android:src="@drawable/add_image_icon"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_review"
-            android:layout_marginTop="27dp"/>
+            app:layout_constraintTop_toBottomOf="@id/et_review" />
 
         <TextView
             android:id="@+id/btn_register"
-            android:text="등록"
+            style="@style/text_medium_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_rounded_6_main500"
             android:paddingHorizontal="8dp"
             android:paddingVertical="6dp"
-            android:background="@drawable/bg_rounded_6_main500"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="등록"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/add_image_icon"
-            style="@style/text_medium_medium"
-            android:textColor="@color/white"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_image_list_will_be_uploaded"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
             android:maxHeight="44dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toEndOf="@id/add_image_icon"
-            app:layout_constraintEnd_toStartOf="@id/btn_register"
             app:layout_constraintBottom_toBottomOf="@id/add_image_icon"
-            android:layout_marginHorizontal="12dp"
-            />
+            app:layout_constraintEnd_toStartOf="@id/btn_register"
+            app:layout_constraintStart_toEndOf="@id/add_image_icon" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

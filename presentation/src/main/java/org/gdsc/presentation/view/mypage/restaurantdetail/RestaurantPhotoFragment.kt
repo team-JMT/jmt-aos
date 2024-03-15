@@ -6,18 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.gdsc.presentation.databinding.FragmentRestaurantPhotoBinding
 import org.gdsc.presentation.model.RestaurantPhotoItem
 import org.gdsc.presentation.view.mypage.adapter.RestaurantPhotoAdapter
+import org.gdsc.presentation.view.mypage.viewmodel.RestaurantDetailViewModel
 
 @AndroidEntryPoint
 class RestaurantPhotoFragment : Fragment() {
 
     private var _binding: FragmentRestaurantPhotoBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel by activityViewModels<RestaurantDetailViewModel>()
+
+    private val restaurantPhotoAdapter = RestaurantPhotoAdapter {
+        findNavController().navigate(RestaurantDetailFragmentDirections.actionRestaurantDetailFragmentToRestaurantPhotoDetailFragment())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,9 +43,6 @@ class RestaurantPhotoFragment : Fragment() {
     }
 
     private fun setAdapter() {
-        val restaurantPhotoAdapter = RestaurantPhotoAdapter {
-            findNavController().navigate(RestaurantDetailFragmentDirections.actionRestaurantDetailFragmentToRestaurantPhotoDetailFragment())
-        }
 
         val spanCount = 3
 
@@ -51,28 +58,15 @@ class RestaurantPhotoFragment : Fragment() {
             }
         })
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.reviews.collect { reviews ->
+                restaurantPhotoAdapter.submitList(
+                    reviews.map { it.reviewImages }.flatten().map { imageUrl ->
+                        (RestaurantPhotoItem(imageUrl))
+                    })
+            }
+        }
 
-        // TODO: supposed to be real data
-        restaurantPhotoAdapter.submitList(
-            listOf(
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-                RestaurantPhotoItem("https://gdsc-jmt.s3.ap-northeast-2.amazonaws.com/profileImg/defaultImg/Default+image.png"),
-            )
-        )
     }
 
 }
