@@ -13,8 +13,10 @@ import kotlinx.coroutines.launch
 import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
 import org.gdsc.domain.SortType
+import org.gdsc.domain.model.GroupPreview
 import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.RegisteredRestaurant
+import org.gdsc.domain.usecase.GetGroupBySearchWithLimitCountUseCase
 import org.gdsc.domain.usecase.GetRestaurantBySearchUseCase
 import org.gdsc.domain.usecase.GetRestaurantBySearchWithLimitCountUseCase
 import org.gdsc.domain.usecase.user.DeleteSearchedKeywordUseCase
@@ -32,40 +34,11 @@ class AllSearchViewModel @Inject constructor(
     private val updateSearchedKeywordUseCase: UpdateSearchedKeywordUseCase,
     private val deleteSearchedKeywordUseCase: DeleteSearchedKeywordUseCase,
     private val initSearchedKeywordUseCase: InitSearchedKeywordUseCase,
-    private val getRestaurantBySearchWithLimitCountUseCase: GetRestaurantBySearchWithLimitCountUseCase
+    private val getRestaurantBySearchWithLimitCountUseCase: GetRestaurantBySearchWithLimitCountUseCase,
+    private val getGroupBySearchWithLimitCountUseCase: GetGroupBySearchWithLimitCountUseCase
 ) : ViewModel() {
 
     init {
-
-        viewModelScope.launch {
-            val location = locationManager.getCurrentLocation()
-
-            if (location == null) {
-                _searchedRestaurantPreviewState.value = emptyList()
-            } else {
-
-                val userLoc = Location(location.longitude.toString(), location.latitude.toString())
-
-                _searchedRestaurantPreviewState.value =
-                    getRestaurantBySearchWithLimitCountUseCase(searchKeyword.value, userLoc, 3)
-            }
-
-        }
-
-        viewModelScope.launch {
-            val location = locationManager.getCurrentLocation()
-
-            if (location == null) {
-                _searchedRestaurantState.value = PagingData.empty()
-            } else {
-                val userLoc = Location(location.longitude.toString(), location.latitude.toString())
-
-                getRestaurantBySearchUseCase(searchKeyword.value, userLoc).distinctUntilChanged()
-                    .collect {
-                        _searchedRestaurantState.value = it
-                    }
-            }
-        }
 
         viewModelScope.launch {
             val keywords = getSearchedKeywordsUseCase()
@@ -100,6 +73,12 @@ class AllSearchViewModel @Inject constructor(
         MutableStateFlow<List<RegisteredRestaurant>>(emptyList())
     val searchedRestaurantPreviewState: StateFlow<List<RegisteredRestaurant>>
         get() = _searchedRestaurantPreviewState
+
+    private var _searchedGroupPreviewState =
+        MutableStateFlow<List<GroupPreview>>(emptyList())
+
+    val searchedGroupPreviewState: StateFlow<List<GroupPreview>>
+        get() = _searchedGroupPreviewState
 
 
     private var _searchedKeywordsState = MutableStateFlow<List<String>>(emptyList())
@@ -137,6 +116,47 @@ class AllSearchViewModel @Inject constructor(
     fun deleteAllSearchedKeyword() {
         viewModelScope.launch {
             _searchedKeywordsState.value = initSearchedKeywordUseCase()
+        }
+    }
+
+    fun searchRestaurantPreviewWithKeyword() {
+        viewModelScope.launch {
+            val location = locationManager.getCurrentLocation()
+
+            if (location == null) {
+                _searchedRestaurantPreviewState.value = emptyList()
+            } else {
+
+                val userLoc = Location(location.longitude.toString(), location.latitude.toString())
+
+                _searchedRestaurantPreviewState.value =
+                    getRestaurantBySearchWithLimitCountUseCase(searchKeyword.value, userLoc, 3)
+            }
+
+        }
+    }
+
+    fun searchRestaurantWithKeyword() {
+        viewModelScope.launch {
+            val location = locationManager.getCurrentLocation()
+
+            if (location == null) {
+                _searchedRestaurantState.value = PagingData.empty()
+            } else {
+                val userLoc = Location(location.longitude.toString(), location.latitude.toString())
+
+                getRestaurantBySearchUseCase(searchKeyword.value, userLoc).distinctUntilChanged()
+                    .collect {
+                        _searchedRestaurantState.value = it
+                    }
+            }
+        }
+    }
+
+    fun searchGroupPreviewWithKeyword() {
+        viewModelScope.launch {
+            val result = getGroupBySearchWithLimitCountUseCase(searchKeyword.value, 3)
+            _searchedGroupPreviewState.value = result
         }
     }
 

@@ -43,6 +43,9 @@ class SearchCategoryAllFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.searchRestaurantPreviewWithKeyword()
+        viewModel.searchGroupPreviewWithKeyword()
+
         binding.restaurantRecyclerView.adapter = searchCategoryRestaurantPreviewAdapter
         binding.restaurantRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -68,44 +71,12 @@ class SearchCategoryAllFragment(
             }
         }
 
-        // Todo: Real APi
-        searchCategoryGroupPreviewAdapter.submitList(
-            listOf(
-                GroupInfo(
-                    "https://avatars.githubusercontent.com/u/58663494?v=4",
-                    1,
-                    "햄버거 먹으러 갈 사람 여기여기 모여라",
-                    "버거 대마왕",
-                    "https://avatars.githubusercontent.com/u/58663494?v=4",
-                    false,
-                    (0 .. 500).shuffled().first(),
-                    false,
-                    (0 .. 500).shuffled().first()
-                ),
-                GroupInfo(
-                    "https://avatars.githubusercontent.com/u/58663494?v=4",
-                    2,
-                    "햄버거 먹으러 갈 사람 여기여기 모여라",
-                    "버거 대마왕",
-                    "https://avatars.githubusercontent.com/u/58663494?v=4",
-                    false,
-                    (0 .. 500).shuffled().first(),
-                    false,
-                    (0 .. 500).shuffled().first()
-                ),
-                GroupInfo(
-                    "https://avatars.githubusercontent.com/u/58663494?v=4",
-                    3,
-                    "햄버거 먹으러 갈 사람 여기여기 모여라",
-                    "버거 대마왕",
-                    "https://avatars.githubusercontent.com/u/58663494?v=4",
-                    false,
-                    (0 .. 500).shuffled().first(),
-                    false,
-                    (0 .. 500).shuffled().first()
-                ),
-            )
-        )
+        repeatWhenUiStarted {
+            viewModel.searchedGroupPreviewState.collect {
+                searchCategoryGroupPreviewAdapter.submitList(it)
+            }
+        }
+
     }
 
     override fun onDestroyView() {

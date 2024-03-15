@@ -42,6 +42,7 @@ class SearchCategoryRestaurantFragment(
         setSpinners()
 
         viewModel.setSearchKeyword(searchKeyword)
+        viewModel.searchRestaurantWithKeyword()
 
         binding.restaurantRecyclerView.adapter = searchCategoryRestaurantAdapter
         binding.restaurantRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -49,6 +50,7 @@ class SearchCategoryRestaurantFragment(
     }
 
     private fun observeState() {
+
         repeatWhenUiStarted {
             viewModel.searchedRestaurantState.collect {
                 searchCategoryRestaurantAdapter.submitData(it)
