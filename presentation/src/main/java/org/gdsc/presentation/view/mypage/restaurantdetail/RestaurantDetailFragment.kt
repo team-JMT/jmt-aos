@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.net.toUri
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
@@ -21,12 +22,14 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.gdsc.domain.Empty
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.FragmentRestaurantDetailBinding
 import org.gdsc.presentation.utils.BitmapUtils.getCompressedBitmapFromUri
 import org.gdsc.presentation.utils.BitmapUtils.saveBitmapToFile
 import org.gdsc.presentation.utils.CalculatorUtils
 import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.mypage.adapter.PhotoWillBeUploadedAdapter
 import org.gdsc.presentation.view.mypage.adapter.RestaurantDetailPagerAdapter
 import org.gdsc.presentation.view.mypage.viewmodel.RestaurantDetailViewModel
@@ -38,6 +41,8 @@ class RestaurantDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: RestaurantDetailViewModel by activityViewModels()
+
+    private val parentActivity by lazy { activity as MainActivity }
 
     private val adapter = PhotoWillBeUploadedAdapter {
         viewModel.deletePhotoForReviewState(it)
@@ -62,6 +67,15 @@ class RestaurantDetailFragment : Fragment() {
                 adapter.submitList(it)
             }
         }
+
+        binding.topScrollView.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                if (scrollY > binding.tvRestaurantName.height) {
+                    parentActivity.changeToolbarTitle(binding.tvRestaurantName.text.toString())
+                } else {
+                    parentActivity.changeToolbarTitle(String.Empty)
+                }
+            })
 
         binding.rvImageListWillBeUploaded.adapter = adapter
 
@@ -167,6 +181,7 @@ class RestaurantDetailFragment : Fragment() {
 
         binding.restaurantDetailPager.adapter = RestaurantDetailPagerAdapter(this)
         binding.restaurantDetailPager.isUserInputEnabled = false
+        binding.restaurantDetailPager.offscreenPageLimit = 1
 
         TabLayoutMediator(binding.tabLayout, binding.restaurantDetailPager) { tab, position ->
             when (position) {
