@@ -55,6 +55,8 @@ class AllSearchFragment : Fragment() {
                 binding.cgRecentSearch.removeAllViews()
                 keywordList.forEach {
                     if (it.isNotBlank()) {
+                        binding.tvRecentSearch.visibility = View.VISIBLE
+                        binding.tvDelete.visibility = View.VISIBLE
                         binding.cgRecentSearch.addView(
                             newChip(it,
                                 { keyword ->
@@ -64,6 +66,9 @@ class AllSearchFragment : Fragment() {
                                 navigateToResultPage()
                             }
                         )
+                    } else {
+                        binding.tvRecentSearch.visibility = View.GONE
+                        binding.tvDelete.visibility = View.GONE
                     }
                 }
             }
