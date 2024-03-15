@@ -30,7 +30,7 @@
         app:layout_constraintBottom_toBottomOf="@id/iv_photo">
 
         <ImageView
-            android:src="@drawable/ic_plus"
+            android:src="@drawable/ic_plus_grey"
             android:layout_width="24dp"
             android:layout_height="24dp"/>
 
