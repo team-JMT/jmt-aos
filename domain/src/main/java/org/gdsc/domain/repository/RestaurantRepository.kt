@@ -30,7 +30,7 @@ interface RestaurantRepository {
 
     suspend fun postRestaurantLocationInfo(restaurantLocationInfo: RestaurantLocationInfo): String
 
-    suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String
+    suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest, groupId: Int): String
 
     suspend fun getRestaurants(
         userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
