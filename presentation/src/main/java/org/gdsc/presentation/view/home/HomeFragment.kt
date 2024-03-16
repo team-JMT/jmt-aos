@@ -433,7 +433,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     private fun observeState() {
 
         lifecycleScope.launch {
-            viewModel.registeredPagingDataByGroup().collect {
+            viewModel.registeredPagingDataByList().collect {
                 restaurantListAdapter.submitData(it)
             }
         }

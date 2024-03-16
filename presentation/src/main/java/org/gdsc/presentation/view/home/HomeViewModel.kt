@@ -1,11 +1,9 @@
 package org.gdsc.presentation.view.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -143,7 +141,7 @@ class HomeViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun registeredPagingDataByGroup(): Flow<PagingData<RegisteredRestaurant>> {
+    suspend fun registeredPagingDataByList(): Flow<PagingData<RegisteredRestaurant>> {
 
         return run {
             return@run combine(
