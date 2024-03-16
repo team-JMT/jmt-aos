@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_home_fragment_to_search_restaurant_location_info_fragment"
             app:destination="@+id/search_restaurant_location_info_fragment"/>
+        <action
+            android:id="@+id/action_home_fragment_to_restaurant_detail_fragment"
+            app:destination="@id/restaurantDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/all_search_fragment"
@@ -37,6 +40,9 @@
         <argument
             android:name="keyword"
             app:argType="string" />
+        <action
+            android:id="@+id/action_all_search_container_fragment_to_restaurantDetailFragment"
+            app:destination="@id/restaurantDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/my_group_fragment"
@@ -203,6 +209,9 @@
         android:name="org.gdsc.presentation.view.mypage.restaurantdetail.RestaurantDetailFragment"
         android:label="fragment_restaurant_detail"
         tools:layout="@layout/fragment_restaurant_detail" >
+        <argument
+            android:name="restaurantId"
+            app:argType="integer" />
         <action
             android:id="@+id/action_restaurantDetailFragment_to_restaurantPhotoDetailFragment"
             app:destination="@id/restaurantPhotoDetailFragment" />

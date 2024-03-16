@@ -7,13 +7,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import org.gdsc.domain.model.GroupInfo
+import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.presentation.R
+import org.gdsc.presentation.base.BaseViewHolder
+import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.FragmentSearchCategoryAllBinding
+import org.gdsc.presentation.databinding.ItemSearchRestaurantBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.allsearch.adapter.SearchCategoryGroupPreviewAdapter
 import org.gdsc.presentation.view.allsearch.adapter.SearchCategoryRestaurantAdapter
@@ -22,14 +29,14 @@ import org.gdsc.presentation.view.allsearch.adapter.SearchCategoryRestaurantPrev
 @AndroidEntryPoint
 class SearchCategoryAllFragment(
     private val searchKeyword: String
-): Fragment() {
+): Fragment(), ViewHolderBindListener {
 
     private var _binding: FragmentSearchCategoryAllBinding? = null
     private val binding get() = _binding!!
 
     val viewModel: AllSearchViewModel by activityViewModels()
 
-    private val searchCategoryRestaurantPreviewAdapter = SearchCategoryRestaurantPreviewAdapter()
+    private val searchCategoryRestaurantPreviewAdapter = SearchCategoryRestaurantPreviewAdapter(this)
     private val searchCategoryGroupPreviewAdapter = SearchCategoryGroupPreviewAdapter()
 
     override fun onCreateView(
@@ -82,5 +89,34 @@ class SearchCategoryAllFragment(
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onViewHolderBind(holder: BaseViewHolder<out ViewBinding>, _item: Any) {
+        if (holder is SearchCategoryRestaurantPreviewAdapter.RestaurantsWithSearchPreviewViewHolder && _item is RegisteredRestaurant) {
+            val binding = ItemSearchRestaurantBinding.bind(holder.itemView)
+            binding.run {
+                Glide.with(root)
+                    .load(_item.userProfileImageUrl)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(userProfileImage)
+
+                userName.text = _item.userNickName
+
+                Glide.with(root)
+                    .load(_item.restaurantImageUrl)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(restaurantImage)
+
+                restaurantCategory.text = _item.category
+                restaurantName.text = _item.name
+            }
+            holder.itemView.setOnClickListener {
+                findNavController().navigate(
+                    AllSearchContainerFragmentDirections.actionAllSearchContainerFragmentToRestaurantDetailFragment(
+                        _item.id
+                    )
+                )
+            }
+        }
     }
 }

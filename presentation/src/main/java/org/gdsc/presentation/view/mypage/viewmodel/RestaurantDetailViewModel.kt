@@ -52,22 +52,36 @@ class RestaurantDetailViewModel
         _photosForReviewState.value = _photosForReviewState.value - image
     }
 
-    init {
+    fun init(id:Int) {
         viewModelScope.launch {
-
             val currentLocation = jmtLocationManager.getCurrentLocation()
-            val restaurantInfo = getRestaurantInfoUseCase(1, currentLocation?.longitude.toString(), currentLocation?.latitude.toString())
+            val restaurantInfo = getRestaurantInfoUseCase(id, currentLocation?.longitude.toString(), currentLocation?.latitude.toString())
             _restaurantInfo.value = restaurantInfo
 
             val userInfo = getOtherUserInfoUseCase(restaurantInfo.userId)
             _authorInfo.value = userInfo
 
-            val reviews = getRestaurantReviewsUseCase(1)
+            val reviews = getRestaurantReviewsUseCase(id)
             _reviews.value = reviews
-
         }
-
     }
+
+//    init {
+//        viewModelScope.launch {
+//
+//            val currentLocation = jmtLocationManager.getCurrentLocation()
+//            val restaurantInfo = getRestaurantInfoUseCase(state.value, currentLocation?.longitude.toString(), currentLocation?.latitude.toString())
+//            _restaurantInfo.value = restaurantInfo
+//
+//            val userInfo = getOtherUserInfoUseCase(restaurantInfo.userId)
+//            _authorInfo.value = userInfo
+//
+//            val reviews = getRestaurantReviewsUseCase(1)
+//            _reviews.value = reviews
+//
+//        }
+//
+//    }
 
     fun postReview(content: String, pictures: List<MultipartBody.Part>, onSuccess: () -> Unit) {
         viewModelScope.launch {
@@ -78,6 +92,12 @@ class RestaurantDetailViewModel
                 onSuccess()
             }
         }
+    }
+
+    fun onDataCleared() {
+        _restaurantInfo.value = null
+        _authorInfo.value = null
+        _reviews.value = emptyList()
     }
 
 }
