@@ -103,7 +103,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     private lateinit var concatAdapter: ConcatAdapter
 
     private val recommendPopularRestaurantList = listOf<RegisteredRestaurant>()
-    private val standardBottomSheetBehavior by lazy { BottomSheetBehavior.from(binding.bottomSheet) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -338,6 +337,9 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             ))
         }
 
+
+        val standardBottomSheetBehavior by lazy { BottomSheetBehavior.from(binding.bottomSheet) }
+
         restaurantListAdapter.addLoadStateListener { loadState ->
             if (loadState.append.endOfPaginationReached) {
                 if (restaurantListAdapter.itemCount < 1) {
@@ -392,12 +394,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
-
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(1000)
-            if (standardBottomSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED)
-                standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-        }
     }
 
     private fun observeState() {
