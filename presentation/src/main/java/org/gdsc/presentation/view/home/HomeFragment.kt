@@ -13,6 +13,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -182,7 +183,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
     private fun setGroup() {
         binding.groupArrow.setOnClickListener {
-            repeatWhenUiStarted {
+            lifecycleScope.launch {
                 viewModel.getMyGroup().let { groupList ->
                     viewModel.setGroupList(groupList)
                 }
@@ -254,14 +255,14 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             naverMap.uiSettings.isZoomControlEnabled = false
             naverMap.uiSettings.isScaleBarEnabled = false
 
-            repeatWhenUiStarted {
+            lifecycleScope.launch {
 
                 viewModel.registeredPagingDataByMap().collect {
                     mapMarkerAdapter.submitData(it)
                 }
             }
 
-            repeatWhenUiStarted {
+            lifecycleScope.launch {
                 val location = viewModel.getCurrentLocation()
                 location?.let {
                     val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
@@ -394,7 +395,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
     private fun observeState() {
 
-        repeatWhenUiStarted {
+        lifecycleScope.launch {
             viewModel.registeredPagingDataByGroup().collect {
                 restaurantListAdapter.submitData(it)
             }
@@ -410,7 +411,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             }
         }
 
-        repeatWhenUiStarted {
+        lifecycleScope.launch {
             viewModel.getMyGroup().let { groupList ->
                 viewModel.setGroupList(groupList)
             }
