@@ -40,9 +40,14 @@ class BottomSheetDialog {
         }
 
     fun show() {
+        if (isShowing) return
         this.btmDlg.show()
     }
 
+    fun dismiss() {
+        if (!isShowing) return
+        this.btmDlg.dismiss()
+    }
 
     fun <T : ViewBinding> bindBuilder(
         binding: T,
