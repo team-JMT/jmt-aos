@@ -82,17 +82,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             }
     }
 
-    // TODO : titleAdapter 문구 정리 필요
-    private val recommendPopularRestaurantTitleAdapter by lazy {
-        RecommendPopularRestaurantTitleAdapter(
-            "그룹에서 인기가 많아요"
-        )
-    }
-    private val recommendPopularRestaurantWrapperAdapter by lazy {
-        RecommendPopularRestaurantWrapperAdapter(
-            recommendPopularRestaurantList
-        )
-    }
     private val restaurantFilterAdapter by lazy { RestaurantFilterAdapter(this) }
     private val restaurantListAdapter by lazy { MapMarkerWithRestaurantsAdatper(this) }
     private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper(this) }
@@ -120,19 +109,10 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         setMap(savedInstanceState)
         observeState()
 
-        concatAdapter = if (recommendPopularRestaurantList.isNotEmpty()) {
-            ConcatAdapter(
-                recommendPopularRestaurantTitleAdapter,
-                recommendPopularRestaurantWrapperAdapter,
-                restaurantFilterAdapter,
-                restaurantListAdapter
-            )
-        } else {
-            ConcatAdapter(
-                restaurantFilterAdapter,
-                restaurantListAdapter
-            )
-        }
+        concatAdapter = ConcatAdapter(
+            restaurantFilterAdapter,
+            restaurantListAdapter
+        )
 
         setRestaurantListBottomSheet()
         setGroup()
@@ -435,6 +415,20 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         lifecycleScope.launch {
             viewModel.registeredPagingDataByList().collect {
                 restaurantListAdapter.submitData(it)
+            }
+        }
+
+        lifecycleScope.launch {
+            val data = viewModel.getRestaurantMapWithLimitCount(SortType.DISTANCE, viewModel.currentGroup.value)
+
+            if (data.isNullOrEmpty().not()) {
+
+                // TODO : titleAdapter 문구 정리 필요
+                val recommendPopularRestaurantTitleAdapter = RecommendPopularRestaurantTitleAdapter("그룹에서 인기가 많아요")
+                val recommendPopularRestaurantWrapperAdapter = RecommendPopularRestaurantWrapperAdapter(data)
+
+                concatAdapter.addAdapter(0, recommendPopularRestaurantTitleAdapter)
+                concatAdapter.addAdapter(1, recommendPopularRestaurantWrapperAdapter)
             }
         }
 

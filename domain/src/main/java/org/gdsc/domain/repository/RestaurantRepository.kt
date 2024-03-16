@@ -50,6 +50,10 @@ interface RestaurantRepository {
 
     suspend fun getRegisteredRestaurantsBySearch(keyword: String?, userLocation: Location?): Flow<PagingData<RegisteredRestaurant>>
 
+    suspend fun getRegisteredRestaurantByMapWithLimitCount(
+        sortType: SortType,currentGroup: Group?
+    ): List<RegisteredRestaurant>
+
     suspend fun getRestaurantReviews(restaurantId: Int): List<Review>
 
     suspend fun getRegisteredRestaurantsBySearchWithLimitCount(keyword: String?, userLocation: Location?, limit: Int): List<RegisteredRestaurant>
