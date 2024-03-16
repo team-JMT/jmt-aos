@@ -49,6 +49,7 @@ class RegisterRestaurantFragment : BaseFragment() {
     private val viewModel: RegisterRestaurantViewModel by viewModels()
 
     private val navArgs by navArgs<RegisterRestaurantFragmentArgs>()
+    private val groupId by lazy { navArgs.groupId }
 
     private val foodCategoryDialog by lazy {
         FoodCategoryBottomSheetDialog { selectedItem ->
@@ -341,7 +342,6 @@ class RegisterRestaurantFragment : BaseFragment() {
                                 MediaType.parse("image/png"),
                                 imageFile
                             )
-
                         val body =
                             MultipartBody.Part.createFormData(
                                 "pictures",
@@ -358,6 +358,7 @@ class RegisterRestaurantFragment : BaseFragment() {
             lifecycleScope.launch(Dispatchers.IO) {
                 viewModel.registerRestaurant(
                     pictures,
+                    groupId,
                     navArgs.restaurantLocationInfo ?: throw Exception()
                 ) { restaurantId ->
 
