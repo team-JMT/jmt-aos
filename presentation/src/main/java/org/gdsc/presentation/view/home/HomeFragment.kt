@@ -135,6 +135,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
         setRestaurantListBottomSheet()
         setGroup()
+        setView()
 
     }
 
@@ -173,6 +174,12 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     drinkSpinner.setMenuTitle(it.text)
                 }
             }
+        }
+    }
+    
+    private fun setView() {
+        binding.groupSearch.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToAllSearchFragment())
         }
     }
 
