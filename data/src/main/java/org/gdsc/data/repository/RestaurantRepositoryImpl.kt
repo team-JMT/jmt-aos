@@ -47,8 +47,11 @@ class RestaurantRepositoryImpl @Inject constructor(
         return restaurantDataSource.postRestaurantLocationInfo(restaurantLocationInfo)
     }
 
-    override suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String {
-        return restaurantDataSource.postRestaurantInfo(restaurantRegistrationRequest)
+    override suspend fun postRestaurantInfo(
+        restaurantRegistrationRequest: RestaurantRegistrationRequest,
+        groupId: Int,
+        ): String {
+        return restaurantDataSource.postRestaurantInfo(restaurantRegistrationRequest, groupId)
     }
 
     override suspend fun getRestaurants(

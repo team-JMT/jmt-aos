@@ -164,13 +164,13 @@ class MainActivity : BaseActivity() {
         binding.toolBar.isVisible = isVisible
     }
 
-    fun navigateToEditRestaurantInfo(restaurantId: Int) {
-
-        val action = HomeFragmentDirections.actionHomeFragmentToRegisterRestaurantFragment(
-            targetRestaurantId = restaurantId
-        )
-        navController.navigate(action)
-    }
+//    fun navigateToEditRestaurantInfo(restaurantId: Int) {
+//
+//        val action = HomeFragmentDirections.actionHomeFragmentToRegisterRestaurantFragment(
+//            targetRestaurantId = restaurantId
+//        )
+//        navController.navigate(action)
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {

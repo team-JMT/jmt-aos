@@ -17,7 +17,8 @@ class PostRestaurantInfoUseCase @Inject constructor(
         canDrinkLiquor: Boolean,
         goWellWithLiquor: String,
         recommendMenu: String,
-        restaurantLocationAggregateIdg: String
+        restaurantLocationAggregateIdg: String,
+        groupId: Int,
     ): String {
         return restaurantRepository.postRestaurantInfo(
             RestaurantRegistrationRequest(
@@ -30,6 +31,7 @@ class PostRestaurantInfoUseCase @Inject constructor(
                 recommendMenu,
                 restaurantLocationAggregateIdg
             ),
+            groupId,
         )
     }
 }

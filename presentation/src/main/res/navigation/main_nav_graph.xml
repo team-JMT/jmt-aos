@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_home_fragment_to_all_search_fragment"
             app:destination="@id/all_search_fragment" />
+        <action
+            android:id="@+id/action_home_fragment_to_search_restaurant_location_info_fragment"
+            app:destination="@+id/search_restaurant_location_info_fragment"/>
     </fragment>
     <fragment
         android:id="@+id/all_search_fragment"
@@ -59,24 +62,38 @@
         android:name="org.gdsc.presentation.view.restaurantregistration.SearchRestaurantLocationInfoFragment"
         android:label="fragment_food_spot_registration"
         tools:layout="@layout/fragment_search_restaurant_location_info" >
+
+        <argument
+            android:name="groupId"
+            app:argType="integer"/>
+
         <action
             android:id="@+id/action_search_restaurant_location_info_fragment_to_confirmRestaurantRegistrationFragment"
             app:destination="@id/confirm_restaurant_registration_fragment" />
+
     </fragment>
     <fragment
         android:id="@+id/confirm_restaurant_registration_fragment"
         android:name="org.gdsc.presentation.view.restaurantregistration.ConfirmRestaurantRegistrationFragment"
         android:label="fragment_confirm_restaurant_registration"
         tools:layout="@layout/fragment_confirm_restaurant_registration">
+
+        <argument
+            android:name="groupId"
+            app:argType="integer"/>
+
         <argument
             android:name="canRegister"
             app:argType="boolean" />
+
         <argument
             android:name="restaurantLocationInfo"
             app:argType="org.gdsc.domain.model.RestaurantLocationInfo" />
+
         <action
             android:id="@+id/action_confirmRestaurantRegistrationFragment_to_registerRestaurantFragment"
             app:destination="@id/registerRestaurant_fragment" />
+
     </fragment>
     <fragment
         android:id="@+id/registerRestaurant_fragment"
@@ -106,6 +123,10 @@
             android:name="targetRestaurantId"
             app:argType="integer"
             android:defaultValue="-1"/>
+
+        <argument
+            android:name="groupId"
+            app:argType="integer"/>
 
         <action
             android:id="@+id/action_registerRestaurantFragment_to_multiImagePickerFragment"

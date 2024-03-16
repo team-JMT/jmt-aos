@@ -154,6 +154,7 @@ class RegisterRestaurantViewModel @Inject constructor(
 
     fun registerRestaurant(
         pictures: List<MultipartBody.Part>,
+        groupId: Int,
         restaurantLocationInfo: RestaurantLocationInfo,
         actionAfterRegisterSuccess: (String) -> Unit = {}
     ) {
@@ -170,7 +171,8 @@ class RegisterRestaurantViewModel @Inject constructor(
                 recommendMenu = recommendMenuListState.value.joinToString(" ") {
                     "#$it"
                 },
-                restaurantLocationAggregateIdg = restaurantLocationInfoId
+                restaurantLocationAggregateIdg = restaurantLocationInfoId,
+                groupId = groupId,
             )
 
             actionAfterRegisterSuccess(restaurantId)
