@@ -52,16 +52,24 @@ class RestaurantDetailViewModel
         _photosForReviewState.value = _photosForReviewState.value - image
     }
 
+    val restaurantIdState: StateFlow<Int>
+        get() = _restaurantIdState
+    private var _restaurantIdState: MutableStateFlow<Int> = MutableStateFlow(-1)
+
     fun init(id:Int) {
+        _restaurantIdState.value = id
+    }
+
+    fun setData() {
         viewModelScope.launch {
             val currentLocation = jmtLocationManager.getCurrentLocation()
-            val restaurantInfo = getRestaurantInfoUseCase(id, currentLocation?.longitude.toString(), currentLocation?.latitude.toString())
+            val restaurantInfo = getRestaurantInfoUseCase(restaurantIdState.value, currentLocation?.longitude.toString(), currentLocation?.latitude.toString())
             _restaurantInfo.value = restaurantInfo
 
             val userInfo = getOtherUserInfoUseCase(restaurantInfo.userId)
             _authorInfo.value = userInfo
 
-            val reviews = getRestaurantReviewsUseCase(id)
+            val reviews = getRestaurantReviewsUseCase(restaurantIdState.value)
             _reviews.value = reviews
         }
     }
@@ -85,7 +93,7 @@ class RestaurantDetailViewModel
 
     fun postReview(content: String, pictures: List<MultipartBody.Part>, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            val isSuccess = postReviewUseCase(1, content, pictures)
+            val isSuccess = postReviewUseCase(restaurantIdState.value, content, pictures)
 
             if (isSuccess) {
                 _photosForReviewState.value = emptyList()
