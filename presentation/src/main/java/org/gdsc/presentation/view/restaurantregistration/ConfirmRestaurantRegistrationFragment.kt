@@ -29,6 +29,7 @@ class ConfirmRestaurantRegistrationFragment : Fragment() {
     private var _binding: FragmentConfirmRestaurantRegistrationBinding? = null
     private val binding get() = _binding!!
     private val navArgs by navArgs<ConfirmRestaurantRegistrationFragmentArgs>()
+    private val groupId by lazy { navArgs.groupId }
 
     private lateinit var mapView: MapView
 
@@ -52,7 +53,10 @@ class ConfirmRestaurantRegistrationFragment : Fragment() {
         binding.selectButton.setOnClickListener {
 
             val action = ConfirmRestaurantRegistrationFragmentDirections
-                .actionConfirmRestaurantRegistrationFragmentToRegisterRestaurantFragment(navArgs.restaurantLocationInfo)
+                .actionConfirmRestaurantRegistrationFragmentToRegisterRestaurantFragment(
+                    groupId,
+                    navArgs.restaurantLocationInfo
+                )
             findNavController().navigate(action)
 
         }

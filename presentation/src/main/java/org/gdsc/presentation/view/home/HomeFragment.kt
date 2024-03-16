@@ -3,7 +3,6 @@ package org.gdsc.presentation.view.home
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,9 +25,6 @@ import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.Projection
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.gdsc.domain.DrinkPossibility
@@ -102,7 +99,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     private lateinit var concatAdapter: ConcatAdapter
 
     private val recommendPopularRestaurantList = listOf<RegisteredRestaurant>()
-    private val standardBottomSheetBehavior by lazy { BottomSheetBehavior.from(binding.bottomSheet) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -139,6 +135,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
         setRestaurantListBottomSheet()
         setGroup()
+        setView()
 
     }
 
@@ -179,10 +176,16 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             }
         }
     }
+    
+    private fun setView() {
+        binding.groupSearch.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToAllSearchFragment())
+        }
+    }
 
     private fun setGroup() {
         binding.groupArrow.setOnClickListener {
-            repeatWhenUiStarted {
+            lifecycleScope.launch {
                 viewModel.getMyGroup().let { groupList ->
                     viewModel.setGroupList(groupList)
                 }
@@ -254,14 +257,14 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             naverMap.uiSettings.isZoomControlEnabled = false
             naverMap.uiSettings.isScaleBarEnabled = false
 
-            repeatWhenUiStarted {
+            lifecycleScope.launch {
 
                 viewModel.registeredPagingDataByMap().collect {
                     mapMarkerAdapter.submitData(it)
                 }
             }
 
-            repeatWhenUiStarted {
+            lifecycleScope.launch {
                 val location = viewModel.getCurrentLocation()
                 location?.let {
                     val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
@@ -320,15 +323,25 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
 
     private fun setRestaurantListBottomSheet() {
+        
+        binding.registButton.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchRestaurantLocationInfoFragment(
+                viewModel.currentGroup.value?.groupId ?: 0
+            ))
+        }
 
         binding.scrollUpButton.setOnClickListener {
             binding.recyclerView.scrollToPosition(0)
         }
 
         binding.registRestaurantButton.setOnClickListener {
-            // TODO : 식당 등록 버튼 클릭 시 동작 정의 필요
-            Log.d("testLog", "식당 등록 버튼 클릭")
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchRestaurantLocationInfoFragment(
+                viewModel.currentGroup.value?.groupId ?: 0
+            ))
         }
+
+
+        val standardBottomSheetBehavior by lazy { BottomSheetBehavior.from(binding.bottomSheet) }
 
         restaurantListAdapter.addLoadStateListener { loadState ->
             if (loadState.append.endOfPaginationReached) {
@@ -384,17 +397,11 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
-
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(1000)
-            if (standardBottomSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED)
-                standardBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-        }
     }
 
     private fun observeState() {
 
-        repeatWhenUiStarted {
+        lifecycleScope.launch {
             viewModel.registeredPagingDataByGroup().collect {
                 restaurantListAdapter.submitData(it)
             }
@@ -410,7 +417,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             }
         }
 
-        repeatWhenUiStarted {
+        lifecycleScope.launch {
             viewModel.getMyGroup().let { groupList ->
                 viewModel.setGroupList(groupList)
             }
@@ -424,10 +431,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
                         if (groupList.isEmpty()) {
                             viewModel.setCurrentGroup(null)
-
-                            if (bottomSheetDialog.isShowing.not()) {
-                                bottomSheetDialog.show()
-                            }
+                            bottomSheetDialog.show()
                         } else {
                             groupList.forEach {
                                 if (it.isSelected) {
@@ -435,6 +439,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                                     return@forEach
                                 }
                             }
+                            bottomSheetDialog.dismiss()
                         }
                     }
 
@@ -470,8 +475,40 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         }
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        mapView.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        mapView.onSaveInstanceState(outState)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView.onStop()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
+    }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+        mapView.onDestroy()
     }
 }

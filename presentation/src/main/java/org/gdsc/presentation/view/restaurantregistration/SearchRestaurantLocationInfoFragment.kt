@@ -1,6 +1,7 @@
 package org.gdsc.presentation.view.restaurantregistration
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.annotation.DrawableRes
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +31,10 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
     private var _binding: FragmentSearchRestaurantLocationInfoBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SearchRestaurantLocationInfoViewModel by viewModels()
+
+    private val navArgs: SearchRestaurantLocationInfoFragmentArgs by navArgs()
+    private val groupId by lazy { navArgs.groupId }
+
     private val adapter by lazy {
         RestaurantLocationInfoAdapter {
             viewLifecycleOwner.lifecycleScope.launch {
@@ -36,8 +42,9 @@ class SearchRestaurantLocationInfoFragment : Fragment() {
 
                 val action = SearchRestaurantLocationInfoFragmentDirections
                     .actionSearchRestaurantLocationInfoFragmentToConfirmRestaurantRegistrationFragment(
+                        groupId,
                         canRegister,
-                        it
+                        it,
                     )
                 findNavController().navigate(action)
             }
