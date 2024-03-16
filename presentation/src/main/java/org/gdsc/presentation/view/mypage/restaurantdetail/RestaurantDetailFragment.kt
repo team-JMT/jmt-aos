@@ -152,6 +152,15 @@ class RestaurantDetailFragment : Fragment() {
             viewModel.init(navArgs.restaurantId)
         }
 
+        lifecycleScope.launch {
+            viewModel.restaurantIdState.collect {
+                if (it != -1) {
+                    viewModel.setData()
+                    binding.btnRegister.isEnabled = true
+                }
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.restaurantInfo.collect {
                 it?.let { notNullRestaurantInfo ->
