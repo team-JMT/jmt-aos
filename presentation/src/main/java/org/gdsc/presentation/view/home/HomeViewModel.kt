@@ -23,6 +23,7 @@ import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.ScreenLocation
 import org.gdsc.domain.model.response.Group
 import org.gdsc.domain.usecase.GetMyGroupUseCase
+import org.gdsc.domain.usecase.GetRestaurantMapWithLimitCountUseCase
 import org.gdsc.domain.usecase.GetRestaurantsByMapUseCase
 import org.gdsc.domain.usecase.PostSelectGroupUseCase
 import org.gdsc.presentation.JmtLocationManager
@@ -35,6 +36,7 @@ class HomeViewModel @Inject constructor(
     private val getRestaurantsByMapUseCase: GetRestaurantsByMapUseCase,
     private val getMyGroupUseCase: GetMyGroupUseCase,
     private val postSelectGroupUserCase: PostSelectGroupUseCase,
+    private val getRestaurantMapWithLimitCountUseCase: GetRestaurantMapWithLimitCountUseCase,
 ) : ViewModel() {
 
     suspend fun getCurrentLocation() = locationManager.getCurrentLocation()
@@ -155,6 +157,10 @@ class HomeViewModel @Inject constructor(
             }.distinctUntilChanged()
                 .flatMapLatest { it }
         }.cachedIn(viewModelScope)
+    }
+
+    suspend fun getRestaurantMapWithLimitCount(sortType: SortType, group: Group?): List<RegisteredRestaurant> {
+        return getRestaurantMapWithLimitCountUseCase(sortType, group)
     }
 
     suspend fun getMyGroup(): List<Group> {

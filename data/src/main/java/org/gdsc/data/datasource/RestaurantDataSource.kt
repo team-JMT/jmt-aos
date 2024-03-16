@@ -51,6 +51,8 @@ interface RestaurantDataSource {
 
     suspend fun getRegisteredRestaurantsBySearch(keyword: String?, userLocation: Location?): Flow<PagingData<RegisteredRestaurantResponse>>
 
+    suspend fun getRegisteredRestaurantByMapWithLimitCount(sortType: SortType, currentGroup: Group?): List<RegisteredRestaurantResponse>
+
     suspend fun getRegisteredRestaurantsBySearchWithLimitCount(keyword: String?, userLocation: Location?, limit: Int): List<RegisteredRestaurantResponse>
 
     suspend fun getRestaurantReviews(restaurantId: Int): ReviewPaging
