@@ -424,10 +424,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
                         if (groupList.isEmpty()) {
                             viewModel.setCurrentGroup(null)
-
-                            if (bottomSheetDialog.isShowing.not()) {
-                                bottomSheetDialog.show()
-                            }
+                            bottomSheetDialog.show()
                         } else {
                             groupList.forEach {
                                 if (it.isSelected) {
@@ -435,6 +432,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                                     return@forEach
                                 }
                             }
+                            bottomSheetDialog.dismiss()
                         }
                     }
 
