@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +44,8 @@ class RestaurantDetailFragment : Fragment() {
     private val viewModel: RestaurantDetailViewModel by activityViewModels()
 
     private val parentActivity by lazy { activity as MainActivity }
+
+    private val navArgs by navArgs<RestaurantDetailFragmentArgs>()
 
     private val adapter = PhotoWillBeUploadedAdapter {
         viewModel.deletePhotoForReviewState(it)
@@ -146,6 +149,10 @@ class RestaurantDetailFragment : Fragment() {
 
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.init(navArgs.restaurantId)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.restaurantInfo.collect {
                 it?.let { notNullRestaurantInfo ->
 
@@ -197,5 +204,8 @@ class RestaurantDetailFragment : Fragment() {
         binding.restaurantDetailPager.currentItem = category
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.onDataCleared()
+    }
 }

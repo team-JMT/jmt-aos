@@ -39,6 +39,7 @@ import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.ContentSheetEmptyGroupBinding
 import org.gdsc.presentation.databinding.ContentSheetGroupSelectBinding
 import org.gdsc.presentation.databinding.FragmentHomeBinding
+import org.gdsc.presentation.databinding.ItemMapWithRestaurantBinding
 import org.gdsc.presentation.model.ResultState
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.WebViewActivity
@@ -93,8 +94,8 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         )
     }
     private val restaurantFilterAdapter by lazy { RestaurantFilterAdapter(this) }
-    private val restaurantListAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
-    private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
+    private val restaurantListAdapter by lazy { MapMarkerWithRestaurantsAdatper(this) }
+    private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper(this) }
     private val emptyAdapter by lazy { EmptyAdapter() }
     private lateinit var concatAdapter: ConcatAdapter
 
@@ -174,6 +175,36 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     drinkSpinner.setMenuTitle(it.text)
                 }
             }
+        } else if (holder is MapMarkerWithRestaurantsAdatper.RestaurantsWithMapViewHolder && _item is RegisteredRestaurant) {
+
+            val binding = ItemMapWithRestaurantBinding.bind(holder.itemView)
+            binding.run {
+                Glide.with(root)
+                    .load(_item.userProfileImageUrl)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(userProfileImage)
+
+                userName.text = _item.userNickName
+
+                Glide.with(root)
+                    .load(_item.restaurantImageUrl)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(restaurantImage)
+
+                restaurantCategory.text = _item.category
+                drinkAvailability.text = if (_item.canDrinkLiquor) "주류 가능" else "주류 불가능"
+
+                restaurantName.text = _item.name
+                restaurantDesc.text = _item.introduce
+            }
+            holder.itemView.setOnClickListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToRestaurantDetailFragment(
+                        _item.id
+                    )
+                )
+            }
+
         }
     }
     
