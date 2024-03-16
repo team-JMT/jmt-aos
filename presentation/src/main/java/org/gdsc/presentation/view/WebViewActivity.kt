@@ -20,36 +20,23 @@ import org.gdsc.presentation.utils.repeatWhenUiStarted
 
 class WebViewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWebViewBinding
-    private lateinit var webView:WebView
+    private lateinit var webView: WebView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWebViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        webViewInit()
-
         webView = binding.webView
 
+        webViewInit()
+
+
         setWebViewBackPress()
-        intent.extras?.let {
-            binding.webView.apply {
-
-                repeatWhenUiStarted {
-                    loadUrl(it.getString("url") ?: WEB_BASE_URL)
-                }
-
-                settings.javaScriptEnabled = true
-                settings.domStorageEnabled = true
-                webViewClient = WebViewClient()
-
-                addJavascriptInterface(WebAppInterface(context), "webviewBridge")
-            }
-
-        }
 
 //        val actionBar: ActionBar? = supportActionBar
 //        actionBar!!.hide()
     }
+
     private fun setWebViewBackPress() {
         this.onBackPressedDispatcher.addCallback(this) {
             if (binding.webView.canGoBack()) {
@@ -60,14 +47,20 @@ class WebViewActivity : AppCompatActivity() {
         }
     }
 
-    fun webViewInit() {
-        val webSettings: WebSettings = webView.getSettings()
-        webSettings.javaScriptEnabled = true // allow the js
+    private fun webViewInit() {
+
+        webView.apply {
+            loadUrl(WEB_BASE_URL + "group-create/name/")
+
+            settings.javaScriptEnabled = true // allow the js
+            settings.domStorageEnabled = true
+            webViewClient = WebViewClient()
+            addJavascriptInterface(WebAppInterface(this@WebViewActivity), "webviewBridge")
+        }
+
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) //화면이 계속 켜짐
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
-        webView.webViewClient = WebViewClient()
 
-        webView.addJavascriptInterface(WebAppInterface(this), "webviewBridge")
     }
 }
