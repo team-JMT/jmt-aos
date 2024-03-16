@@ -321,14 +321,21 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
 
 
     private fun setRestaurantListBottomSheet() {
+        
+        binding.registButton.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchRestaurantLocationInfoFragment(
+                viewModel.currentGroup.value?.groupId ?: 0
+            ))
+        }
 
         binding.scrollUpButton.setOnClickListener {
             binding.recyclerView.scrollToPosition(0)
         }
 
         binding.registRestaurantButton.setOnClickListener {
-            // TODO : 식당 등록 버튼 클릭 시 동작 정의 필요
-            Log.d("testLog", "식당 등록 버튼 클릭")
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchRestaurantLocationInfoFragment(
+                viewModel.currentGroup.value?.groupId ?: 0
+            ))
         }
 
         restaurantListAdapter.addLoadStateListener { loadState ->
