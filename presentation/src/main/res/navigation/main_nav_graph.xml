@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_all_search_container_fragment_to_restaurantDetailFragment"
             app:destination="@id/restaurantDetailFragment" />
+        <action
+            android:id="@+id/action_all_search_container_fragment_to_my_group_group_detail"
+            app:destination="@+id/my_group_fragment"/>
     </fragment>
     <fragment
         android:id="@+id/my_group_fragment"
