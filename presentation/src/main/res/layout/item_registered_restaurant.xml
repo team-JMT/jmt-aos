@@ -79,7 +79,7 @@
 
                 <org.gdsc.presentation.view.custom.FlexibleCornerImageView
                     android:id="@+id/user_profile_image"
-                    android:src="@drawable/jmt_logo_small"
+                    android:src="@drawable/ic_jmt_logo_grey"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:scaleType="centerCrop"
