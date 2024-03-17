@@ -52,6 +52,13 @@
         android:name="org.gdsc.presentation.view.group.MyGroupFragment"
         android:label="my_group_fragment"
         tools:layout="@layout/fragment_my_group" >
+        <argument
+            android:name="route"
+            app:argType="string"
+            android:defaultValue=""/>
+        <action
+            android:id="@+id/action_my_group_fragment_to_search_restaurant_location_info_fragment"
+            app:destination="@id/search_restaurant_location_info_fragment" />
     </fragment>
     <fragment
         android:id="@+id/my_page_fragment"
