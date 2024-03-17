@@ -1,7 +1,9 @@
 package org.gdsc.data.database
 
+import androidx.room.Database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.RoomDatabase
 
 @Entity(tableName = "restaurant")
 data class RegisteredRestaurant(
@@ -21,4 +23,6 @@ data class RegisteredRestaurant(
     val userProfileImageUrl: String, // 식당 등록한 유저 프로필 이미지
     val canDrinkLiquor: Boolean, // 식당 주류 판매 여부
     val differenceInDistance: String, // 식당과의 거리
+    val groupId: Int,
+    val groupName: String,
 )
