@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.gdsc.domain.model.GroupInfo
 import org.gdsc.presentation.R
+import org.gdsc.presentation.base.BaseViewHolder
+import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.ItemSearchGroupBinding
 
-class SearchCategoryGroupAdapter() :
+class SearchCategoryGroupAdapter(
+    private val listener: ViewHolderBindListener,
+) :
     PagingDataAdapter<GroupInfo, SearchCategoryGroupAdapter.SearchCategoryGroupViewHolder>(
         DiffCallback
     ) {
@@ -26,22 +30,11 @@ class SearchCategoryGroupAdapter() :
     }
 
     class SearchCategoryGroupViewHolder(
-        private val binding: ItemSearchGroupBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: GroupInfo) {
-            binding.run {
-                Glide.with(itemView.context)
-                    .load(item.groupProfileImageUrl)
-                    .placeholder(R.drawable.base_profile_image)
-                    .into(ivGroupImage)
-
-                tvGroupName.text = item.groupName
-                tvIntroduction.text = item.groupIntroduce
-                tvMemberCount.text = item.memberCnt.toString()
-                tvRestaurantCount.text = item.restaurantCnt.toString()
-            }
-        }
-    }
+        binding: ItemSearchGroupBinding,
+        listener: ViewHolderBindListener,
+    ) : BaseViewHolder<ItemSearchGroupBinding>(
+        binding, listener
+    )
 
     override fun onBindViewHolder(
         holder: SearchCategoryGroupViewHolder,
@@ -59,6 +52,6 @@ class SearchCategoryGroupAdapter() :
     ): SearchCategoryGroupViewHolder {
         val binding =
             ItemSearchGroupBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SearchCategoryGroupViewHolder(binding)
+        return SearchCategoryGroupViewHolder(binding, listener)
     }
 }

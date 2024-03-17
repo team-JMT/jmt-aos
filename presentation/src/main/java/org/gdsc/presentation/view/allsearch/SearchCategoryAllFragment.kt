@@ -15,11 +15,13 @@ import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import org.gdsc.domain.model.GroupInfo
+import org.gdsc.domain.model.GroupPreview
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.presentation.R
 import org.gdsc.presentation.base.BaseViewHolder
 import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.FragmentSearchCategoryAllBinding
+import org.gdsc.presentation.databinding.ItemSearchGroupBinding
 import org.gdsc.presentation.databinding.ItemSearchRestaurantBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.allsearch.adapter.SearchCategoryGroupPreviewAdapter
@@ -37,7 +39,7 @@ class SearchCategoryAllFragment(
     val viewModel: AllSearchViewModel by activityViewModels()
 
     private val searchCategoryRestaurantPreviewAdapter = SearchCategoryRestaurantPreviewAdapter(this)
-    private val searchCategoryGroupPreviewAdapter = SearchCategoryGroupPreviewAdapter()
+    private val searchCategoryGroupPreviewAdapter = SearchCategoryGroupPreviewAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -100,6 +102,7 @@ class SearchCategoryAllFragment(
                     .placeholder(R.drawable.base_profile_image)
                     .into(userProfileImage)
 
+                groupName.text = _item.groupName
                 userName.text = _item.userNickName
 
                 Glide.with(root)
@@ -116,6 +119,19 @@ class SearchCategoryAllFragment(
                         _item.id
                     )
                 )
+            }
+        } else if (holder is SearchCategoryGroupPreviewAdapter.GroupWithSearchPreviewViewHolder && _item is GroupPreview) {
+            val binding = ItemSearchGroupBinding.bind(holder.itemView)
+            binding.run {
+                Glide.with(root)
+                    .load(_item.groupProfileImageUrl)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(ivGroupImage)
+
+                tvGroupName.text = _item.groupName
+                tvIntroduction.text = _item.groupIntroduce
+                tvMemberCount.text = _item.memberCnt.toString()
+                tvRestaurantCount.text = _item.restaurantCnt.toString()
             }
         }
     }
