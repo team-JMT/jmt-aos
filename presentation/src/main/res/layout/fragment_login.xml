@@ -6,19 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".login.LoginFragment">
 
-    <ImageView
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrie"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="100dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_jmt_login"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/jmt_splash_logo"
-        android:layout_marginBottom="27dp"
+        android:src="@drawable/ic_jmt_logo_main"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/title"/>
@@ -27,12 +26,11 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/login_jmt_title"
+        android:src="@drawable/ic_jmt_logo_title_main"
+        android:layout_marginBottom="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/barrie"/>
 
     <LinearLayout
         android:id="@+id/google_login_btn_template"
@@ -44,8 +42,8 @@
         android:layout_marginHorizontal="20dp"
         android:background="@drawable/bg_rounded_border_8_grey200"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/apple_login_btn"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/apple_login_btn">
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -72,16 +70,34 @@
         android:visibility="gone"
         android:layout_marginBottom="24dp"/>
 
-    <TextView
+    <LinearLayout
         android:id="@+id/apple_login_btn"
-        android:textAppearance="@style/text_medium_medium"
-        android:text="@string/continue_with_apple"
-        android:textColor="@color/grayscale600"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="56dp"/>
+        android:minHeight="56dp"
+        android:gravity="center"
+        android:clickable="true"
+        android:layout_marginHorizontal="20dp"
+        android:backgroundTint="@color/black"
+        android:background="@drawable/bg_rounded_border_8_grey200"
+        android:orientation="horizontal"
+        android:layout_marginBottom="56dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_apple"/>
+
+        <TextView
+            android:id="@+id/apple_login_btn_text"
+            style="@style/text_large_bold"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Apple 계정으로 가입하기"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

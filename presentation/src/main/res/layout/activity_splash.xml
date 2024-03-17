@@ -4,34 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main500"
     tools:context=".login.SplashActivity">
 
-    <ImageView
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrie"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/bg_splash_summer"
-        android:scaleType="centerCrop"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/jmt_splash_logo"
+        android:src="@drawable/ic_jmt_logo_white"
         app:layout_constraintVertical_bias="0.46"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@+id/titls"/>
 
     <ImageView
         android:id="@+id/titls"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/splash_title"
-        android:layout_marginTop="18dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_jmt_logo_title_white"
+        app:layout_constraintBottom_toTopOf="@+id/barrie"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/content"
+        style="@style/text_large_medium"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="우리들의 존맛탱 맛집 모음"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo"/>
+        app:layout_constraintTop_toBottomOf="@+id/barrie"/>
 
 
 
