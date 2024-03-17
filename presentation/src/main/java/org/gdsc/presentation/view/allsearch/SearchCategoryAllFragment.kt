@@ -133,6 +133,13 @@ class SearchCategoryAllFragment(
                 tvMemberCount.text = _item.memberCnt.toString()
                 tvRestaurantCount.text = _item.restaurantCnt.toString()
             }
+            holder.itemView.setOnClickListener {
+                findNavController().navigate(
+                    AllSearchContainerFragmentDirections.actionAllSearchContainerFragmentToMyGroupGroupDetail(
+                        "group-detail/${_item.groupId}"
+                    )
+                )
+            }
         }
     }
 }
