@@ -261,6 +261,20 @@ class RestaurantDataSourceImpl @Inject constructor(
         }.flow.cachedIn(coroutineScope)
     }
 
+    override suspend fun getRegisteredRestaurantByMapWithLimitCount(
+        sortType: SortType,
+        currentGroup: Group?
+    ): List<RegisteredRestaurantResponse> {
+        return restaurantAPI.getRestaurantLocationInfoByMap(
+            page = 1,
+            size = 3,
+            sort = sortType.key,
+            RestaurantSearchRequest(
+                groupId = currentGroup?.groupId
+            )
+        ).data.restaurants
+    }
+
     override suspend fun getRegisteredRestaurantsBySearchWithLimitCount(
         keyword: String?,
         userLocation: Location?,

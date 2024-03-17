@@ -10,6 +10,8 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.gdsc.presentation.databinding.FragmentMyGroupBinding
@@ -27,6 +29,7 @@ class MyGroupFragment: Fragment() {
     private val specificWebViewViewModel: SpecificWebViewViewModel by viewModels()
 
     private val parentActivity by lazy { requireActivity() as MainActivity }
+    private val navArgs by navArgs<MyGroupFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +47,7 @@ class MyGroupFragment: Fragment() {
         
         binding.webView.apply {
             repeatWhenUiStarted {
-                loadUrl(WEB_BASE_URL)
+                loadUrl(WEB_BASE_URL + navArgs.route)
             }
 
             settings.javaScriptEnabled = true
@@ -58,6 +61,12 @@ class MyGroupFragment: Fragment() {
                 },
                 slideDownBottomNavigationView ={
                     parentActivity.slideDownBottomNavigationView()
+                },
+                navigateToRestaurantRegistration = { groupId ->
+                    findNavController().navigate(
+                        MyGroupFragmentDirections
+                            .actionMyGroupFragmentToSearchRestaurantLocationInfoFragment(groupId)
+                    )
                 },
                 setAccessToken = {
                     viewLifecycleOwner.lifecycleScope.launch {

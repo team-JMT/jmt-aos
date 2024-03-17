@@ -17,4 +17,6 @@ data class RegisteredRestaurant(
     val userProfileImageUrl: String, // 식당 등록한 유저 프로필 이미지
     val canDrinkLiquor: Boolean, // 식당 주류 판매 여부
     val differenceInDistance: String, // 식당과의 거리
+    val groupId: Int,
+    val groupName: String,
 )
