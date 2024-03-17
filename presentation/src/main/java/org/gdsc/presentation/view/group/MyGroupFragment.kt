@@ -10,6 +10,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -60,6 +61,12 @@ class MyGroupFragment: Fragment() {
                 },
                 slideDownBottomNavigationView ={
                     parentActivity.slideDownBottomNavigationView()
+                },
+                navigateToRestaurantRegistration = { groupId ->
+                    findNavController().navigate(
+                        MyGroupFragmentDirections
+                            .actionMyGroupFragmentToSearchRestaurantLocationInfoFragment(groupId)
+                    )
                 },
                 setAccessToken = {
                     viewLifecycleOwner.lifecycleScope.launch {
