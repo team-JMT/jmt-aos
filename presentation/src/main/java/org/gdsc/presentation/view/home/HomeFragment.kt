@@ -39,6 +39,7 @@ import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.ContentSheetEmptyGroupBinding
 import org.gdsc.presentation.databinding.ContentSheetGroupSelectBinding
 import org.gdsc.presentation.databinding.FragmentHomeBinding
+import org.gdsc.presentation.databinding.ItemMapWithRestaurantBinding
 import org.gdsc.presentation.model.ResultState
 import org.gdsc.presentation.utils.repeatWhenUiStarted
 import org.gdsc.presentation.view.WebViewActivity
@@ -81,20 +82,9 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             }
     }
 
-    // TODO : titleAdapter 문구 정리 필요
-    private val recommendPopularRestaurantTitleAdapter by lazy {
-        RecommendPopularRestaurantTitleAdapter(
-            "그룹에서 인기가 많아요"
-        )
-    }
-    private val recommendPopularRestaurantWrapperAdapter by lazy {
-        RecommendPopularRestaurantWrapperAdapter(
-            recommendPopularRestaurantList
-        )
-    }
     private val restaurantFilterAdapter by lazy { RestaurantFilterAdapter(this) }
-    private val restaurantListAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
-    private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper() }
+    private val restaurantListAdapter by lazy { MapMarkerWithRestaurantsAdatper(this) }
+    private val mapMarkerAdapter by lazy { MapMarkerWithRestaurantsAdatper(this) }
     private val emptyAdapter by lazy { EmptyAdapter() }
     private lateinit var concatAdapter: ConcatAdapter
 
@@ -119,19 +109,10 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
         setMap(savedInstanceState)
         observeState()
 
-        concatAdapter = if (recommendPopularRestaurantList.isNotEmpty()) {
-            ConcatAdapter(
-                recommendPopularRestaurantTitleAdapter,
-                recommendPopularRestaurantWrapperAdapter,
-                restaurantFilterAdapter,
-                restaurantListAdapter
-            )
-        } else {
-            ConcatAdapter(
-                restaurantFilterAdapter,
-                restaurantListAdapter
-            )
-        }
+        concatAdapter = ConcatAdapter(
+            restaurantFilterAdapter,
+            restaurantListAdapter
+        )
 
         setRestaurantListBottomSheet()
         setGroup()
@@ -174,6 +155,36 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                     drinkSpinner.setMenuTitle(it.text)
                 }
             }
+        } else if (holder is MapMarkerWithRestaurantsAdatper.RestaurantsWithMapViewHolder && _item is RegisteredRestaurant) {
+
+            val binding = ItemMapWithRestaurantBinding.bind(holder.itemView)
+            binding.run {
+                Glide.with(root)
+                    .load(_item.userProfileImageUrl)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(userProfileImage)
+
+                userName.text = _item.userNickName
+
+                Glide.with(root)
+                    .load(_item.restaurantImageUrl)
+                    .placeholder(R.drawable.base_profile_image)
+                    .into(restaurantImage)
+
+                restaurantCategory.text = _item.category
+                drinkAvailability.text = if (_item.canDrinkLiquor) "주류 가능" else "주류 불가능"
+
+                restaurantName.text = _item.name
+                restaurantDesc.text = _item.introduce
+            }
+            holder.itemView.setOnClickListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToRestaurantDetailFragment(
+                        _item.id
+                    )
+                )
+            }
+
         }
     }
     
@@ -402,8 +413,22 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     private fun observeState() {
 
         lifecycleScope.launch {
-            viewModel.registeredPagingDataByGroup().collect {
+            viewModel.registeredPagingDataByList().collect {
                 restaurantListAdapter.submitData(it)
+            }
+        }
+
+        lifecycleScope.launch {
+            val data = viewModel.getRestaurantMapWithLimitCount(SortType.DISTANCE, viewModel.currentGroup.value)
+
+            if (data.isNullOrEmpty().not()) {
+
+                // TODO : titleAdapter 문구 정리 필요
+                val recommendPopularRestaurantTitleAdapter = RecommendPopularRestaurantTitleAdapter("그룹에서 인기가 많아요")
+                val recommendPopularRestaurantWrapperAdapter = RecommendPopularRestaurantWrapperAdapter(data)
+
+                concatAdapter.addAdapter(0, recommendPopularRestaurantTitleAdapter)
+                concatAdapter.addAdapter(1, recommendPopularRestaurantWrapperAdapter)
             }
         }
 

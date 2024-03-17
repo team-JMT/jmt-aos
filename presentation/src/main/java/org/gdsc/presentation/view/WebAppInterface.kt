@@ -14,6 +14,11 @@ sealed class WebViewReceivedData {
     data class Back(
         val enable: Boolean
     ): WebViewReceivedData()
+
+    data class Navigate(
+        val restaurantId: Int
+    ): WebViewReceivedData()
+
 }
 sealed class WebViewBrideObject {
     data class Token(val data: Any? = null): WebViewBrideObject()
@@ -30,6 +35,10 @@ fun JSONObject.toWebViewBrideObject(): WebViewBrideObject {
             val isVisible = JSONObject(this.get("data").toString()).get("isVisible") as Boolean
             WebViewBrideObject.Other(WebViewReceivedData.Navigation(isVisible))
         }
+        "navigate" -> {
+            val groupId = JSONObject(this.get("data").toString()).get("groupId") as Int
+            WebViewBrideObject.Other(WebViewReceivedData.Navigate(groupId))
+        }
         // back
         else -> {
             val enable = JSONObject(this.get("data").toString()).get("enable") as Boolean
@@ -42,7 +51,7 @@ class WebAppInterface(
     private val mContext: Context,
     private val slideUpBottomNavigationView: () -> Unit = {},
     private val slideDownBottomNavigationView: () -> Unit = {},
-    private val navigateToRestaurantEdit: (Int) -> Unit = {},
+    private val navigateToRestaurantRegistration: (Int) -> Unit = {},
     private val setAccessToken: () -> Unit = {},
     private val setUserPosition: () -> Unit = {},
 ) {
@@ -100,6 +109,9 @@ class WebAppInterface(
                         } else {
 
                         }
+                    }
+                    is WebViewReceivedData.Navigate -> {
+                        navigateToRestaurantRegistration(receivedData.restaurantId)
                     }
                 }
             }

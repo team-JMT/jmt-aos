@@ -207,6 +207,7 @@
             android:paddingHorizontal="8dp"
             android:paddingVertical="6dp"
             android:text="등록"
+            android:enabled="false"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/add_image_icon"
             app:layout_constraintEnd_toEndOf="parent" />
