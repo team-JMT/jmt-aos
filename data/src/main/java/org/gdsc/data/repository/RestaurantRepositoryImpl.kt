@@ -88,6 +88,8 @@ class RestaurantRepositoryImpl @Inject constructor(
                         userProfileImageUrl = restaurant.userProfileImageUrl,
                         canDrinkLiquor = restaurant.canDrinkLiquor,
                         differenceInDistance = restaurant.differenceInDistance,
+                        groupId = restaurant.groupId,
+                        groupName = restaurant.groupName,
                     )
                     restaurantTemp
                 }, result.totalElementsCount
@@ -137,6 +139,8 @@ class RestaurantRepositoryImpl @Inject constructor(
                     userProfileImageUrl = restaurant.userProfileImageUrl,
                     canDrinkLiquor = restaurant.canDrinkLiquor,
                     differenceInDistance = restaurant.differenceInDistance,
+                    groupId = restaurant.groupId,
+                    groupName = restaurant.groupName,
                 )
             }
         }
@@ -166,6 +170,8 @@ class RestaurantRepositoryImpl @Inject constructor(
                         userProfileImageUrl = restaurant.userProfileImageUrl,
                         canDrinkLiquor = restaurant.canDrinkLiquor,
                         differenceInDistance = restaurant.differenceInDistance,
+                        groupId = restaurant.groupId,
+                        groupName = restaurant.groupName,
                     )
                 }
             }
@@ -194,6 +200,8 @@ class RestaurantRepositoryImpl @Inject constructor(
                     userProfileImageUrl = restaurant.userProfileImageUrl,
                     canDrinkLiquor = restaurant.canDrinkLiquor,
                     differenceInDistance = restaurant.differenceInDistance,
+                    groupId = restaurant.groupId,
+                    groupName = restaurant.groupName,
                 )
             }
     }
@@ -231,6 +239,8 @@ class RestaurantRepositoryImpl @Inject constructor(
                     userProfileImageUrl = restaurant.userProfileImageUrl,
                     canDrinkLiquor = restaurant.canDrinkLiquor,
                     differenceInDistance = restaurant.differenceInDistance,
+                    groupId = restaurant.groupId,
+                    groupName = restaurant.groupName,
                 )
             }
     }
