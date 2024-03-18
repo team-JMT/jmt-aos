@@ -1,5 +1,7 @@
 package org.gdsc.data.repository
 
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
 import org.gdsc.data.datasource.GroupDataSource
 import org.gdsc.domain.model.GroupPreview
 import org.gdsc.domain.model.response.Group
@@ -19,5 +21,9 @@ class GroupRepositoryImpl @Inject constructor(
 
     override suspend fun searchGroup(keyword: String, limitCount: Int): List<GroupPreview> {
         return groupDataSource.searchGroup(keyword, limitCount)
+    }
+
+    override suspend fun searchPagingGroup(keyword: String): Flow<PagingData<GroupPreview>> {
+        return groupDataSource.searchPagingGroup(keyword)
     }
 }

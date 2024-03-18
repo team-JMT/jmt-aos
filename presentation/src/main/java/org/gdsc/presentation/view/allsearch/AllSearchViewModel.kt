@@ -16,6 +16,7 @@ import org.gdsc.domain.SortType
 import org.gdsc.domain.model.GroupPreview
 import org.gdsc.domain.model.Location
 import org.gdsc.domain.model.RegisteredRestaurant
+import org.gdsc.domain.usecase.GetGroupBySearchUseCase
 import org.gdsc.domain.usecase.GetGroupBySearchWithLimitCountUseCase
 import org.gdsc.domain.usecase.GetRestaurantBySearchUseCase
 import org.gdsc.domain.usecase.GetRestaurantBySearchWithLimitCountUseCase
@@ -35,7 +36,8 @@ class AllSearchViewModel @Inject constructor(
     private val deleteSearchedKeywordUseCase: DeleteSearchedKeywordUseCase,
     private val initSearchedKeywordUseCase: InitSearchedKeywordUseCase,
     private val getRestaurantBySearchWithLimitCountUseCase: GetRestaurantBySearchWithLimitCountUseCase,
-    private val getGroupBySearchWithLimitCountUseCase: GetGroupBySearchWithLimitCountUseCase
+    private val getGroupBySearchWithLimitCountUseCase: GetGroupBySearchWithLimitCountUseCase,
+    private val getGroupBySearchUseCase: GetGroupBySearchUseCase
 ) : ViewModel() {
 
     init {
@@ -80,6 +82,12 @@ class AllSearchViewModel @Inject constructor(
 
     private var _searchedGroupPreviewState =
         MutableStateFlow<List<GroupPreview>>(emptyList())
+
+    val searchedGroupState: StateFlow<PagingData<GroupPreview>>
+        get() = _searchedGroupState
+
+    private var _searchedGroupState =
+        MutableStateFlow<PagingData<GroupPreview>>(PagingData.empty())
 
     val searchedGroupPreviewState: StateFlow<List<GroupPreview>>
         get() = _searchedGroupPreviewState
@@ -165,6 +173,12 @@ class AllSearchViewModel @Inject constructor(
         viewModelScope.launch {
             val result = getGroupBySearchWithLimitCountUseCase(searchKeyword.value, 3)
             _searchedGroupPreviewState.value = result
+        }
+        viewModelScope.launch {
+            getGroupBySearchUseCase(searchKeyword.value).distinctUntilChanged()
+                .collect {
+                    _searchedGroupState.value = it
+                }
         }
     }
 

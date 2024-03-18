@@ -48,10 +48,10 @@ class SearchCategoryAllFragment(
             viewModel.isForGroup.collect { isForGroup ->
                 if (isForGroup.not()) {
                     binding.restaurantRecyclerView.visibility = View.GONE
-                    binding.waringNoRestaurant.root.visibility = View.VISIBLE
+                    binding.warningNoRestaurant.root.visibility = View.VISIBLE
                 } else {
                     binding.restaurantRecyclerView.visibility = View.VISIBLE
-                    binding.waringNoRestaurant.root.visibility = View.GONE
+                    binding.warningNoRestaurant.root.visibility = View.GONE
                 }
             }
         }
@@ -60,10 +60,10 @@ class SearchCategoryAllFragment(
             viewModel.searchedGroupPreviewState.collect {
                 if (it.isEmpty()) {
                     binding.groupRecyclerView.visibility = View.GONE
-                    binding.waringNoGroup.root.visibility = View.VISIBLE
+                    binding.warningNoGroup.root.visibility = View.VISIBLE
                 } else {
                     binding.groupRecyclerView.visibility = View.VISIBLE
-                    binding.waringNoGroup.root.visibility = View.GONE
+                    binding.warningNoGroup.root.visibility = View.GONE
 
                 }
             }

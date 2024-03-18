@@ -6,21 +6,21 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import org.gdsc.domain.model.GroupInfo
+import org.gdsc.domain.model.GroupPreview
 import org.gdsc.presentation.R
 import org.gdsc.presentation.databinding.ItemSearchGroupBinding
 
 class SearchCategoryGroupAdapter() :
-    PagingDataAdapter<GroupInfo, SearchCategoryGroupAdapter.SearchCategoryGroupViewHolder>(
+    PagingDataAdapter<GroupPreview, SearchCategoryGroupAdapter.SearchCategoryGroupViewHolder>(
         DiffCallback
     ) {
 
-    companion object DiffCallback : DiffUtil.ItemCallback<GroupInfo>() {
-        override fun areItemsTheSame(oldItem: GroupInfo, newItem: GroupInfo): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<GroupPreview>() {
+        override fun areItemsTheSame(oldItem: GroupPreview, newItem: GroupPreview): Boolean {
             return oldItem.groupId == newItem.groupId
         }
 
-        override fun areContentsTheSame(oldItem: GroupInfo, newItem: GroupInfo): Boolean {
+        override fun areContentsTheSame(oldItem: GroupPreview, newItem: GroupPreview): Boolean {
             return oldItem == newItem
         }
     }
@@ -28,10 +28,10 @@ class SearchCategoryGroupAdapter() :
     class SearchCategoryGroupViewHolder(
         private val binding: ItemSearchGroupBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: GroupInfo) {
+        fun bind(item: GroupPreview) {
             binding.run {
                 Glide.with(itemView.context)
-                    .load(item.groupProfileImageUrl)
+                    .load("https://picsum.photos/200")
                     .placeholder(R.drawable.base_profile_image)
                     .into(ivGroupImage)
 

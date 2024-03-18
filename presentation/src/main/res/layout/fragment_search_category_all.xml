@@ -43,7 +43,7 @@
             android:layout_marginHorizontal="@dimen/default_spacing">
 
             <include
-                android:id="@+id/waring_no_restaurant"
+                android:id="@+id/warning_no_restaurant"
                 layout="@layout/restaurant_is_only_for_people_in_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -102,7 +102,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <include
-                android:id="@+id/waring_no_group"
+                android:id="@+id/warning_no_group"
                 layout="@layout/there_is_no_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
