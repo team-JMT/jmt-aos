@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.gdsc.domain.model.GroupPreview
 import org.gdsc.presentation.R
+import org.gdsc.presentation.base.BaseViewHolder
+import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.ItemSearchGroupBinding
 
-class SearchCategoryGroupPreviewAdapter
+class SearchCategoryGroupPreviewAdapter(
+    private val listener: ViewHolderBindListener
+)
     : ListAdapter<GroupPreview, SearchCategoryGroupPreviewAdapter.GroupWithSearchPreviewViewHolder>(
     diffCallback
 ) {
@@ -34,22 +38,9 @@ class SearchCategoryGroupPreviewAdapter
     }
 
     class GroupWithSearchPreviewViewHolder(
-        private val binding: ItemSearchGroupBinding,
-    ): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: GroupPreview) {
-            binding.run {
-                Glide.with(itemView.context)
-                    .load("https://picsum.photos/200")
-                    .placeholder(R.drawable.base_profile_image)
-                    .into(ivGroupImage)
-
-                tvGroupName.text = item.groupName
-                tvIntroduction.text = item.groupIntroduce
-                tvMemberCount.text = item.memberCnt.toString()
-                tvRestaurantCount.text = item.restaurantCnt.toString()
-            }
-        }
-    }
+        binding: ItemSearchGroupBinding,
+        listener: ViewHolderBindListener
+    ): BaseViewHolder<ItemSearchGroupBinding>(binding, listener)
 
     override fun onBindViewHolder(holder: GroupWithSearchPreviewViewHolder, position: Int) {
         val item = getItem(position)
@@ -63,7 +54,7 @@ class SearchCategoryGroupPreviewAdapter
         viewType: Int
     ): GroupWithSearchPreviewViewHolder {
         val binding = ItemSearchGroupBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GroupWithSearchPreviewViewHolder(binding)
+        return GroupWithSearchPreviewViewHolder(binding, listener)
     }
 
 }

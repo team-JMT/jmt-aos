@@ -8,11 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.presentation.R
+import org.gdsc.presentation.base.BaseViewHolder
 import org.gdsc.presentation.base.Const
+import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.ItemRegisteredRestaurantBinding
 import org.gdsc.presentation.utils.CalculatorUtils
 
-class RegisteredRestaurantPagingDataAdapter : PagingDataAdapter<RegisteredRestaurant, RestaurantViewHolder>(
+class RegisteredRestaurantPagingDataAdapter(
+    private val listener: ViewHolderBindListener
+) : PagingDataAdapter<RegisteredRestaurant, RegisteredRestaurantPagingDataAdapter.RestaurantViewHolder>(
     diffCallback
 ) {
 
@@ -26,11 +30,10 @@ class RegisteredRestaurantPagingDataAdapter : PagingDataAdapter<RegisteredRestau
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
-
         return RestaurantViewHolder(
             ItemRegisteredRestaurantBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
-            )
+            ), listener
         )
     }
 
@@ -40,31 +43,8 @@ class RegisteredRestaurantPagingDataAdapter : PagingDataAdapter<RegisteredRestau
         }
     }
 
-}
-
-class RestaurantViewHolder(private val binding: ItemRegisteredRestaurantBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: RegisteredRestaurant) {
-        with(binding) {
-            item.let {
-                restaurantName.text = it.name
-                restaurantCategory.text = it.category
-                userName.text = it.userNickName
-
-                restaurantDistance.text = binding.root.context.getString(
-                    R.string.distance_from_current_location,
-                    CalculatorUtils.getDistanceWithLength(it.differenceInDistance.toInt())
-                )
-
-                Glide.with(root)
-                    .load(it.userProfileImageUrl)
-                    .placeholder(R.drawable.base_profile_image)
-                    .into(userProfileImage)
-
-                Glide.with(root)
-                    .load(it.restaurantImageUrl)
-                    .placeholder(R.drawable.ig_restaurant_placeholder)
-                    .into(restaurantImage)
-            }
-        }
-    }
+    class RestaurantViewHolder(
+        binding: ItemRegisteredRestaurantBinding,
+        listener: ViewHolderBindListener
+    ) :BaseViewHolder<ItemRegisteredRestaurantBinding>(binding, listener)
 }

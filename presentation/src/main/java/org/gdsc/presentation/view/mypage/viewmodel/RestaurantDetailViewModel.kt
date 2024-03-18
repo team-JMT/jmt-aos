@@ -52,32 +52,60 @@ class RestaurantDetailViewModel
         _photosForReviewState.value = _photosForReviewState.value - image
     }
 
-    init {
-        viewModelScope.launch {
+    val restaurantIdState: StateFlow<Int>
+        get() = _restaurantIdState
+    private var _restaurantIdState: MutableStateFlow<Int> = MutableStateFlow(-1)
 
+    fun init(id:Int) {
+        _restaurantIdState.value = id
+    }
+
+    fun setData() {
+        viewModelScope.launch {
             val currentLocation = jmtLocationManager.getCurrentLocation()
-            val restaurantInfo = getRestaurantInfoUseCase(1, currentLocation?.longitude.toString(), currentLocation?.latitude.toString())
+            val restaurantInfo = getRestaurantInfoUseCase(restaurantIdState.value, currentLocation?.longitude.toString(), currentLocation?.latitude.toString())
             _restaurantInfo.value = restaurantInfo
 
             val userInfo = getOtherUserInfoUseCase(restaurantInfo.userId)
             _authorInfo.value = userInfo
 
-            val reviews = getRestaurantReviewsUseCase(1)
+            val reviews = getRestaurantReviewsUseCase(restaurantIdState.value)
             _reviews.value = reviews
-
         }
-
     }
+
+//    init {
+//        viewModelScope.launch {
+//
+//            val currentLocation = jmtLocationManager.getCurrentLocation()
+//            val restaurantInfo = getRestaurantInfoUseCase(state.value, currentLocation?.longitude.toString(), currentLocation?.latitude.toString())
+//            _restaurantInfo.value = restaurantInfo
+//
+//            val userInfo = getOtherUserInfoUseCase(restaurantInfo.userId)
+//            _authorInfo.value = userInfo
+//
+//            val reviews = getRestaurantReviewsUseCase(1)
+//            _reviews.value = reviews
+//
+//        }
+//
+//    }
 
     fun postReview(content: String, pictures: List<MultipartBody.Part>, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            val isSuccess = postReviewUseCase(1, content, pictures)
+            val isSuccess = postReviewUseCase(restaurantIdState.value, content, pictures)
 
             if (isSuccess) {
                 _photosForReviewState.value = emptyList()
                 onSuccess()
             }
         }
+    }
+
+    fun onDataCleared() {
+        _restaurantInfo.value = null
+        _authorInfo.value = null
+        _reviews.value = emptyList()
     }
 
 }

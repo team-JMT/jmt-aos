@@ -9,9 +9,14 @@ import android.webkit.WebViewClient
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.gdsc.presentation.databinding.FragmentMyGroupBinding
 import org.gdsc.presentation.utils.repeatWhenUiStarted
+import org.gdsc.presentation.view.MainActivity
 import org.gdsc.presentation.view.WEB_BASE_URL
 import org.gdsc.presentation.view.WebAppInterface
 import org.gdsc.presentation.view.webview.SpecificWebViewViewModel
@@ -22,6 +27,9 @@ class MyGroupFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val specificWebViewViewModel: SpecificWebViewViewModel by viewModels()
+
+    private val parentActivity by lazy { requireActivity() as MainActivity }
+    private val navArgs by navArgs<MyGroupFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +47,7 @@ class MyGroupFragment: Fragment() {
         
         binding.webView.apply {
             repeatWhenUiStarted {
-                loadUrl(WEB_BASE_URL)
+                loadUrl(WEB_BASE_URL + navArgs.route)
             }
 
             settings.javaScriptEnabled = true
@@ -47,7 +55,26 @@ class MyGroupFragment: Fragment() {
             webViewClient = WebViewClient()
 
             addJavascriptInterface(WebAppInterface(
-                requireContext()
+                mContext = requireContext(),
+                slideUpBottomNavigationView = {
+                    parentActivity.slideUpBottomNavigationView()
+                },
+                slideDownBottomNavigationView ={
+                    parentActivity.slideDownBottomNavigationView()
+                },
+                navigateToRestaurantRegistration = { groupId ->
+                    findNavController().navigate(
+                        MyGroupFragmentDirections
+                            .actionMyGroupFragmentToSearchRestaurantLocationInfoFragment(groupId)
+                    )
+                },
+                setAccessToken = {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        binding.webView.loadUrl(
+                            "javascript:setAccessToken('${specificWebViewViewModel.getAccessToken()}')"
+                        )
+                    }
+                }
             ), "webviewBridge")
 
         }

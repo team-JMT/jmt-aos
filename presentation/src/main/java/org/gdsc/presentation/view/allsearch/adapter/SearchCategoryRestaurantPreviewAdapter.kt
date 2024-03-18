@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.presentation.R
+import org.gdsc.presentation.base.BaseViewHolder
+import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.ItemSearchRestaurantBinding
 
-class SearchCategoryRestaurantPreviewAdapter
+class SearchCategoryRestaurantPreviewAdapter(
+    private val listener: ViewHolderBindListener
+)
     : ListAdapter<RegisteredRestaurant, SearchCategoryRestaurantPreviewAdapter.RestaurantsWithSearchPreviewViewHolder>(
     diffCallback
 ) {
@@ -34,27 +38,11 @@ class SearchCategoryRestaurantPreviewAdapter
     }
 
     class RestaurantsWithSearchPreviewViewHolder(
-        private val binding: ItemSearchRestaurantBinding,
-    ): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: RegisteredRestaurant) {
-            binding.run {
-                Glide.with(itemView.context)
-                    .load(item.userProfileImageUrl)
-                    .placeholder(R.drawable.base_profile_image)
-                    .into(userProfileImage)
-
-                userName.text = item.userNickName
-
-                Glide.with(itemView.context)
-                    .load(item.restaurantImageUrl)
-                    .placeholder(R.drawable.base_profile_image)
-                    .into(restaurantImage)
-
-                restaurantCategory.text = item.category
-                restaurantName.text = item.name
-            }
-        }
-    }
+        binding: ItemSearchRestaurantBinding,
+        listener: ViewHolderBindListener
+    ): BaseViewHolder<ItemSearchRestaurantBinding>(
+        binding, listener
+    )
 
     override fun onBindViewHolder(holder: RestaurantsWithSearchPreviewViewHolder, position: Int) {
         val item = getItem(position)
@@ -68,7 +56,7 @@ class SearchCategoryRestaurantPreviewAdapter
         viewType: Int
     ): RestaurantsWithSearchPreviewViewHolder {
         val binding = ItemSearchRestaurantBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RestaurantsWithSearchPreviewViewHolder(binding)
+        return RestaurantsWithSearchPreviewViewHolder(binding, listener)
     }
 
 }

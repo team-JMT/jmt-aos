@@ -57,7 +57,7 @@ class SpecificWebViewFragment : Fragment() {
                     parentActivity.slideDownBottomNavigationView()
                 },
                 {
-                    parentActivity.navigateToEditRestaurantInfo(it)
+//                    parentActivity.navigateToEditRestaurantInfo(it)
                 },
                 {
                     repeatWhenUiStarted {
