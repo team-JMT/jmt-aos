@@ -44,11 +44,15 @@ data class RegisteredRestaurantResponse(
     @SerializedName("userNickName")
     val userNickName: String = "", // 식당 등록한 유저 닉네임
     @SerializedName("userProfileImageUrl")
-    val userProfileImageUrl: String = "", // 식당 등록한 유저 프로필 이미지
+    val userProfileImageUrl: String? = "", // 식당 등록한 유저 프로필 이미지
     @SerializedName("canDrinkLiquor")
     val canDrinkLiquor: Boolean = false, // 식당 주류 판매 여부
     @SerializedName("differenceInDistance")
     val differenceInDistance: String = "", // 식당과의 거리
+    @SerializedName("groupId")
+    val groupId: Int = 0,
+    @SerializedName("groupName")
+    val groupName: String = "",
 ) {
     fun convertResponseToRegisteredRestaurant(
         userId: Int,
@@ -70,6 +74,8 @@ data class RegisteredRestaurantResponse(
             userProfileImageUrl = userProfileImageUrl,
             canDrinkLiquor = canDrinkLiquor,
             differenceInDistance = differenceInDistance,
+            groupId = groupId,
+            groupName = groupName,
         )
     }
 }

@@ -34,11 +34,31 @@ class BottomSheetDialog {
         behavior.maxHeight = getBottomSheetDialogDefaultHeight()
     }
 
-    fun <T: ViewBinding> bindBuilder(binding: T, callback: T.(BottomSheetDialog) -> Unit) {
+    val isShowing: Boolean
+        get() {
+            return this.btmDlg.isShowing
+        }
+
+    fun show() {
+        if (isShowing) return
+        this.btmDlg.show()
+    }
+
+    fun dismiss() {
+        if (!isShowing) return
+        this.btmDlg.dismiss()
+    }
+
+    fun <T : ViewBinding> bindBuilder(
+        binding: T,
+        callback: T.(BottomSheetDialog) -> Unit
+    ): org.gdsc.presentation.view.custom.BottomSheetDialog {
         this.customView = binding.root
         btmDlg.setContentView(this.customView!!)
         binding.callback(btmDlg)
+        return this
     }
+
     private fun getBottomSheetDialogDefaultHeight(): Int {
         return getScreenRealHeight() * 70 / 100
     }

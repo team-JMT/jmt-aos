@@ -87,7 +87,10 @@ class RestaurantDataSourceImpl @Inject constructor(
         return restaurantAPI.postRestaurantLocationInfo(restaurantLocationInfo).data
     }
 
-    override suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String {
+    override suspend fun postRestaurantInfo(
+        restaurantRegistrationRequest: RestaurantRegistrationRequest,
+        groupId: Int,
+    ): String {
         runCatching {
             restaurantAPI.postRestaurantInfo(
                 mapOf(
@@ -100,7 +103,7 @@ class RestaurantDataSourceImpl @Inject constructor(
                     "goWellWithLiquor" to restaurantRegistrationRequest.goWellWithLiquor.toRequestBody(),
                     "recommendMenu" to restaurantRegistrationRequest.recommendMenu.toRequestBody(),
                     "restaurantLocationId" to restaurantRegistrationRequest.restaurantLocationAggregateId.toRequestBody(),
-                    "groupId" to "10".toRequestBody()
+                    "groupId" to groupId.toString().toRequestBody()
                 ),
                 pictures = restaurantRegistrationRequest.pictures
             )
@@ -256,6 +259,20 @@ class RestaurantDataSourceImpl @Inject constructor(
                 )
             )
         }.flow.cachedIn(coroutineScope)
+    }
+
+    override suspend fun getRegisteredRestaurantByMapWithLimitCount(
+        sortType: SortType,
+        currentGroup: Group?
+    ): List<RegisteredRestaurantResponse> {
+        return restaurantAPI.getRestaurantLocationInfoByMap(
+            page = 1,
+            size = 3,
+            sort = sortType.key,
+            RestaurantSearchRequest(
+                groupId = currentGroup?.groupId
+            )
+        ).data.restaurants
     }
 
     override suspend fun getRegisteredRestaurantsBySearchWithLimitCount(

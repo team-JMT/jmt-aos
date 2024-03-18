@@ -47,8 +47,11 @@ class RestaurantRepositoryImpl @Inject constructor(
         return restaurantDataSource.postRestaurantLocationInfo(restaurantLocationInfo)
     }
 
-    override suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String {
-        return restaurantDataSource.postRestaurantInfo(restaurantRegistrationRequest)
+    override suspend fun postRestaurantInfo(
+        restaurantRegistrationRequest: RestaurantRegistrationRequest,
+        groupId: Int,
+        ): String {
+        return restaurantDataSource.postRestaurantInfo(restaurantRegistrationRequest, groupId)
     }
 
     override suspend fun getRestaurants(
@@ -85,6 +88,8 @@ class RestaurantRepositoryImpl @Inject constructor(
                         userProfileImageUrl = restaurant.userProfileImageUrl,
                         canDrinkLiquor = restaurant.canDrinkLiquor,
                         differenceInDistance = restaurant.differenceInDistance,
+                        groupId = restaurant.groupId,
+                        groupName = restaurant.groupName,
                     )
                     restaurantTemp
                 }, result.totalElementsCount
@@ -134,6 +139,8 @@ class RestaurantRepositoryImpl @Inject constructor(
                     userProfileImageUrl = restaurant.userProfileImageUrl,
                     canDrinkLiquor = restaurant.canDrinkLiquor,
                     differenceInDistance = restaurant.differenceInDistance,
+                    groupId = restaurant.groupId,
+                    groupName = restaurant.groupName,
                 )
             }
         }
@@ -163,8 +170,39 @@ class RestaurantRepositoryImpl @Inject constructor(
                         userProfileImageUrl = restaurant.userProfileImageUrl,
                         canDrinkLiquor = restaurant.canDrinkLiquor,
                         differenceInDistance = restaurant.differenceInDistance,
+                        groupId = restaurant.groupId,
+                        groupName = restaurant.groupName,
                     )
                 }
+            }
+    }
+
+    override suspend fun getRegisteredRestaurantByMapWithLimitCount(
+        sortType: SortType,
+        currentGroup: Group?
+    ): List<RegisteredRestaurant> {
+        return restaurantDataSource.getRegisteredRestaurantByMapWithLimitCount(sortType, currentGroup)
+            .map { restaurant ->
+                RegisteredRestaurant(
+                    id = restaurant.id,
+                    name = restaurant.name,
+                    placeUrl = restaurant.placeUrl,
+                    phone = restaurant.phone,
+                    address = restaurant.address,
+                    roadAddress = restaurant.roadAddress,
+                    x = restaurant.x,
+                    y = restaurant.y,
+                    restaurantImageUrl = restaurant.restaurantImageUrl,
+                    introduce = restaurant.introduce,
+                    category = restaurant.category,
+                    userId = restaurant.id,
+                    userNickName = restaurant.userNickName,
+                    userProfileImageUrl = restaurant.userProfileImageUrl,
+                    canDrinkLiquor = restaurant.canDrinkLiquor,
+                    differenceInDistance = restaurant.differenceInDistance,
+                    groupId = restaurant.groupId,
+                    groupName = restaurant.groupName,
+                )
             }
     }
 
@@ -201,6 +239,8 @@ class RestaurantRepositoryImpl @Inject constructor(
                     userProfileImageUrl = restaurant.userProfileImageUrl,
                     canDrinkLiquor = restaurant.canDrinkLiquor,
                     differenceInDistance = restaurant.differenceInDistance,
+                    groupId = restaurant.groupId,
+                    groupName = restaurant.groupName,
                 )
             }
     }

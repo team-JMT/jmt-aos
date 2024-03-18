@@ -31,7 +31,7 @@ interface RestaurantDataSource {
 
     suspend fun postRestaurantLocationInfo(restaurantLocationInfo: RestaurantLocationInfo): String
 
-    suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest): String
+    suspend fun postRestaurantInfo(restaurantRegistrationRequest: RestaurantRegistrationRequest, groupId: Int): String
 
     suspend fun getRestaurants(
         userId: Int, locationData: Location, sortType: SortType, foodCategory: FoodCategory, drinkPossibility: DrinkPossibility
@@ -50,6 +50,8 @@ interface RestaurantDataSource {
     ): Flow<PagingData<RegisteredRestaurantResponse>>
 
     suspend fun getRegisteredRestaurantsBySearch(keyword: String?, userLocation: Location?): Flow<PagingData<RegisteredRestaurantResponse>>
+
+    suspend fun getRegisteredRestaurantByMapWithLimitCount(sortType: SortType, currentGroup: Group?): List<RegisteredRestaurantResponse>
 
     suspend fun getRegisteredRestaurantsBySearchWithLimitCount(keyword: String?, userLocation: Location?, limit: Int): List<RegisteredRestaurantResponse>
 

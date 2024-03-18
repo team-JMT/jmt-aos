@@ -1,11 +1,9 @@
 package org.gdsc.presentation.view.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +23,7 @@ import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.domain.model.ScreenLocation
 import org.gdsc.domain.model.response.Group
 import org.gdsc.domain.usecase.GetMyGroupUseCase
+import org.gdsc.domain.usecase.GetRestaurantMapWithLimitCountUseCase
 import org.gdsc.domain.usecase.GetRestaurantsByMapUseCase
 import org.gdsc.domain.usecase.PostSelectGroupUseCase
 import org.gdsc.presentation.JmtLocationManager
@@ -37,6 +36,7 @@ class HomeViewModel @Inject constructor(
     private val getRestaurantsByMapUseCase: GetRestaurantsByMapUseCase,
     private val getMyGroupUseCase: GetMyGroupUseCase,
     private val postSelectGroupUserCase: PostSelectGroupUseCase,
+    private val getRestaurantMapWithLimitCountUseCase: GetRestaurantMapWithLimitCountUseCase,
 ) : ViewModel() {
 
     suspend fun getCurrentLocation() = locationManager.getCurrentLocation()
@@ -85,8 +85,8 @@ class HomeViewModel @Inject constructor(
         get() = _myGroupList
 
 
-    private var _currentGroup = MutableStateFlow<Group?>(null)
-    val currentGroup: StateFlow<Group?>
+    private var _currentGroup: MutableStateFlow<Group> = MutableStateFlow(Group(0, "", "", "", "", 0, 0, false, false))
+    val currentGroup: StateFlow<Group>
         get() = _currentGroup
 
 
@@ -118,7 +118,7 @@ class HomeViewModel @Inject constructor(
         _myGroupList.value = ResultState.OnSuccess(groupList)
     }
 
-    fun setCurrentGroup(group: Group?) {
+    fun setCurrentGroup(group: Group) {
         _currentGroup.value = group
     }
 
@@ -143,7 +143,7 @@ class HomeViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun registeredPagingDataByGroup(): Flow<PagingData<RegisteredRestaurant>> {
+    suspend fun registeredPagingDataByList(): Flow<PagingData<RegisteredRestaurant>> {
 
         return run {
             return@run combine(
@@ -159,8 +159,12 @@ class HomeViewModel @Inject constructor(
         }.cachedIn(viewModelScope)
     }
 
-    suspend fun getMyGroup(): List<Group> {
-        return getMyGroupUseCase()
+    suspend fun getRestaurantMapWithLimitCount(sortType: SortType, group: Group?): List<RegisteredRestaurant> {
+        return getRestaurantMapWithLimitCountUseCase(sortType, group)
+    }
+
+    suspend fun requestGroupList() {
+        _myGroupList.value = ResultState.OnSuccess(getMyGroupUseCase())
     }
 
     suspend fun selectGroup(groupID: Int) {

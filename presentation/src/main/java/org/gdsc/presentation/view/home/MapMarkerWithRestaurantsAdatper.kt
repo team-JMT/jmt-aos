@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.gdsc.domain.model.RegisteredRestaurant
 import org.gdsc.presentation.R
+import org.gdsc.presentation.base.BaseViewHolder
+import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.ItemMapWithRestaurantBinding
 
-class MapMarkerWithRestaurantsAdatper
+class MapMarkerWithRestaurantsAdatper(
+    private val listener: ViewHolderBindListener
+)
     : PagingDataAdapter<RegisteredRestaurant, MapMarkerWithRestaurantsAdatper.RestaurantsWithMapViewHolder>(
     diffCallback
 ) {
@@ -33,30 +37,10 @@ class MapMarkerWithRestaurantsAdatper
     }
 
     class RestaurantsWithMapViewHolder(
-        private val binding: ItemMapWithRestaurantBinding,
-    ): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: RegisteredRestaurant) {
-            binding.run {
-                Glide.with(itemView.context)
-                    .load(item.userProfileImageUrl)
-                    .placeholder(R.drawable.base_profile_image)
-                    .into(userProfileImage)
+        binding: ItemMapWithRestaurantBinding,
+        listener: ViewHolderBindListener
+    ): BaseViewHolder<ItemMapWithRestaurantBinding>(binding, listener)
 
-                userName.text = item.userNickName
-
-                Glide.with(itemView.context)
-                    .load(item.restaurantImageUrl)
-                    .placeholder(R.drawable.base_profile_image)
-                    .into(restaurantImage)
-
-                restaurantCategory.text = item.category
-                drinkAvailability.text = if (item.canDrinkLiquor) "주류 가능" else "주류 불가능"
-
-                restaurantName.text = item.name
-                restaurantDesc.text = item.introduce
-            }
-        }
-    }
     override fun onBindViewHolder(holder: RestaurantsWithMapViewHolder, position: Int) {
         val item = getItem(position)
         if (item != null) {
@@ -68,7 +52,7 @@ class MapMarkerWithRestaurantsAdatper
         parent: ViewGroup,
         viewType: Int
     ): RestaurantsWithMapViewHolder {
-        val binding = ItemMapWithRestaurantBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RestaurantsWithMapViewHolder(binding)
+        val binding = ItemMapWithRestaurantBinding.inflate(LayoutInflater.from(parent.context), parent, false,)
+        return RestaurantsWithMapViewHolder(binding, listener)
     }
 }

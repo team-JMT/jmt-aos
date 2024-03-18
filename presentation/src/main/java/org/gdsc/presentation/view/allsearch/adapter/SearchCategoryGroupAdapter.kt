@@ -8,10 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.gdsc.domain.model.GroupPreview
 import org.gdsc.presentation.R
+import org.gdsc.presentation.base.BaseViewHolder
+import org.gdsc.presentation.base.ViewHolderBindListener
 import org.gdsc.presentation.databinding.ItemSearchGroupBinding
 
-class SearchCategoryGroupAdapter() :
-    PagingDataAdapter<GroupPreview, SearchCategoryGroupAdapter.SearchCategoryGroupViewHolder>(
+class SearchCategoryGroupAdapter(
+    private val listener: ViewHolderBindListener,
+) :
+    PagingDataAdapter<GroupInfo, SearchCategoryGroupAdapter.SearchCategoryGroupViewHolder>(
         DiffCallback
     ) {
 
@@ -26,8 +30,11 @@ class SearchCategoryGroupAdapter() :
     }
 
     class SearchCategoryGroupViewHolder(
-        private val binding: ItemSearchGroupBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
+        binding: ItemSearchGroupBinding,
+        listener: ViewHolderBindListener,
+    ) : BaseViewHolder<ItemSearchGroupBinding>(
+        binding, listener
+    ) {
         fun bind(item: GroupPreview) {
             binding.run {
                 Glide.with(itemView.context)
@@ -59,6 +66,6 @@ class SearchCategoryGroupAdapter() :
     ): SearchCategoryGroupViewHolder {
         val binding =
             ItemSearchGroupBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SearchCategoryGroupViewHolder(binding)
+        return SearchCategoryGroupViewHolder(binding, listener)
     }
 }

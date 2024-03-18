@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_weight="0"
-        android:paddingHorizontal="@dimen/default_spacing"
+        android:paddingStart="@dimen/default_spacing"
         android:background="@color/white">
 
         <ImageView
@@ -49,19 +49,21 @@
             android:src="@drawable/back_arrow"
             android:rotation="180"
             android:backgroundTint="@color/grey800"
-            android:layout_marginStart="@dimen/divider_large"
+            android:padding="8dp"
             app:layout_constraintStart_toEndOf="@+id/group_name"
-            app:layout_constraintEnd_toStartOf="@+id/ic_group_search"
+            app:layout_constraintEnd_toStartOf="@+id/group_search"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <ImageView
-            android:id="@+id/ic_group_search"
+            android:id="@+id/group_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_thin_magnifying_glass"
             android:backgroundTint="@color/grey700"
             android:foregroundTint="@color/grey700"
+            android:padding="@dimen/half_spacing"
+            android:layout_marginEnd="@dimen/half_spacing"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
