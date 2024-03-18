@@ -7,11 +7,10 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/jmt_character"
-        android:layout_marginBottom="32dp"
+        android:src="@drawable/ic_jmt_logo_grey"
         app:layout_constraintBottom_toTopOf="@+id/not_yet_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
