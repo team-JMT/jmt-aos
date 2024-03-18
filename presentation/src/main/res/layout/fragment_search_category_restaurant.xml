@@ -61,4 +61,13 @@
         app:layout_constraintTop_toBottomOf="@+id/filter_lay"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="0dp" />
+
+    <include
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/warning_no_restaurant"
+        layout="@layout/restaurant_is_only_for_people_in_group"
+        android:layout_marginBottom="40dp"
+        android:layout_marginHorizontal="@dimen/default_spacing"
+        app:layout_constraintTop_toBottomOf="@+id/filter_lay" />
 </androidx.constraintlayout.widget.ConstraintLayout>

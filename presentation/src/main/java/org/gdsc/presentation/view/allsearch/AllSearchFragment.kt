@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import org.gdsc.presentation.R
@@ -30,6 +31,8 @@ class AllSearchFragment : Fragment() {
 
     private val viewModel: AllSearchViewModel by activityViewModels()
 
+    private val navArgs: AllSearchFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,6 +43,9 @@ class AllSearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 그룹 전용인지 아닌지 판별하는 용도
+        viewModel.isForGroupState(navArgs.isForGroup)
 
         parent.changeToolbarTitle("검색")
 
