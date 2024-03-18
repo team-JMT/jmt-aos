@@ -85,8 +85,8 @@ class HomeViewModel @Inject constructor(
         get() = _myGroupList
 
 
-    private var _currentGroup = MutableStateFlow<Group?>(null)
-    val currentGroup: StateFlow<Group?>
+    private var _currentGroup: MutableStateFlow<Group> = MutableStateFlow(Group(0, "", "", "", "", 0, 0, false, false))
+    val currentGroup: StateFlow<Group>
         get() = _currentGroup
 
 
@@ -118,7 +118,7 @@ class HomeViewModel @Inject constructor(
         _myGroupList.value = ResultState.OnSuccess(groupList)
     }
 
-    fun setCurrentGroup(group: Group?) {
+    fun setCurrentGroup(group: Group) {
         _currentGroup.value = group
     }
 
