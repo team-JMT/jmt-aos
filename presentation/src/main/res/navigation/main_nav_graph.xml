@@ -22,6 +22,10 @@
         <action
             android:id="@+id/action_all_search_fragment_to_all_search_container_fragment"
             app:destination="@+id/all_search_container_fragment"/>
+        <argument
+            android:name="isForGroup"
+            app:argType="boolean"
+            android:defaultValue="false"/>
     </fragment>
     <fragment
         android:id="@+id/all_search_container_fragment"

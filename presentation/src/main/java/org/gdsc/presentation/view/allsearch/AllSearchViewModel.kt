@@ -48,6 +48,10 @@ class AllSearchViewModel @Inject constructor(
         }
     }
 
+    private var _isForGroup = MutableStateFlow(false)
+    val isForGroup: StateFlow<Boolean>
+        get() = _isForGroup
+
     private var _searchKeyword = MutableStateFlow("")
     val searchKeyword: StateFlow<String>
         get() = _searchKeyword
@@ -85,6 +89,10 @@ class AllSearchViewModel @Inject constructor(
     val searchedKeywordsState: StateFlow<List<String>>
         get() = _searchedKeywordsState
 
+
+    fun isForGroupState(isForGroup: Boolean) {
+        _isForGroup.value = isForGroup
+    }
     fun setSearchKeyword(keyword: String) {
         _searchKeyword.value = keyword
     }
