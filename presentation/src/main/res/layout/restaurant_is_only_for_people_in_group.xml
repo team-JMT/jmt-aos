@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_jmt_new_logo_grey200"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:text="맛집 목록은 그룹 멤버만 볼 수 있어요."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/text_large_medium"/>
+
+</LinearLayout>

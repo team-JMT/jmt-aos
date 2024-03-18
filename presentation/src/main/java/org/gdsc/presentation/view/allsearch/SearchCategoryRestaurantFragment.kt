@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
@@ -45,6 +46,18 @@ class SearchCategoryRestaurantFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        repeatWhenUiStarted {
+            viewModel.isForGroup.collect{ isForGroup ->
+                if (isForGroup.not()) {
+                    binding.restaurantRecyclerView.visibility = View.GONE
+                    binding.warningNoRestaurant.root.visibility = View.VISIBLE
+                } else {
+                    binding.restaurantRecyclerView.visibility = View.VISIBLE
+                    binding.warningNoRestaurant.root.visibility = View.GONE
+                }
+            }
+        }
 
         observeState()
         setSpinners()
