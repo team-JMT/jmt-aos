@@ -3,6 +3,7 @@ package org.gdsc.presentation.view.home
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -455,7 +456,6 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
                         val groupList = state.response
 
                         if (groupList.isEmpty()) {
-                            viewModel.setCurrentGroup(null)
                             bottomSheetDialog.show()
                         } else {
                             groupList.forEach {
