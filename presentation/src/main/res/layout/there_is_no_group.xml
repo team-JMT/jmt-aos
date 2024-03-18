@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_jmt_new_logo_grey200"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:text="아직 등록된 그룹이 없어요."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/text_large_medium"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_create_group"
+        android:text="새로운 그룹 만들기"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="10dp"
+        style="@style/JmtButtonMain"/>
+
+</LinearLayout>

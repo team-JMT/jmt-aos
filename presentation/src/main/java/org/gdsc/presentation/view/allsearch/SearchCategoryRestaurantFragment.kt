@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import org.gdsc.domain.DrinkPossibility
 import org.gdsc.domain.FoodCategory
@@ -37,6 +38,18 @@ class SearchCategoryRestaurantFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        repeatWhenUiStarted {
+            viewModel.isForGroup.collect{ isForGroup ->
+                if (isForGroup.not()) {
+                    binding.restaurantRecyclerView.visibility = View.GONE
+                    binding.waringNoRestaurant.root.visibility = View.VISIBLE
+                } else {
+                    binding.restaurantRecyclerView.visibility = View.VISIBLE
+                    binding.waringNoRestaurant.root.visibility = View.GONE
+                }
+            }
+        }
 
         observeState()
         setSpinners()

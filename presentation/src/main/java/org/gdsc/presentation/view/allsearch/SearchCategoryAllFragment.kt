@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,12 +23,12 @@ import org.gdsc.presentation.view.allsearch.adapter.SearchCategoryRestaurantPrev
 @AndroidEntryPoint
 class SearchCategoryAllFragment(
     private val searchKeyword: String
-): Fragment() {
+) : Fragment() {
 
     private var _binding: FragmentSearchCategoryAllBinding? = null
     private val binding get() = _binding!!
 
-    val viewModel: AllSearchViewModel by activityViewModels()
+    private val viewModel: AllSearchViewModel by activityViewModels()
 
     private val searchCategoryRestaurantPreviewAdapter = SearchCategoryRestaurantPreviewAdapter()
     private val searchCategoryGroupPreviewAdapter = SearchCategoryGroupPreviewAdapter()
@@ -43,6 +44,31 @@ class SearchCategoryAllFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        repeatWhenUiStarted {
+            viewModel.isForGroup.collect { isForGroup ->
+                if (isForGroup.not()) {
+                    binding.restaurantRecyclerView.visibility = View.GONE
+                    binding.waringNoRestaurant.root.visibility = View.VISIBLE
+                } else {
+                    binding.restaurantRecyclerView.visibility = View.VISIBLE
+                    binding.waringNoRestaurant.root.visibility = View.GONE
+                }
+            }
+        }
+
+        repeatWhenUiStarted {
+            viewModel.searchedGroupPreviewState.collect {
+                if (it.isEmpty()) {
+                    binding.groupRecyclerView.visibility = View.GONE
+                    binding.waringNoGroup.root.visibility = View.VISIBLE
+                } else {
+                    binding.groupRecyclerView.visibility = View.VISIBLE
+                    binding.waringNoGroup.root.visibility = View.GONE
+
+                }
+            }
+        }
+
         viewModel.searchRestaurantPreviewWithKeyword()
         viewModel.searchGroupPreviewWithKeyword()
 
@@ -54,7 +80,8 @@ class SearchCategoryAllFragment(
 
         // Todo: New Adapter With Real APi
         binding.recommendedRestaurantRecyclerView.adapter = searchCategoryRestaurantPreviewAdapter
-        binding.recommendedRestaurantRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recommendedRestaurantRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext())
 
         binding.icRestaurant.setOnClickListener {
             val viewPager = requireActivity().findViewById<ViewPager2>(R.id.search_category_pager)
@@ -64,6 +91,7 @@ class SearchCategoryAllFragment(
         viewModel.setSearchKeyword(searchKeyword)
         observeState()
     }
+
     private fun observeState() {
         repeatWhenUiStarted {
             viewModel.searchedRestaurantPreviewState.collect {

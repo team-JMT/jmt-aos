@@ -43,6 +43,9 @@ class MyPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+//        val navigation = MyPageFragmentDirections.actionMyPageFragmentToRestaurantDetailFragment()
+//        findNavController().navigate(navigation)
+
         initUserInfo()
         setPager()
         setTabLayout()
