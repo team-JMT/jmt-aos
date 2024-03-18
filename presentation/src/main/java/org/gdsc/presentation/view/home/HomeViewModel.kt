@@ -163,8 +163,8 @@ class HomeViewModel @Inject constructor(
         return getRestaurantMapWithLimitCountUseCase(sortType, group)
     }
 
-    suspend fun getMyGroup(): List<Group> {
-        return getMyGroupUseCase()
+    suspend fun requestGroupList() {
+        _myGroupList.value = ResultState.OnSuccess(getMyGroupUseCase())
     }
 
     suspend fun selectGroup(groupID: Int) {
