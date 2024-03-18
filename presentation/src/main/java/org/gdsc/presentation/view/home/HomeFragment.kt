@@ -198,9 +198,7 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
     private fun setGroup() {
         binding.groupArrow.setOnClickListener {
             lifecycleScope.launch {
-                viewModel.getMyGroup().let { groupList ->
-                    viewModel.setGroupList(groupList)
-                }
+                viewModel.requestGroupList()
             }
 
             BottomSheetDialog(requireContext())
@@ -437,16 +435,8 @@ class HomeFragment : Fragment(), ViewHolderBindListener {
             viewModel.setSortType(SortType.DISTANCE)
         }
 
-        repeatWhenUiStarted {
-            viewModel.myGroupList.collect {
-                binding.groupName.text
-            }
-        }
-
         lifecycleScope.launch {
-            viewModel.getMyGroup().let { groupList ->
-                viewModel.setGroupList(groupList)
-            }
+            viewModel.requestGroupList()
         }
 
         repeatWhenUiStarted {
